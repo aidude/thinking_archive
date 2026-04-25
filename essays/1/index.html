@@ -4,651 +4,377 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>We Keep Building Better THAAD Missiles — The Thinking Archive</title>
+<meta name="description" content="From THAAD missiles to laser defense to DeepSeek — why constraints drive innovation, why science has forgotten this, and how novelty search offers a way out.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-  :root {
-    --ink: #0f0e0c;
-    --paper: #f5f2eb;
-    --accent: #c8401a;
-    --muted: #6b6560;
-    --border: #d4cfc6;
-    --highlight: #e8e2d5;
-    --card-bg: #efebe2;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 300;
-    line-height: 1.7;
-    overflow-x: hidden;
-  }
-
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 1000;
-    opacity: 0.4;
-  }
-
-  /* NAV */
-  nav {
-    padding: 1.5rem 4rem;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    background: var(--paper);
-    z-index: 100;
-    backdrop-filter: blur(8px);
-  }
-
-  .nav-home {
-    font-family: 'Playfair Display', serif;
-    font-size: 1rem;
-    font-style: italic;
-    color: var(--ink);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-  .nav-home:hover { color: var(--accent); }
-
-  .nav-meta {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--muted);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
-  /* HERO */
-  .essay-hero {
-    padding: 5rem 4rem 3rem;
-    max-width: 780px;
-    opacity: 0;
-    animation: fadeUp 0.8s ease 0.1s forwards;
-  }
-
-  .essay-tags {
-    display: flex;
-    gap: 0.8rem;
-    flex-wrap: wrap;
-    margin-bottom: 2rem;
-  }
-
-  .tag {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.62rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    border: 1px solid var(--border);
-    padding: 0.3rem 0.7rem;
-    border-radius: 2px;
-  }
-
-  .tag.featured {
-    color: var(--accent);
-    border-color: var(--accent);
-  }
-
-  .essay-title {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(1.8rem, 4vw, 2.8rem);
-    font-weight: 400;
-    line-height: 1.2;
-    letter-spacing: -0.02em;
-    margin-bottom: 1.5rem;
-  }
-
-  .essay-subtitle {
-    font-size: 1.1rem;
-    color: var(--muted);
-    line-height: 1.7;
-    max-width: 620px;
-    margin-bottom: 2rem;
-  }
-
-  .essay-byline {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.68rem;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border);
-  }
-
-  .byline-item strong {
-    display: block;
-    color: var(--ink);
-    font-weight: 400;
-    margin-bottom: 0.2rem;
-  }
-
-  /* CONTENTS */
-  .contents {
-    margin: 0 4rem 3rem;
-    padding: 2rem;
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 2px;
-    max-width: 400px;
-    opacity: 0;
-    animation: fadeUp 0.8s ease 0.2s forwards;
-  }
-
-  .contents-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 1rem;
-  }
-
-  .contents ol {
-    list-style: none;
-    counter-reset: toc;
-  }
-
-  .contents ol li {
-    counter-increment: toc;
-    padding: 0.4rem 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 0.82rem;
-  }
-
-  .contents ol li:last-child { border-bottom: none; }
-
-  .contents ol li a {
-    color: var(--muted);
-    text-decoration: none;
-    display: flex;
-    gap: 0.8rem;
-    align-items: baseline;
-    transition: color 0.2s;
-  }
-
-  .contents ol li a:hover { color: var(--accent); }
-
-  .contents ol li a::before {
-    content: counter(toc, upper-roman);
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
-    color: var(--border);
-    min-width: 20px;
-  }
-
-  /* ESSAY BODY */
-  .essay-body {
-    max-width: 680px;
-    margin: 0 auto;
-    padding: 0 4rem 6rem;
-    opacity: 0;
-    animation: fadeUp 0.8s ease 0.3s forwards;
-  }
-
-  .section-num {
-    font-family: 'Playfair Display', serif;
-    font-size: 0.75rem;
-    color: var(--border);
-    letter-spacing: 0.1em;
-    margin-bottom: 0.5rem;
-    margin-top: 4rem;
-  }
-
-  .section-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.5rem;
-    font-weight: 400;
-    margin-bottom: 1.5rem;
-    color: var(--ink);
-  }
-
-  .essay-body p {
-    font-size: 1rem;
-    line-height: 1.85;
-    margin-bottom: 1.4rem;
-    color: var(--ink);
-  }
-
-  .essay-body p.lede {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.25rem;
-    line-height: 1.7;
-    color: var(--ink);
-  }
-
-  .essay-body p.solo {
-    font-weight: 500;
-    font-size: 1rem;
-  }
-
-  /* CALLOUT */
-  .callout {
-    margin: 2.5rem 0;
-    padding: 1.8rem 2rem;
-    background: var(--card-bg);
-    border-left: 3px solid var(--accent);
-    border-radius: 0 2px 2px 0;
-  }
-
-  .callout-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.62rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 0.8rem;
-  }
-
-  .callout p {
-    font-size: 0.9rem !important;
-    color: var(--muted) !important;
-    margin-bottom: 0 !important;
-  }
-
-  .callout .eq {
-    font-family: 'DM Mono', monospace;
-    font-size: 1.1rem;
-    color: var(--ink) !important;
-    margin: 0.8rem 0 !important;
-    letter-spacing: 0.05em;
-  }
-
-  /* INTERACTIVE PANELS */
-  .interactive {
-    margin: 3rem 0;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  .interactive-header {
-    padding: 1rem 1.5rem;
-    background: var(--card-bg);
-    border-bottom: 1px solid var(--border);
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--muted);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .interactive-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
-  }
-
-  .interactive-body {
-    padding: 2rem 1.5rem;
-  }
-
-  /* COST CHART */
-  .cost-chart {
-    display: flex;
-    flex-direction: column;
-    gap: 1.2rem;
-  }
-
-  .cost-row {
-    display: grid;
-    grid-template-columns: 140px 1fr auto;
-    gap: 1rem;
-    align-items: center;
-  }
-
-  .cost-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-    letter-spacing: 0.05em;
-  }
-
-  .cost-bar-wrap {
-    height: 32px;
-    background: var(--highlight);
-    border-radius: 2px;
-    overflow: hidden;
-    position: relative;
-  }
-
-  .cost-bar {
-    height: 100%;
-    border-radius: 2px;
-    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-    display: flex;
-    align-items: center;
-    padding-left: 0.8rem;
-  }
-
-  .cost-bar.drone { background: #4a9eff; width: 0; }
-  .cost-bar.thaad { background: var(--accent); width: 0; }
-  .cost-bar.laser { background: #2ecc71; width: 0; }
-
-  .cost-value {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.75rem;
-    font-weight: 400;
-    color: var(--ink);
-    white-space: nowrap;
-  }
-
-  .cost-ratio {
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border);
-    font-family: 'DM Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--muted);
-    line-height: 1.8;
-  }
-
-  .cost-ratio span {
-    color: var(--accent);
-    font-weight: 400;
-  }
-
-  /* DMN TOGGLE */
-  .brain-toggle {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .brain-mode {
-    padding: 1.5rem;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: center;
-  }
-
-  .brain-mode.active {
-    border-color: var(--accent);
-    background: var(--card-bg);
-  }
-
-  .brain-mode-title {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    margin-bottom: 0.8rem;
-    color: var(--muted);
-    transition: color 0.3s;
-  }
-
-  .brain-mode.active .brain-mode-title { color: var(--accent); }
-
-  .brain-visual {
-    font-size: 2.5rem;
-    margin-bottom: 0.8rem;
-    filter: grayscale(1);
-    transition: filter 0.3s;
-  }
-
-  .brain-mode.active .brain-visual { filter: grayscale(0); }
-
-  .brain-regions {
-    font-size: 0.75rem;
-    color: var(--muted);
-    line-height: 1.6;
-  }
-
-  .brain-regions .active-region {
-    color: var(--ink);
-    font-weight: 500;
-  }
-
-  .brain-description {
-    padding: 1.2rem;
-    background: var(--highlight);
-    border-radius: 4px;
-    font-size: 0.85rem;
-    color: var(--muted);
-    min-height: 80px;
-    transition: all 0.3s ease;
-  }
-
-  /* PRODUCTIVITY CHART */
-  .productivity-chart {
-    position: relative;
-    height: 200px;
-    margin-bottom: 1.5rem;
-  }
-
-  .prod-canvas {
-    width: 100%;
-    height: 100%;
-  }
-
-  .prod-controls {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 1rem;
-  }
-
-  .prod-controls label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.68rem;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-  }
-
-  .prod-controls input[type=range] {
-    flex: 1;
-    accent-color: var(--accent);
-  }
-
-  .prod-year {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--ink);
-    min-width: 40px;
-  }
-
-  .prod-stat {
-    margin-top: 0.8rem;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--muted);
-  }
-
-  .prod-stat span { color: var(--accent); }
-
-  /* 2x2 MATRIX */
-  .matrix {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 1.5rem;
-  }
-
-  .matrix-cell {
-    background: var(--paper);
-    padding: 1.5rem;
-    opacity: 0;
-    transform: scale(0.95);
-    transition: all 0.4s ease;
-  }
-
-  .matrix-cell.visible {
-    opacity: 1;
-    transform: scale(1);
-  }
-
-  .matrix-cell.phase { background: var(--card-bg); }
-
-  .matrix-cell-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 0.5rem;
-  }
-
-  .matrix-cell.phase .matrix-cell-label { color: var(--accent); }
-
-  .matrix-cell-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 0.95rem;
-    font-weight: 400;
-    margin-bottom: 0.5rem;
-    line-height: 1.3;
-  }
-
-  .matrix-cell-examples {
-    font-size: 0.72rem;
-    color: var(--muted);
-    line-height: 1.6;
-    font-style: italic;
-  }
-
-  .matrix-star {
-    display: inline-block;
-    color: var(--accent);
-    font-size: 1.2rem;
-    margin-right: 0.3rem;
-  }
-
-  .matrix-axes {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1px;
-    margin-bottom: 0.5rem;
-  }
-
-  .matrix-axis-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    text-align: center;
-    padding: 0.4rem;
-    background: var(--highlight);
-    border-radius: 2px;
-  }
-
-  /* SEPARATOR */
-  .essay-sep {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin: 3rem 0;
-    color: var(--border);
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
-  }
-
-  .essay-sep::before,
-  .essay-sep::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-
-  /* REFERENCES */
-  .references {
-    margin-top: 4rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--border);
-  }
-
-  .references-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 1.5rem;
-  }
-
-  .references ol {
-    padding-left: 1.5rem;
-  }
-
-  .references ol li {
-    font-size: 0.78rem;
-    color: var(--muted);
-    line-height: 1.7;
-    margin-bottom: 0.5rem;
-    font-family: 'DM Mono', monospace;
-  }
-
-  /* FOOTER */
-  .essay-footer {
-    max-width: 680px;
-    margin: 0 auto;
-    padding: 0 4rem 4rem;
-    border-top: 1px solid var(--border);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .essay-footer p {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--muted);
-    letter-spacing: 0.08em;
-  }
-
-  .footer-link {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.65rem;
-    color: var(--accent);
-    text-decoration: none;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
-  /* ANIMATIONS */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* RESPONSIVE */
-  @media (max-width: 768px) {
-    nav { padding: 1rem 1.5rem; }
-    .essay-hero { padding: 3rem 1.5rem 2rem; }
-    .contents { margin: 0 1.5rem 2rem; }
-    .essay-body { padding: 0 1.5rem 4rem; }
-    .cost-row { grid-template-columns: 100px 1fr auto; }
-    .brain-toggle { grid-template-columns: 1fr; }
-    .essay-footer { padding: 2rem 1.5rem; flex-direction: column; gap: 1rem; }
-  }
+/* ── RESET & BASE ─────────────────────────────── */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; font-size: 14px; }
+
+:root {
+  --ink:      #0f0e0c;
+  --paper:    #f5f2eb;
+  --accent:   #c8401a;
+  --muted:    #6b6560;
+  --border:   #d4cfc6;
+  --hi:       #e8e2d5;
+  --card:     #efebe2;
+  --green:    #2a7a4b;
+  --blue:     #1f5fa6;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  font-size: 1rem; /* 14px */
+  line-height: 1.85;
+  overflow-x: hidden;
+}
+
+/* grain */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 999; opacity: .4;
+}
+
+/* ── NAV ──────────────────────────────────────── */
+nav {
+  padding: 1.2rem 3rem;
+  border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+  position: sticky; top: 0; background: var(--paper); z-index: 100;
+}
+.nav-home {
+  font-family: 'Playfair Display', serif;
+  font-style: italic; font-size: 1rem;
+  color: var(--ink); text-decoration: none;
+  transition: color .2s;
+}
+.nav-home:hover { color: var(--accent); }
+.nav-meta {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.643rem; color: var(--muted);
+  letter-spacing: .1em; text-transform: uppercase;
+}
+
+/* ── HERO ─────────────────────────────────────── */
+.hero {
+  padding: 4rem 3rem 2.5rem;
+  max-width: 760px;
+  opacity: 0; animation: fadeUp .8s ease .1s forwards;
+}
+.tags { display: flex; gap: .6rem; flex-wrap: wrap; margin-bottom: 1.8rem; }
+.tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.571rem; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--muted); border: 1px solid var(--border);
+  padding: .25rem .65rem; border-radius: 2px;
+}
+.tag.feat { color: var(--accent); border-color: var(--accent); }
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  font-weight: 400; line-height: 1.2;
+  letter-spacing: -.02em; margin-bottom: 1rem;
+}
+.hero-sub {
+  font-size: 1.05rem; color: var(--muted);
+  line-height: 1.7; max-width: 600px; margin-bottom: 1.8rem;
+}
+.byline {
+  display: flex; gap: 2rem; flex-wrap: wrap;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.643rem; color: var(--muted);
+  letter-spacing: .08em;
+  padding-top: 1.4rem; border-top: 1px solid var(--border);
+}
+.byline strong { display: block; color: var(--ink); font-weight: 400; margin-bottom: .15rem; }
+
+/* ── TABLE OF CONTENTS ────────────────────────── */
+.toc {
+  margin: 0 3rem 2.5rem;
+  padding: 1.6rem;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 2px; max-width: 380px;
+  opacity: 0; animation: fadeUp .8s ease .2s forwards;
+}
+.toc-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.571rem; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: .8rem;
+}
+.toc ol { list-style: none; counter-reset: toc; }
+.toc li {
+  counter-increment: toc;
+  padding: .35rem 0; border-bottom: 1px solid var(--border);
+  font-size: 0.857rem;
+}
+.toc li:last-child { border-bottom: none; }
+.toc a {
+  color: var(--muted); text-decoration: none;
+  display: flex; gap: .7rem; align-items: baseline;
+  transition: color .2s;
+}
+.toc a:hover { color: var(--accent); }
+.toc a::before {
+  content: counter(toc, upper-roman);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.571rem; color: var(--border); min-width: 18px;
+}
+
+/* ── ESSAY BODY ───────────────────────────────── */
+.body {
+  max-width: 660px; margin: 0 auto;
+  padding: 0 3rem 5rem;
+  opacity: 0; animation: fadeUp .8s ease .3s forwards;
+}
+
+.sec-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 0.714rem; color: var(--border);
+  letter-spacing: .1em; margin-bottom: .4rem; margin-top: 3.5rem;
+}
+.sec-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.357rem; font-weight: 400;
+  margin-bottom: 1.4rem; line-height: 1.3;
+}
+
+.body p { font-size: 1rem; line-height: 1.85; margin-bottom: 1.3rem; }
+.body p.lede {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem; line-height: 1.7;
+}
+.body p.solo { font-weight: 500; }
+.body strong { font-weight: 500; }
+.body em { font-style: italic; color: var(--muted); }
+
+/* ── CALLOUT ──────────────────────────────────── */
+.callout {
+  margin: 2rem 0; padding: 1.5rem 1.8rem;
+  background: var(--card);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 2px 2px 0;
+}
+.callout-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.571rem; letter-spacing: .15em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: .7rem;
+}
+.callout p { font-size: 0.857rem !important; color: var(--muted) !important; margin-bottom: 0 !important; }
+.callout .eq {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.929rem; color: var(--ink) !important;
+  margin: .7rem 0 !important; letter-spacing: .04em;
+  line-height: 1.9;
+}
+
+/* ── INTERACTIVE PANEL ────────────────────────── */
+.interactive {
+  margin: 2.5rem 0;
+  border: 1px solid var(--border);
+  border-radius: 4px; overflow: hidden;
+}
+.int-header {
+  padding: .9rem 1.4rem;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.571rem; letter-spacing: .15em;
+  text-transform: uppercase; color: var(--muted);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.int-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.int-body { padding: 1.6rem 1.4rem; }
+
+/* ── COST CHART ───────────────────────────────── */
+.cost-chart-wrap { position: relative; width: 100%; height: 260px; }
+.cost-legend {
+  display: flex; gap: 1rem; flex-wrap: wrap;
+  margin-top: .9rem; margin-bottom: .7rem;
+}
+.cost-leg-item {
+  display: flex; align-items: center; gap: 5px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.571rem; color: var(--muted);
+}
+.cost-leg-sw { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
+.cost-note {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.571rem; color: var(--muted);
+  line-height: 1.8; margin-top: 1rem;
+  padding-top: 1rem; border-top: 1px solid var(--border);
+}
+.cost-note span { color: var(--accent); }
+
+/* ── PRODUCTIVITY CHART ───────────────────────── */
+.prod-wrap { position: relative; width: 100%; height: 190px; }
+.prod-controls {
+  display: flex; align-items: center; gap: .8rem;
+  margin-top: .8rem;
+}
+.prod-controls label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.643rem; color: var(--muted);
+}
+.prod-controls input[type=range] { flex: 1; accent-color: var(--accent); }
+.prod-year {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.714rem; color: var(--ink); min-width: 36px;
+}
+.prod-stat {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.643rem; color: var(--muted); margin-top: .6rem;
+}
+.prod-stat span { color: var(--accent); }
+
+/* ── NOVELTY SEARCH SIM ───────────────────────── */
+.sim-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  margin-bottom: 10px;
+}
+.sim-panel { border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+.sim-ph {
+  padding: 6px 10px; font-family: 'DM Mono', monospace;
+  font-size: 0.5rem; letter-spacing: .14em; text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+.sim-ph.obj { color: var(--accent); }
+.sim-ph.nov { color: var(--green); }
+.sim-canvas { display: block; width: 100%; background: #f8f4ec; }
+.sim-controls {
+  display: flex; gap: 8px; align-items: center;
+  margin-bottom: 10px; flex-wrap: wrap;
+}
+.sim-btn {
+  padding: 5px 14px; border: 1px solid var(--border);
+  border-radius: 3px; font-family: 'DM Mono', monospace;
+  font-size: 0.571rem; cursor: pointer;
+  color: var(--muted); background: transparent;
+  letter-spacing: .08em; transition: all .15s;
+}
+.sim-btn:hover { background: var(--hi); }
+.sim-btn.run { border-color: var(--accent); color: var(--accent); }
+.sim-speed {
+  display: flex; align-items: center; gap: 6px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.571rem; color: var(--muted);
+}
+.sim-speed input { width: 80px; accent-color: var(--accent); }
+.sim-step {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.571rem; color: var(--muted);
+}
+.sim-stats {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+  margin-bottom: 10px;
+}
+.sim-stat-box {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 4px; padding: 9px 12px;
+}
+.sim-stat-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.5rem; letter-spacing: .14em;
+  text-transform: uppercase; margin-bottom: 6px;
+}
+.sim-row {
+  display: flex; justify-content: space-between;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.571rem; padding: 2.5px 0;
+  border-bottom: 1px solid var(--border);
+}
+.sim-row:last-child { border-bottom: none; }
+.sim-k { color: var(--muted); }
+.sim-v { color: var(--ink); font-weight: 500; }
+.sim-v.warn { color: var(--accent); }
+.sim-v.good { color: var(--green); }
+.sim-legend {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.sim-leg {
+  display: flex; align-items: center; gap: 5px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.5rem; color: var(--muted);
+}
+.sim-leg-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+.sim-insight {
+  padding: 9px 12px;
+  background: var(--card); border: 1px solid var(--border);
+  border-left: 2px solid var(--accent); border-radius: 0 4px 4px 0;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.571rem; color: var(--muted);
+  line-height: 1.8; min-height: 48px;
+}
+.sim-insight strong { color: var(--ink); }
+.sim-insight.phase { border-left-color: #c8a020; }
+
+/* ── SEPARATOR ────────────────────────────────── */
+.sep {
+  display: flex; align-items: center;
+  gap: .8rem; margin: 2.5rem 0;
+  color: var(--border); font-family: 'DM Mono', monospace;
+  font-size: 0.643rem; letter-spacing: .2em;
+}
+.sep::before, .sep::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+/* ── REFERENCES ───────────────────────────────── */
+.refs {
+  margin-top: 3.5rem; padding-top: 1.8rem;
+  border-top: 1px solid var(--border);
+}
+.refs-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.571rem; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 1.2rem;
+}
+.refs ol { padding-left: 1.4rem; }
+.refs li {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.643rem; color: var(--muted);
+  line-height: 1.7; margin-bottom: .4rem;
+}
+
+/* ── FOOTER ───────────────────────────────────── */
+.essay-footer {
+  max-width: 660px; margin: 0 auto;
+  padding: 0 3rem 3rem;
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 1rem;
+}
+.essay-footer p {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.571rem; color: var(--muted);
+}
+.back-link {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.571rem; color: var(--accent);
+  text-decoration: none; letter-spacing: .1em; text-transform: uppercase;
+}
+
+/* ── ANIMATION ────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── RESPONSIVE ───────────────────────────────── */
+@media (max-width: 680px) {
+  nav, .hero, .toc, .body, .essay-footer { padding-left: 1.4rem; padding-right: 1.4rem; }
+  .toc { margin-left: 1.4rem; margin-right: 1.4rem; }
+  .sim-grid { grid-template-columns: 1fr; }
+  .sim-stats { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
@@ -660,544 +386,973 @@
 </nav>
 
 <!-- HERO -->
-<div class="essay-hero">
-  <div class="essay-tags">
-    <span class="tag featured">Astera Essay Competition 2026</span>
-    <span class="tag">Metascience</span>
-    <span class="tag">Systems Thinking</span>
-    <span class="tag">Neuroscience</span>
+<div class="hero">
+  <div class="tags">
+    <span class="tag feat">Scientific Infrastructure</span>
+    <span class="tag">Novelty Search</span>
+    <span class="tag">Phase Transitions</span>
+    <span class="tag">Constraint-Driven Innovation</span>
   </div>
-
-  <h1 class="essay-title">We Keep Building Better THAAD Missiles</h1>
-  <p class="essay-subtitle">How scientific infrastructure optimizes against the discoveries we need most — and what we should build instead.</p>
-
-  <div class="essay-byline">
-    <div class="byline-item">
-      <strong>Amritansh</strong>
-      Independent AI Researcher
-    </div>
-    <div class="byline-item">
-      <strong>April 2026</strong>
-      Bengaluru, India
-    </div>
-    <div class="byline-item">
-      <strong>~15 min read</strong>
-      2,500 words
-    </div>
+  <h1>The Constraint Paradox: Why the Best Discoveries Cannot Be Planned</h1>
+  <p class="hero-sub">
+    From a $5,000 drone vs a $12,000,000 missile to DeepSeek vs GPT-4 —
+    the same pattern keeps appearing. Constraints don't slow innovation down.
+    They reveal solutions that abundance makes invisible.
+    Science has forgotten this. Here is the mathematics of why, and what to do about it.
+  </p>
+  <div class="byline">
+    <div><strong>Amritansh</strong>Independent AI Researcher</div>
+    <div><strong>May 2026</strong>Bengaluru, India</div>
+    <div><strong>~18 min read</strong>2,800 words</div>
   </div>
 </div>
 
-<!-- TABLE OF CONTENTS -->
-<div class="contents">
-  <div class="contents-label">Contents</div>
+<!-- TOC -->
+<div class="toc">
+  <div class="toc-label">Contents</div>
   <ol>
-    <li><a href="#opening">I was doing nothing</a></li>
-    <li><a href="#thaad">The THAAD problem</a></li>
-    <li><a href="#brain">What the brain actually does</a></li>
-    <li><a href="#formal">The formal problem</a></li>
-    <li><a href="#einstein">Einstein needed the patent office</a></li>
-    <li><a href="#destruction">The structural destruction</a></li>
-    <li><a href="#matrix">The 2x2 that explains everything</a></li>
-    <li><a href="#experiment">The experiment</a></li>
-    <li><a href="#closing">The closing argument</a></li>
+    <li><a href="#s1">The $12 million problem</a></li>
+    <li><a href="#s2">The same thing happened in AI</a></li>
+    <li><a href="#s3">What science is getting wrong</a></li>
+    <li><a href="#s4">The mathematics of constraint-driven phase transitions</a></li>
+    <li><a href="#s5">Why objectives are deceptive</a></li>
+    <li><a href="#s6">Novelty search — the algorithm science is missing</a></li>
+    <li><a href="#s7">The experiment</a></li>
   </ol>
 </div>
 
-<!-- ESSAY BODY -->
-<div class="essay-body">
-
-  <!-- OPENING -->
-  <div id="opening">
-    <p class="lede">I was doing nothing.</p>
-
-    <p>Technically I was daydreaming — letting my mind wander across worm biology, swarm robotics, warfare, neuromodulation — when something clicked that five months of structured experimentation hadn't produced. The connection between how serotonin drives worm colonies to swarm, how robot swarms exhibit order-disorder phase transitions, and how the brain's neuromodulatory system gates plasticity — these were the same mathematical object. A control parameter driving a system through a phase boundary.</p>
-
-    <p>That daydream became the theoretical spine of my research.</p>
-
-    <p class="solo">This bothered me. It should bother you too.</p>
-
-    <p>Because if the most important cognitive event in my research happened during the one hour nobody was paying me to work — on rented GPUs in Bengaluru, with no lab, no advisor, no grant — then we have a serious infrastructure problem. Not a personal one. A systemic one.</p>
-
-    <p>Here is the problem, stated plainly: <strong>we have built scientific infrastructure that eliminates the cognitive state most likely to produce breakthroughs.</strong> We have done this while studying the very organ that perfected it. And we keep calling the results a productivity crisis, as if the problem were effort rather than architecture.</p>
-  </div>
-
-  <div class="essay-sep">§</div>
-
-  <!-- THAAD -->
-  <div id="thaad">
-    <p class="section-num">I.</p>
-    <h2 class="section-title">First, The Drones</h2>
-
-    <p>In recent conflicts, Iranian drones costing approximately $5,000 each have been intercepted by THAAD missile systems costing approximately $5,000,000 per intercept.</p>
-
-    <p class="solo">Read that again.</p>
-
-    <!-- INTERACTIVE: COST CHART -->
-    <div class="interactive">
-      <div class="interactive-header">
-        <span>Cost Asymmetry — The Optimization Trap</span>
-        <span class="interactive-dot"></span>
-      </div>
-      <div class="interactive-body">
-        <div class="cost-chart">
-          <div class="cost-row">
-            <span class="cost-label">Iranian Drone</span>
-            <div class="cost-bar-wrap"><div class="cost-bar drone" id="bar-drone"></div></div>
-            <span class="cost-value">$5,000</span>
-          </div>
-          <div class="cost-row">
-            <span class="cost-label">THAAD Intercept</span>
-            <div class="cost-bar-wrap"><div class="cost-bar thaad" id="bar-thaad"></div></div>
-            <span class="cost-value">$5,000,000</span>
-          </div>
-          <div class="cost-row">
-            <span class="cost-label">Laser Defense</span>
-            <div class="cost-bar-wrap"><div class="cost-bar laser" id="bar-laser"></div></div>
-            <span class="cost-value">&lt;$1</span>
-          </div>
-        </div>
-        <div class="cost-ratio">
-          Cost ratio (Drone:THAAD): <span>1 : 1,000</span><br>
-          Cost reduction (THAAD→Laser): <span>5,000,000×</span><br>
-          Method: <span>Exit the optimization game entirely. Return to physics.</span>
-        </div>
-      </div>
-    </div>
-
-    <p>The laser solution was not found by optimizing the missile. It was found by someone who stopped playing the missile game long enough to ask: <em>what does physics actually permit here?</em> Light travels at the speed of light. Energy per photon is cheap. Given these facts — what becomes possible?</p>
-
-    <p>In statistical physics, this is called a phase transition. When a control parameter crosses a critical threshold, the system doesn't improve — it reorganizes entirely.</p>
-
-    <div class="callout">
-      <div class="callout-label">Phase Transition — Formal Statement</div>
-      <p>Near a critical point, correlation length ξ diverges:</p>
-      <p class="eq">ξ ~ |T − T<sub>c</sub>|<sup>−ν</sup></p>
-      <p>Where T is the control parameter, T<sub>c</sub> is the critical point, and ν is the critical exponent. Small changes in T near T<sub>c</sub> produce system-wide reorganization. This is what the laser did to missile defense. This is what Einstein did to Newtonian mechanics.</p>
-    </div>
-
-    <p>The question worth asking — the one this essay is actually about — is whether scientific infrastructure makes phase transitions more or less likely.</p>
-
-    <p>I will argue: <strong>dramatically less likely.</strong> And I will argue we can fix it.</p>
-  </div>
-
-  <div class="essay-sep">§</div>
-
-  <!-- BRAIN -->
-  <div id="brain">
-    <p class="section-num">II.</p>
-    <h2 class="section-title">Here Is What The Brain Does (And It's Weirder Than You Think)</h2>
-
-    <p>The brain runs two fundamentally different operating systems simultaneously.</p>
-
-    <!-- INTERACTIVE: BRAIN MODES -->
-    <div class="interactive">
-      <div class="interactive-header">
-        <span>Brain Operating Modes — Click to Switch</span>
-        <span class="interactive-dot"></span>
-      </div>
-      <div class="interactive-body">
-        <div class="brain-toggle">
-          <div class="brain-mode active" id="mode-exploit" onclick="switchMode('exploit')">
-            <div class="brain-visual">🎯</div>
-            <div class="brain-mode-title">Exploitation Mode</div>
-            <div class="brain-regions">
-              <span class="active-region">Prefrontal Cortex ↑</span><br>
-              Focused Attention ↑<br>
-              Acetylcholine ↑<br>
-              Default Mode Network ↓
-            </div>
-          </div>
-          <div class="brain-mode" id="mode-explore" onclick="switchMode('explore')">
-            <div class="brain-visual">🌊</div>
-            <div class="brain-mode-title">Exploration Mode</div>
-            <div class="brain-regions">
-              Prefrontal Cortex ↓<br>
-              <span class="active-region">Default Mode Network ↑</span><br>
-              Acetylcholine ↓<br>
-              <span class="active-region">Semantic Integration ↑</span>
-            </div>
-          </div>
-        </div>
-        <div class="brain-description" id="brain-desc">
-          <strong>Exploitation mode:</strong> High acetylcholine. Precise, targeted, resource-efficient. This is you debugging code, analyzing data, writing a methods section. Fast and focused. The brain runs this mode when there is a known problem with a known solution path.
-        </div>
-      </div>
-    </div>
-
-    <p>The Default Mode Network (DMN) is stranger. Neuroscientists discovered it almost by accident (Raichle et al., 2001) when they noticed that certain brain regions got <em>more</em> active when subjects were told to do nothing. They assumed it was noise.</p>
-
-    <p>It wasn't noise. It was the most metabolically expensive thing the brain does — consuming roughly <strong>20% of total energy at complete rest.</strong></p>
-
-    <p>The brain is paying a significant price to keep this system running when you're staring at the ceiling. Why? Because the DMN performs a function that the exploitation system cannot: it integrates across semantically distant memory spaces. It connects worm biology to phase transitions. It connects THAAD missiles to representational geometry.</p>
-
-    <div class="callout">
-      <div class="callout-label">The Neuroscience of Insight — Jung-Beeman et al., 2004</div>
-      <p>The "aha moment" is preceded by alpha-wave activity in the cortex — the brain <em>actively suppressing</em> its focused attention system so the DMN can make the connection. The brain quiets its exploitation machinery to let the exploration system work. This is not a bug. This is the most sophisticated information processing the brain performs.</p>
-    </div>
-
-    <p>The neuromodulatory system — dopamine, acetylcholine, norepinephrine, serotonin — is the meta-controller that switches between these modes. Acetylcholine up: focus, encode, exploit. Acetylcholine down, default mode active: wander, integrate, explore.</p>
-
-    <p>The brain has a switch. It uses it constantly. It has been refined over 500 million years of evolution.</p>
-
-    <p class="solo">We built scientific infrastructure that jams it in the exploit position and calls the result productivity.</p>
-  </div>
-
-  <div class="essay-sep">§</div>
-
-  <!-- FORMAL -->
-  <div id="formal">
-    <p class="section-num">III.</p>
-    <h2 class="section-title">The Formal Problem (For Those Who Like Equations)</h2>
-
-    <p>The multi-armed bandit problem asks: if you have multiple slot machines with unknown payoffs, how do you balance exploiting the best known machine against exploring potentially better unknown ones?</p>
-
-    <div class="callout">
-      <div class="callout-label">Gittins Index Theorem (1979) — Optimal Exploration Policy</div>
-      <p class="eq">V(arm i) = μᵢ + β√(log t / nᵢ)</p>
-      <p>Where μᵢ is current expected reward, t is total time, nᵢ is how often arm i has been tried, and β controls exploration-exploitation balance. <strong>Pure exploitation — always choosing the highest known reward — is provably suboptimal.</strong> The mathematics demands exploration.</p>
-    </div>
-
-    <p>Current scientific grant structures implement pure exploitation: commit to a hypothesis in advance, maximize output on that hypothesis, renew based on results. The Gittins theorem says this is <strong>mathematically guaranteed to underperform.</strong></p>
-
-    <div class="callout">
-      <div class="callout-label">Ashby's Law of Requisite Variety (1956)</div>
-      <p>A regulatory system must have at least as much variety — as many possible states — as the environment it seeks to control. A scientific infrastructure that can only make exploitation moves cannot control a problem space that requires exploration moves.</p>
-      <p>These are not metaphors. They are theorems. We are violating them institutionally.</p>
-    </div>
-
-    <!-- INTERACTIVE: PRODUCTIVITY DECLINE -->
-    <div class="interactive">
-      <div class="interactive-header">
-        <span>Research Productivity Decline — Bloom et al. (2020)</span>
-        <span class="interactive-dot"></span>
-      </div>
-      <div class="interactive-body">
-        <div class="productivity-chart">
-          <canvas class="prod-canvas" id="prod-canvas"></canvas>
-        </div>
-        <div class="prod-controls">
-          <label>Year</label>
-          <input type="range" min="0" max="9" value="9" id="prod-slider" step="1">
-          <span class="prod-year" id="prod-year">2020</span>
-        </div>
-        <div class="prod-stat" id="prod-stat">
-          By 2020: <span>~18× more researchers</span> needed to sustain the same rate of progress as 1930.
-        </div>
-      </div>
-    </div>
-
-    <p>This is what a system approaching a local minimum looks like from the inside. Running faster to stay in place.</p>
-  </div>
-
-  <div class="essay-sep">§</div>
-
-  <!-- EINSTEIN -->
-  <div id="einstein">
-    <p class="section-num">IV.</p>
-    <h2 class="section-title">Einstein Needed The Patent Office. Not Despite It. Because Of It.</h2>
-
-    <p>Here is the standard story: Einstein was a genius who revolutionized physics despite being trapped in a boring clerical job.</p>
-
-    <p class="solo">Here is the more interesting story.</p>
-
-    <p>The patent office gave him four things simultaneously that his subsequent academic career partially destroyed: <strong>cognitive slack</strong>, <strong>cross-domain exposure</strong>, <strong>freedom from publication pressure</strong>, and <strong>protected time for thought experiments.</strong></p>
-
-    <p>Special relativity did not emerge despite these conditions. It emerged because of them.</p>
-
-    <p>Bohr at Copenhagen was different but shared something essential. His institute was structured around open debate — Heisenberg, Pauli, Born, Dirac arguing constantly in a room. Crucially: no one was penalized for a wrong hypothesis in the seminar room. Failure was information, not embarrassment.</p>
-
-    <p>What Einstein and Bohr shared was not genius. Lots of people are geniuses. They shared <em>infrastructure that protected the exploration phase.</em></p>
-
-    <p class="solo">We have spent a century mythologizing the genius and ignoring the patent office. This is a costly mistake.</p>
-  </div>
-
-  <div class="essay-sep">§</div>
-
-  <!-- STRUCTURAL DESTRUCTION -->
-  <div id="destruction">
-    <p class="section-num">V.</p>
-    <h2 class="section-title">The Structural Destruction of the Exploration Phase (A Brief Horror Story)</h2>
-
-    <p>A standard research grant requires: a specific hypothesis stated in advance. A methodology committed to before results are known. Milestones deliverable at fixed intervals. Publications as evidence of productivity. Specialist peer review by people in the same subfield.</p>
-
-    <p>Every single one of these requirements is architecturally optimized for exploitation and <strong>architecturally hostile to exploration.</strong></p>
-
-    <p>A stated hypothesis forecloses the daydream. A committed methodology prevents the pivot. Fixed milestones impose an artificial timescale on insight, which operates on its own schedule. Publication requirements bias toward positive results — which means the 250 hours I spent repeating experiments others had already failed at stay invisible to every researcher who comes after me.</p>
-
-    <p>Meanwhile the systems that figured out how to separate exploration from exploitation consistently outperform those that haven't:</p>
-
-    <p><strong>DARPA</strong> program managers get a mission, three to five years, no publication requirements, complete methodological autonomy. The internet. GPS. Stealth. The precursors to modern AI. All phase transitions. All from protected exploration time.</p>
-
-    <p><strong>Renaissance Technologies</strong> hires mathematicians and physicists — people trained to wander across abstract spaces — and builds systematic infrastructure around their insights. The wandering and the testing are structurally separated.</p>
-
-    <p><strong>Military after-action reviews</strong> capture failure intelligence immediately. Not six months later in a paper four people will read. Immediately. Causally. What failed, why it failed, what to try next.</p>
-
-    <p class="solo">We keep building better THAAD missiles.</p>
-  </div>
-
-  <div class="essay-sep">§</div>
-
-  <!-- MATRIX -->
-  <div id="matrix">
-    <p class="section-num">VI.</p>
-    <h2 class="section-title">The 2×2 That Explains Everything</h2>
-
-    <p>All of scientific infrastructure can be placed on two axes: does it provide shared failure intelligence? Does it protect exploration time?</p>
-
-    <!-- INTERACTIVE: 2x2 MATRIX -->
-    <div class="interactive">
-      <div class="interactive-header">
-        <span>Scientific Infrastructure Matrix — Cells appear in sequence</span>
-        <span class="interactive-dot"></span>
-      </div>
-      <div class="interactive-body">
-        <div class="matrix-axes">
-          <div class="matrix-axis-label">✓ Shared Failure Intelligence</div>
-          <div class="matrix-axis-label">✗ No Shared Intelligence</div>
-        </div>
-        <div class="matrix" id="matrix-grid">
-          <div class="matrix-cell phase" id="cell-tl">
-            <div class="matrix-cell-label"><span class="matrix-star">★</span>Protected Exploration + Shared Failure</div>
-            <div class="matrix-cell-title">Phase Transitions</div>
-            <div class="matrix-cell-examples">DARPA · Renaissance Technologies · What we need to build</div>
-          </div>
-          <div class="matrix-cell" id="cell-tr">
-            <div class="matrix-cell-label">Protected Exploration, No Sharing</div>
-            <div class="matrix-cell-title">Isolated Genius</div>
-            <div class="matrix-cell-examples">Einstein at the patent office — lucky, not repeatable</div>
-          </div>
-          <div class="matrix-cell" id="cell-bl">
-            <div class="matrix-cell-label">No Exploration, Shared Knowledge</div>
-            <div class="matrix-cell-title">Faster Local Optima</div>
-            <div class="matrix-cell-examples">Current academia at its best — faster, but still stuck</div>
-          </div>
-          <div class="matrix-cell" id="cell-br">
-            <div class="matrix-cell-label">No Exploration, No Sharing</div>
-            <div class="matrix-cell-title">Stuck</div>
-            <div class="matrix-cell-examples">Industry short-termism — optimizing the THAAD missile</div>
-          </div>
-        </div>
-        <p style="font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--muted);">
-          Phase transitions happen in the top-left. Almost no existing institution deliberately builds for it.
-        </p>
-      </div>
-    </div>
-
-    <p>The experiment this essay proposes is to build the top-left quadrant deliberately — for neuro-inspired AI research — and measure whether it produces phase transitions at a higher rate than the bottom-left.</p>
-  </div>
-
-  <div class="essay-sep">§</div>
-
-  <!-- EXPERIMENT -->
-  <div id="experiment">
-    <p class="section-num">VII.</p>
-    <h2 class="section-title">The Experiment</h2>
-
-    <p>Call it the <strong>Neuro-AI Exploration Collective</strong> — a 12-month pilot with 20 researchers working on neuro-inspired continual learning, structured around three features no existing institution provides simultaneously:</p>
-
-    <div class="callout">
-      <div class="callout-label">Feature 1 — Protected Exploration Time (40% of funded hours)</div>
-      <p>Explicitly unstructured. No deliverables. No hypothesis required in advance. The only requirement: when something clicks, log the cognitive state that produced it. Not the idea — the state. Were you reading? Walking? Connecting concepts from unrelated fields? This is the exploration fingerprint.</p>
-    </div>
-
-    <div class="callout">
-      <div class="callout-label">Feature 2 — Shared Failure Intelligence</div>
-      <p>Structured experiment logs from the remaining 60% of time: hypothesis, architecture, result, what it rules out, what the failure implies, suggested next directions. AI-queryable. Accessible across disciplines. My 250 hours of repeated failures become visible. The next researcher finds my failure log before repeating the experiment.</p>
-    </div>
-
-    <div class="callout">
-      <div class="callout-label">Feature 3 — Cross-Domain Serendipity Injection</div>
-      <p>A weekly LLM-generated digest reasoning across failure logs and exploration fingerprints simultaneously — surfacing non-obvious connections across disciplinary boundaries. Worm swarming to phase transitions. THAAD asymmetry to representational geometry. Not curated by an editor. Generated by a system that holds the entire knowledge graph simultaneously.</p>
-    </div>
-
-    <p><strong>What we measure after 12 months:</strong> Phase transition rate — how many researchers report genuinely novel framings that exit the current optimization game? Failure intelligence utilization — how often do researchers cite a logged failure as preventing the same experiment? Exploration fingerprint analysis — can we trace each phase transition back through the daydream logs?</p>
-
-    <p>The experiment can fail. Researchers may not adopt the format. Logs may be too heterogeneous. Cross-domain connections may not yield testable hypotheses. These are real failure modes — and each one tells us something important about what the actual solution needs to look like.</p>
-
-    <p class="solo">We embrace these features.</p>
-  </div>
-
-  <div class="essay-sep">§</div>
-
-  <!-- CLOSING -->
-  <div id="closing">
-    <p class="section-num">VIII.</p>
-    <h2 class="section-title">The Closing Argument (Short, Because Feynman Said So)</h2>
-
-    <p>The brain solves exploration-exploitation through architectural separation: fast exploitation, slow exploration, a neuromodulatory meta-controller switching between them.</p>
-
-    <p>We are studying this system. We are trying to replicate it in machines. We are doing this research inside an institution that eliminated the exploration system entirely and then wonders why the breakthroughs have slowed.</p>
-
-    <p>I found a piece of my research in a daydream about worm colonies, swarm robotics, and warfare.</p>
-
-    <p>I was not being paid. Nobody was measuring the hour. No milestone depended on it.</p>
-
-    <p class="solo">And it was the most productive hour of my last five months.</p>
-
-    <p>We should stop treating the patent office as Einstein's obstacle.</p>
-
-    <p class="solo">It was his laboratory.</p>
-
-    <p>Build it deliberately. Measure whether it works. Publish everything — including if it fails.</p>
-
-    <p class="solo">The brain figured this out 500 million years ago. It is embarrassing that we haven't.</p>
-  </div>
-
-  <!-- REFERENCES -->
-  <div class="references">
-    <div class="references-label">References</div>
-    <ol>
-      <li>Ashby, W.R. (1956). An Introduction to Cybernetics. Chapman & Hall.</li>
-      <li>Beaty, R.E. et al. (2016). Creativity and the default network. Neuropsychologia, 64, 92–98.</li>
-      <li>Bloom, N. et al. (2020). Are ideas getting harder to find? American Economic Review, 110(4), 1104–1144.</li>
-      <li>Buckner, R.L. et al. (2008). The brain's default network. Annals of the New York Academy of Sciences, 1124, 1–38.</li>
-      <li>Gittins, J.C. (1979). Bandit processes and dynamic allocation indices. Journal of the Royal Statistical Society, 41(2), 148–177.</li>
-      <li>Jung-Beeman, M. et al. (2004). Neural activity observed in people solving verbal problems with insight. PLOS Biology, 2(4), e97.</li>
-      <li>Raichle, M.E. et al. (2001). A default mode of brain function. PNAS, 98(2), 676–682.</li>
-      <li>Sio, U.N. & Ormerod, T.C. (2009). Does incubation enhance problem solving? Psychological Bulletin, 135(1), 94–120.</li>
-    </ol>
-  </div>
-
+<!-- BODY -->
+<div class="body">
+
+<!-- ── SECTION 1 ── -->
+<div id="s1">
+  <p class="lede">I was doing nothing.</p>
+  <p>
+    Technically I was daydreaming — letting my mind wander across worm biology, swarm robotics,
+    warfare, neuromodulation — when something clicked that five months of structured
+    experimentation hadn't produced. The connection between how serotonin drives worm colonies
+    to swarm, how robot swarms exhibit order-disorder phase transitions, and how the brain's
+    neuromodulatory system gates plasticity — these were the same mathematical object.
+    A control parameter driving a system through a phase boundary.
+  </p>
+  <p>That daydream became the theoretical spine of my research.</p>
+  <p class="solo">This bothered me. It should bother you too.</p>
+
+  <div class="sep">§</div>
+
+  <p class="sec-num">I.</p>
+  <h2 class="sec-title" id="s1t">The $12 Million Problem</h2>
+
+  <p>
+    In recent conflicts, Iranian drones costing approximately <strong>$5,000 each</strong>
+    have required THAAD interceptor missiles costing approximately
+    <strong>$12,000,000 per shot</strong> to neutralise.
+  </p>
+  <p class="solo">Read that again. $5,000 versus $12,000,000.</p>
+  <p>
+    A cost asymmetry of 2,400 to one. The defender cannot win this game through
+    optimisation. Better THAAD missiles cost more. Cheaper drones cost less. The
+    optimisation loop eats itself.
+  </p>
+  <p>
+    The emerging answer is laser-based directed energy defence. Cost per intercept:
+    <strong>less than $1</strong>. That is a 12,000,000× cost reduction — achieved
+    not by optimising the existing missile but by returning to physical first principles.
+    What does physics actually permit? Light travels at the speed of light. Energy per
+    photon is cheap. The atmosphere imposes known constraints. Given these facts —
+    what becomes possible?
+  </p>
+  <p>
+    This is not an incremental improvement. This is a <strong>phase transition</strong>
+    in solution space. The system reorganised entirely. Same problem, completely different game.
+  </p>
 </div>
+
+<!-- COST CHART -->
+<div class="interactive">
+  <div class="int-header">
+    <span>Cost Asymmetry — Log₁₀ Scale</span>
+    <span class="int-dot"></span>
+  </div>
+  <div class="int-body">
+    <div class="cost-chart-wrap">
+      <canvas id="costChart"
+        aria-label="Log scale bar chart: Laser defense under $1, Iranian drone $5,000, THAAD interceptor $12,000,000">
+      </canvas>
+    </div>
+    <div class="cost-legend">
+      <span class="cost-leg-item"><span class="cost-leg-sw" style="background:#2a7a4b"></span>Laser defence — &lt;$1</span>
+      <span class="cost-leg-item"><span class="cost-leg-sw" style="background:#1f5fa6"></span>Iranian drone — $5,000</span>
+      <span class="cost-leg-item"><span class="cost-leg-sw" style="background:#c8401a"></span>THAAD interceptor — $12,000,000</span>
+    </div>
+    <div class="cost-note">
+      Drone : THAAD ratio — <span>1 : 2,400</span> &nbsp;·&nbsp;
+      THAAD → Laser reduction — <span>12,000,000×</span> &nbsp;·&nbsp;
+      <span style="opacity:.6">Y-axis: log₁₀ scale — each gridline is 10× the previous. Standard for comparing values across orders of magnitude.</span>
+    </div>
+  </div>
+</div>
+
+<div class="sep">§</div>
+
+<!-- ── SECTION 2 ── -->
+<div id="s2">
+  <p class="sec-num">II.</p>
+  <h2 class="sec-title">The Same Thing Just Happened in AI</h2>
+
+  <p>
+    In January 2025, a small Chinese team published a model that matched GPT-4's
+    performance on most benchmarks. They trained it for <strong>$6 million</strong>.
+    GPT-4 cost between $80 and $100 million to train. DeepSeek used 2.78 million GPU hours.
+    GPT-4 used approximately 60 million — <strong>twenty-one times more compute.</strong>
+  </p>
+  <p>
+    The reason this happened: the United States government banned the export of
+    NVIDIA's most powerful H100 chips to China. DeepSeek couldn't buy the weapon.
+    So they had to think differently.
+  </p>
+  <p>What they built under constraint:</p>
+
+  <div class="callout">
+    <div class="callout-label">DeepSeek's constraint-driven innovations</div>
+    <p>
+      <strong>Mixture of Experts (MoE)</strong> — instead of activating all 671 billion
+      parameters for every token, only 37 billion activate at once. The right specialist
+      for each task. Dense models run every employee on every problem simultaneously.
+      MoE assigns the right expert.<br><br>
+      <strong>FP8 mixed precision training</strong> — 8-bit floating point at this scale
+      had never been validated. The memory constraint forced them to try it. Memory halved.
+      Compute doubled per unit.<br><br>
+      <strong>DualPipe algorithm</strong> — their H800 chips had slower interconnect than
+      H100s. So they invented a pipeline parallelism algorithm that hides communication
+      latency behind computation. Near-zero overhead on inferior hardware.
+    </p>
+  </div>
+
+  <p>
+    None of these came from having more resources. They came from having fewer.
+    The H100 ban blocked the obvious valley — just buy more compute — and forced
+    navigation toward a completely different region of the design space.
+  </p>
+  <p class="solo">This is not luck. This is mathematics.</p>
+</div>
+
+<div class="sep">§</div>
+
+<!-- ── SECTION 3 ── -->
+<div id="s3">
+  <p class="sec-num">III.</p>
+  <h2 class="sec-title">What Science Is Getting Wrong</h2>
+
+  <p>
+    Bloom et al. (2020) measured something alarming: research productivity —
+    the number of researchers required to produce a given rate of improvement —
+    has <strong>doubled approximately every 13 years</strong> since the 1930s
+    across multiple fields. Moore's Law required 18 researchers in 1971 to sustain
+    its pace. By 2014, it required 18 times more. We are running faster to stand still.
+  </p>
+  <p>
+    Drag the slider below. Watch what happens to research productivity as decades pass.
+  </p>
+</div>
+
+<!-- PRODUCTIVITY CHART -->
+<div class="interactive">
+  <div class="int-header">
+    <span>Research Productivity Decline — Bloom et al. (2020)</span>
+    <span class="int-dot"></span>
+  </div>
+  <div class="int-body">
+    <div class="prod-wrap">
+      <canvas id="prodChart" width="620" height="190" aria-label="Research productivity decline chart with year slider"></canvas>
+    </div>
+    <div class="prod-controls">
+      <label>Year</label>
+      <input type="range" min="0" max="9" value="9" id="prodSlider" step="1">
+      <span class="prod-year" id="prodYear">2020</span>
+    </div>
+    <div class="prod-stat" id="prodStat">
+      By 2020: <span>~18× more researchers</span> needed to sustain the same rate of progress as 1930.
+    </div>
+  </div>
+</div>
+
+<p>
+  This is what a system approaching a local minimum looks like from the inside.
+  The machinery gets bigger. The marginal output gets smaller.
+</p>
+<p>
+  Here is why. A standard research grant requires: a specific hypothesis stated
+  in advance. A methodology committed to before results exist. Milestones
+  deliverable at fixed intervals. Publications as evidence of productivity.
+  Specialist peer review by people sharing the same assumptions.
+</p>
+<p>
+  Every single one of these requirements is architecturally optimised for
+  <strong>exploitation</strong> — and architecturally hostile to
+  <strong>exploration</strong>.
+</p>
+<p>
+  A stated hypothesis forecloses the daydream. A committed methodology prevents
+  the pivot. Fixed milestones impose an artificial timescale on insight, which
+  arrives on its own schedule. Publication requirements bias toward positive
+  results — which means the 250 hours I spent repeating experiments others had
+  already failed at stay invisible to every researcher who comes after me.
+</p>
+<p class="solo">We keep building better THAAD missiles.</p>
+
+<div class="sep">§</div>
+
+<!-- ── SECTION 4 ── -->
+<div id="s4">
+  <p class="sec-num">IV.</p>
+  <h2 class="sec-title">The Mathematics of Constraint-Driven Phase Transitions</h2>
+
+  <p>
+    Think of the space of all possible research approaches as an
+    <strong>energy landscape</strong> — a surface with hills and valleys.
+    Cost is height. You want to go down. Without constraints, there is one
+    obvious deep valley: scale up. More compute, more data, more parameters.
+    Everyone optimises into this valley.
+  </p>
+  <p>
+    Apply a constraint — the H100 ban, a limited budget, a bandwidth restriction —
+    and the landscape changes topology. A wall appears. The obvious valley is blocked.
+    But the mathematics reveals something counterintuitive: <strong>the constraint-modified
+    landscape has a different global minimum.</strong> One that unconstrained searchers
+    never find because they never have reason to look there.
+  </p>
+
+  <div class="callout">
+    <div class="callout-label">Catastrophe Theory — Bifurcation Potential</div>
+    <p class="eq">V(x, c) = x⁴ + c·x²</p>
+    <p>
+      c > 0 (no constraint): single minimum — one obvious solution, the scale valley.<br>
+      c = 0: bifurcation point — the landscape is about to reorganise.<br>
+      c &lt; 0 (constraint applied): double-well potential — two minima emerge.
+      The new minimum is the constraint-driven innovation.
+    </p>
+  </div>
+
+  <p>
+    This is spontaneous symmetry breaking — the same mathematics that governs
+    the Higgs field in particle physics. At high resource abundance (high temperature),
+    the potential is symmetric with one obvious minimum. As resources drop below the
+    critical threshold, the potential bifurcates. Two new minima appear that were
+    mathematically impossible in the high-resource regime.
+  </p>
+  <p>
+    DeepSeek's MoE routing (φ = +v) and FP8 precision training (φ = −v) are those
+    two new minima. They existed in the mathematics all along. The constraint made
+    them the only reachable path.
+  </p>
+</div>
+
+<div class="sep">§</div>
+
+<!-- ── SECTION 5 ── -->
+<div id="s5">
+  <p class="sec-num">V.</p>
+  <h2 class="sec-title">Why Objectives Are Deceptive</h2>
+
+  <p>
+    Kenneth Stanley and Joel Lehman's book <em>Why Greatness Cannot Be Planned</em>
+    makes a disarmingly simple argument: <strong>on complex landscapes, chasing
+    the objective is the worst strategy.</strong>
+  </p>
+  <p>
+    The reason is deception. The most direct path toward a distant goal often
+    leads away from the actual solution. The stepping stones you need don't look
+    like progress. Consider: almost no prerequisite to any major invention was
+    invented with that invention in mind.
+  </p>
+  <p>
+    Vacuum tubes didn't look like computers. Cowpox didn't look like a smallpox vaccine.
+    M-Pesa's mobile airtime transfers didn't look like global financial infrastructure.
+    DeepSeek's MoE routing didn't look like AGI.
+  </p>
+
+  <div class="callout">
+    <div class="callout-label">The Deceptive Landscape Problem</div>
+    <p>
+      Objective-based search on a deceptive landscape converges to the nearest
+      local maximum — not the global optimum. The false peak problem: the gradient
+      always points toward the closest hill, not the highest one. Standard science
+      funding is gradient ascent on a landscape riddled with false peaks.
+    </p>
+  </div>
+
+  <p>
+    This is not a failure of individual researchers. It is a structural property
+    of the search strategy. You cannot climb to the true peak by following the
+    local gradient if the landscape is deceptive. The only escape is to stop
+    following the gradient — and start following novelty.
+  </p>
+</div>
+
+<div class="sep">§</div>
+
+<!-- ── SECTION 6 ── -->
+<div id="s6">
+  <p class="sec-num">VI.</p>
+  <h2 class="sec-title">Novelty Search — The Algorithm Science Is Missing</h2>
+
+  <p>
+    Stanley and Lehman's solution is radical: <strong>abandon the objective entirely.</strong>
+    Instead of rewarding progress toward a goal, reward only one thing —
+    <em>being different from everything that has come before.</em>
+  </p>
+  <p>
+    The novelty search algorithm maintains an <strong>archive</strong> — a permanent
+    record of every behaviour the search has explored. New candidates are evaluated
+    not for proximity to the goal but for <em>distance from the archive</em>. The most
+    novel candidate wins. Always.
+  </p>
+
+  <div class="callout">
+    <div class="callout-label">Novelty Score — Formal Definition</div>
+    <p class="eq">ρ(x) = (1/k) Σ dist(x, μᵢ)</p>
+    <p>
+      Where x is the candidate behaviour, μᵢ are the k nearest neighbours in the archive,
+      and dist is behavioural distance. Only candidates with ρ(x) above a threshold
+      enter the archive. The search is rewarded purely for unexplored territory —
+      never for proximity to the goal.
+    </p>
+  </div>
+
+  <p>
+    The result is counterintuitive: <strong>by ignoring the goal entirely, novelty
+    search reliably finds it on deceptive landscapes</strong> — while objective-based
+    search gets permanently trapped at the false peak.
+  </p>
+  <p>
+    The archive is the key. It is the shared memory of where search has been.
+    Without it, the search is a random walk. With it, the search is systematic
+    exploration of the unknown — the mathematical equivalent of Einstein's patent
+    office, where every day brought cross-domain exposure that objective-based
+    academic research would never have funded.
+  </p>
+  <p>
+    Watch the simulation below. Both agents start at the same point.
+    Both face the same landscape. The goal is behind a barrier — visible but
+    not directly reachable by gradient ascent. A false peak sits in the way,
+    attracting the objective search and trapping it. Novelty search ignores the
+    goal, builds its archive, and finds the path around.
+  </p>
+</div>
+
+<!-- NOVELTY SEARCH SIMULATION -->
+<div class="interactive">
+  <div class="int-header">
+    <span>Novelty Search vs Objective Search — Live Simulation</span>
+    <span class="int-dot"></span>
+  </div>
+  <div class="int-body">
+
+    <div class="sim-legend">
+      <span class="sim-leg"><span class="sim-leg-dot" style="background:#c8401a"></span>Objective agent</span>
+      <span class="sim-leg"><span class="sim-leg-dot" style="background:#2a7a4b"></span>Novelty agent</span>
+      <span class="sim-leg"><span class="sim-leg-dot" style="background:rgba(42,122,75,0.35)"></span>Archive (visited)</span>
+      <span class="sim-leg"><span class="sim-leg-dot" style="background:#c8a020"></span>★ Goal</span>
+      <span class="sim-leg"><span class="sim-leg-dot" style="background:#c87030"></span>▲ False peak</span>
+      <span class="sim-leg"><span class="sim-leg-dot" style="background:#c8c0b0"></span>Barrier</span>
+    </div>
+
+    <div class="sim-controls">
+      <button class="sim-btn run" id="simBtnRun" onclick="simToggle()">RUN ▶</button>
+      <button class="sim-btn" onclick="simReset()">RESET</button>
+      <div class="sim-speed">
+        <span>Speed</span>
+        <input type="range" min="1" max="10" value="4" id="simSpd" oninput="document.getElementById('simSpdV').textContent=this.value">
+        <span id="simSpdV">4</span>
+      </div>
+      <span class="sim-step" id="simStep">Step: 0</span>
+    </div>
+
+    <div class="sim-grid">
+      <div class="sim-panel">
+        <div class="sim-ph obj">Objective Search — follows gradient toward goal</div>
+        <canvas class="sim-canvas" id="simCO" height="240"></canvas>
+      </div>
+      <div class="sim-panel">
+        <div class="sim-ph nov">Novelty Search — maximises distance from archive</div>
+        <canvas class="sim-canvas" id="simCN" height="240"></canvas>
+      </div>
+    </div>
+
+    <div class="sim-stats">
+      <div class="sim-stat-box">
+        <div class="sim-stat-title" style="color:#c8401a">Objective Search</div>
+        <div class="sim-row"><span class="sim-k">current score</span><span class="sim-v" id="sOSc">0.000</span></div>
+        <div class="sim-row"><span class="sim-k">trapped at false peak</span><span class="sim-v" id="sOTr">No</span></div>
+        <div class="sim-row"><span class="sim-k">goal reached</span><span class="sim-v" id="sOG">No</span></div>
+      </div>
+      <div class="sim-stat-box">
+        <div class="sim-stat-title" style="color:#2a7a4b">Novelty Search</div>
+        <div class="sim-row"><span class="sim-k">archive size</span><span class="sim-v" id="sNA">0</span></div>
+        <div class="sim-row"><span class="sim-k">phase transitions</span><span class="sim-v" id="sNP">0</span></div>
+        <div class="sim-row"><span class="sim-k">goal reached</span><span class="sim-v" id="sNG">No</span></div>
+      </div>
+    </div>
+
+    <div class="sim-insight" id="simIns">
+      <strong>Ready.</strong> Press RUN to start both searches. Objective search climbs the gradient — fast progress toward the false peak, then stuck. Novelty search builds an archive and explores where it has never been.
+    </div>
+
+  </div>
+</div>
+
+<div class="sep">§</div>
+
+<!-- ── SECTION 7 ── -->
+<div id="s7">
+  <p class="sec-num">VII.</p>
+  <h2 class="sec-title">The Experiment</h2>
+
+  <p>
+    The simulation above is not a metaphor. It is a precise description of what
+    current scientific infrastructure does — and what it should do instead.
+  </p>
+  <p>
+    The false peak is the citation-optimised research program. The barrier is the
+    disciplinary wall between neuroscience and machine learning. The archive is
+    the shared failure intelligence system — the record of every experiment attempted,
+    including the 250 hours I spent repeating failures that others had already made
+    privately and never published.
+  </p>
+  <p>My hypothesis, stated as a falsifiable claim:</p>
+
+  <div class="callout">
+    <div class="callout-label">The Hypothesis</div>
+    <p>
+      If we give a community of neuro-AI researchers three things simultaneously —
+      <strong>40% protected exploration time</strong> (no deliverables, no hypothesis required),
+      <strong>shared failure intelligence</strong> (structured experiment logs, AI-queryable,
+      across disciplines), and a <strong>novelty scorer</strong> (an LLM that measures
+      distance from the archive and rewards unexplored territory) — they will produce
+      phase transitions in scientific thinking at a measurably higher rate than
+      researchers operating under standard grant structures.
+    </p>
+  </div>
+
+  <p>
+    Pilot: 20 researchers, 12 months, three measurements — phase transition rate,
+    failure intelligence utilisation, and exploration fingerprint analysis
+    (can we trace each breakthrough back through the daydream logs?).
+  </p>
+  <p>
+    The experiment can fail. The logs may be too heterogeneous for the LLM to reason across.
+    Researchers may not adopt the format. The novelty scorer may not identify genuinely
+    useful directions. These are real failure modes. Each one tells us something important
+    about what the actual solution needs to look like.
+  </p>
+  <p class="solo">We embrace these features.</p>
+
+  <div class="sep">§</div>
+
+  <p>
+    The brain solved exploration-exploitation through architectural separation:
+    fast exploitation, slow exploration, a neuromodulatory meta-controller switching
+    between them. The Default Mode Network consumes 20% of total brain energy at rest.
+    The brain pays a significant metabolic price to keep the exploration system running.
+  </p>
+  <p>
+    We are studying this system. We are trying to replicate it in machines.
+    We are doing this research inside an institution that eliminated the exploration
+    system entirely and then wonders why the breakthroughs have slowed.
+  </p>
+  <p>I found a piece of my research in a daydream about worm colonies and warfare.</p>
+  <p>I was not being paid. No milestone depended on it.</p>
+  <p class="solo">It was the most productive hour of my last five months.</p>
+  <p>We should stop treating the patent office as Einstein's obstacle.</p>
+  <p class="solo">It was his laboratory.</p>
+  <p>Build it deliberately. Measure whether it works. Publish everything — including if it fails.</p>
+  <p class="solo">The brain figured this out 500 million years ago.</p>
+</div>
+
+<!-- REFERENCES -->
+<div class="refs">
+  <div class="refs-label">References</div>
+  <ol>
+    <li>Bloom, N. et al. (2020). Are ideas getting harder to find? <em>American Economic Review</em>, 110(4), 1104–1144.</li>
+    <li>Raichle, M.E. et al. (2001). A default mode of brain function. <em>PNAS</em>, 98(2), 676–682.</li>
+    <li>Gittins, J.C. (1979). Bandit processes and dynamic allocation indices. <em>Journal of the Royal Statistical Society</em>, 41(2), 148–177.</li>
+    <li>Stanley, K.O. & Lehman, J. (2015). <em>Why Greatness Cannot Be Planned: The Myth of the Objective.</em> Springer.</li>
+    <li>Stanley, K.O. & Lehman, J. (2011). Abandoning objectives: Evolution through the search for novelty alone. <em>Evolutionary Computation</em>, 19(2), 189–223.</li>
+    <li>Jung-Beeman, M. et al. (2004). Neural activity observed in people solving verbal problems with insight. <em>PLOS Biology</em>, 2(4), e97.</li>
+    <li>Ashby, W.R. (1956). <em>An Introduction to Cybernetics.</em> Chapman & Hall.</li>
+    <li>DeepSeek-AI. (2024). DeepSeek-V3 Technical Report. arXiv:2412.19437.</li>
+  </ol>
+</div>
+
+</div><!-- end .body -->
 
 <!-- FOOTER -->
 <div class="essay-footer">
   <p>The Thinking Archive · Essay No. 01 · April 2026</p>
-  <a href="../../index.html" class="footer-link">← Back to Archive</a>
+  <a href="../../index.html" class="back-link">← Back to Archive</a>
 </div>
 
+<!-- ── SCRIPTS ─────────────────────────────────────────────────────── -->
 <script>
-// COST BARS
-window.addEventListener('load', () => {
-  setTimeout(() => {
-    document.getElementById('bar-drone').style.width = '0.1%';
-    document.getElementById('bar-thaad').style.width = '100%';
-    document.getElementById('bar-laser').style.width = '0.00002%';
-  }, 500);
+/* ══════════════════════════════════════════════
+   1. COST CHART
+══════════════════════════════════════════════ */
+(function() {
+  const cv = document.getElementById('costChart');
+  const mono = "'DM Mono', monospace";
+  const textC = '#6b6560';
+  const gridC = 'rgba(180,175,165,0.25)';
 
-  // Animate matrix cells in sequence
-  const cells = ['cell-bl', 'cell-br', 'cell-tr', 'cell-tl'];
-  cells.forEach((id, i) => {
-    setTimeout(() => {
-      document.getElementById(id).classList.add('visible');
-    }, 800 + i * 400);
+  new Chart(cv.getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: ['Laser defence', 'Iranian drone', 'THAAD interceptor'],
+      datasets: [{
+        data: [0.5, 5000, 12000000],
+        backgroundColor: ['#2a7a4b', '#1f5fa6', '#c8401a'],
+        borderColor:     ['#1e5c38', '#164880', '#922e0e'],
+        borderWidth: 1, borderRadius: 3,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1a1a18',
+          titleColor: '#f5f2eb',
+          bodyColor: '#d4cfc6',
+          padding: 10,
+          callbacks: {
+            label: c => {
+              const v = c.raw;
+              if (v < 1)  return '  < $1';
+              if (v < 1000) return '  $' + v.toLocaleString();
+              if (v < 1000000) return '  $' + v.toLocaleString();
+              return '  $' + (v/1000000).toFixed(0) + ',000,000';
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: gridC },
+          ticks: { color: textC, font: { size: 11, family: mono }, maxRotation: 0, padding: 6 }
+        },
+        y: {
+          type: 'logarithmic',
+          min: 0.1, max: 100000000,
+          grid: { color: gridC },
+          title: {
+            display: true,
+            text: 'Cost per unit (USD) — log₁₀ scale',
+            color: textC,
+            font: { size: 10, family: mono },
+            padding: { bottom: 8 }
+          },
+          ticks: {
+            color: textC,
+            font: { size: 10, family: mono },
+            padding: 6,
+            callback: v => {
+              const m = {
+                0.1:'$0.10', 1:'$1', 10:'$10', 100:'$100',
+                1000:'$1K', 10000:'$10K', 100000:'$100K',
+                1000000:'$1M', 10000000:'$10M', 100000000:'$100M'
+              };
+              return m[v] !== undefined ? m[v] : '';
+            }
+          }
+        }
+      }
+    }
   });
+})();
 
-  // Draw productivity chart
-  drawProductivity(9);
-});
-
-// BRAIN MODE SWITCH
-function switchMode(mode) {
-  document.getElementById('mode-exploit').classList.toggle('active', mode === 'exploit');
-  document.getElementById('mode-explore').classList.toggle('active', mode === 'explore');
-
-  const desc = document.getElementById('brain-desc');
-  if (mode === 'exploit') {
-    desc.innerHTML = '<strong>Exploitation mode:</strong> High acetylcholine. Precise, targeted, resource-efficient. This is you debugging code, analyzing data, writing a methods section. Fast and focused. The brain runs this mode when there is a known problem with a known solution path.';
-  } else {
-    desc.innerHTML = '<strong>Exploration mode (Default Mode Network):</strong> The DMN consumes ~20% of total brain energy at rest. It integrates across semantically distant memory spaces — connecting worm biology to phase transitions, THAAD missiles to representational geometry. The "aha moment" happens here. The brain pays dearly to keep this system running. We call it daydreaming. We treat it as laziness.';
-  }
-}
-
-// PRODUCTIVITY CHART
-const years = [1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020];
-const productivity = [1, 1.4, 2.1, 3.2, 4.8, 6.9, 9.5, 12.1, 15.3, 18.2];
-const descriptions = [
+/* ══════════════════════════════════════════════
+   2. PRODUCTIVITY CHART
+══════════════════════════════════════════════ */
+const prodYears = [1930,1940,1950,1960,1970,1980,1990,2000,2010,2020];
+const prodVals  = [1,1.4,2.1,3.2,4.8,6.9,9.5,12.1,15.3,18.2];
+const prodDescs = [
   '1930: Baseline. 1 researcher-unit produces 1 unit of progress.',
-  '1940: 1.4× researchers needed for same progress.',
-  '1950: 2.1× researchers. Diminishing returns beginning.',
-  '1960: 3.2× researchers. Post-war science boom, but efficiency drops.',
-  '1970: 4.8× researchers needed. The pattern is unmistakable.',
+  '1940: 1.4× researchers needed for the same progress.',
+  '1950: 2.1× researchers. Diminishing returns are visible.',
+  '1960: 3.2× researchers. Post-war boom, but efficiency falls.',
+  '1970: 4.8× researchers. The pattern is unmistakable.',
   '1980: 6.9× researchers. Science is getting harder to do.',
-  '1990: 9.5× researchers. Publication rates soar. Productivity falls.',
+  '1990: 9.5× researchers. Publication rates soar, productivity falls.',
   '2000: 12.1× researchers. The local minimum deepens.',
   '2010: 15.3× researchers. Running faster to stand still.',
-  '2020: ~18× more researchers needed to sustain the same rate of progress as 1930.'
+  '2020: ~18× more researchers needed to sustain 1930\'s rate of progress.'
 ];
 
-function drawProductivity(idx) {
-  const canvas = document.getElementById('prod-canvas');
-  const ctx = canvas.getContext('2d');
-  canvas.width = canvas.offsetWidth * window.devicePixelRatio;
-  canvas.height = canvas.offsetHeight * window.devicePixelRatio;
-  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-  const w = canvas.offsetWidth;
-  const h = canvas.offsetHeight;
-  const pad = { top: 20, right: 20, bottom: 30, left: 40 };
+function drawProd(idx) {
+  const cv = document.getElementById('prodChart');
+  const container = cv.parentElement;
+  const dpr = window.devicePixelRatio || 1;
+  const W = Math.max(container.clientWidth || 0, 300);
+  const H = 190;
+  cv.style.width  = W + 'px';
+  cv.style.height = H + 'px';
+  cv.width  = W * dpr;
+  cv.height = H * dpr;
+  const ctx = cv.getContext('2d');
+  ctx.scale(dpr, dpr);
+  const pad = { l: 44, r: 16, t: 16, b: 30 };
+  const cw = W - pad.l - pad.r, ch = H - pad.t - pad.b;
+  const maxY = 20, pts = idx + 1;
+  const textC = '#6b6560', gridC = 'rgba(180,175,165,0.25)';
+  const accent = '#c8401a';
 
-  ctx.clearRect(0, 0, w, h);
+  ctx.clearRect(0, 0, W, H);
 
-  const maxY = 20;
-  const pts = idx + 1;
+  // background
+  ctx.fillStyle = 'transparent';
 
-  // Grid lines
-  ctx.strokeStyle = '#d4cfc6';
-  ctx.lineWidth = 0.5;
-  [5, 10, 15, 20].forEach(v => {
-    const y = pad.top + (1 - v / maxY) * (h - pad.top - pad.bottom);
-    ctx.beginPath();
-    ctx.moveTo(pad.left, y);
-    ctx.lineTo(w - pad.right, y);
-    ctx.stroke();
-    ctx.fillStyle = '#6b6560';
-    ctx.font = `${10 * window.devicePixelRatio / window.devicePixelRatio}px DM Mono, monospace`;
-    ctx.fillText(v + '×', 4, y + 4);
+  // grid lines + y labels
+  [5,10,15,20].forEach(v => {
+    const y = pad.t + (1 - v/maxY) * ch;
+    ctx.beginPath(); ctx.strokeStyle = gridC; ctx.lineWidth = .5;
+    ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + cw, y); ctx.stroke();
+    ctx.fillStyle = textC;
+    ctx.font = '9px "DM Mono",monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText(v + '×', pad.l - 4, y + 3);
   });
 
-  // Line
-  ctx.beginPath();
-  ctx.strokeStyle = '#c8401a';
-  ctx.lineWidth = 2;
-  ctx.lineJoin = 'round';
-  for (let i = 0; i < pts; i++) {
-    const x = pad.left + (i / (years.length - 1)) * (w - pad.left - pad.right);
-    const y = pad.top + (1 - productivity[i] / maxY) * (h - pad.top - pad.bottom);
-    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-  }
-  ctx.stroke();
+  // x axis line
+  ctx.beginPath(); ctx.strokeStyle = gridC; ctx.lineWidth = .5;
+  ctx.moveTo(pad.l, pad.t + ch); ctx.lineTo(pad.l + cw, pad.t + ch); ctx.stroke();
 
-  // Fill under
+  // area fill under curve
   ctx.beginPath();
   for (let i = 0; i < pts; i++) {
-    const x = pad.left + (i / (years.length - 1)) * (w - pad.left - pad.right);
-    const y = pad.top + (1 - productivity[i] / maxY) * (h - pad.top - pad.bottom);
+    const x = pad.l + (i / (prodYears.length - 1)) * cw;
+    const y = pad.t + (1 - prodVals[i] / maxY) * ch;
     i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
   }
-  const lastX = pad.left + ((pts - 1) / (years.length - 1)) * (w - pad.left - pad.right);
-  const baseY = pad.top + (h - pad.top - pad.bottom);
-  ctx.lineTo(lastX, baseY);
-  ctx.lineTo(pad.left, baseY);
+  const lastX = pad.l + ((pts - 1) / (prodYears.length - 1)) * cw;
+  ctx.lineTo(lastX, pad.t + ch);
+  ctx.lineTo(pad.l, pad.t + ch);
   ctx.closePath();
   ctx.fillStyle = 'rgba(200,64,26,0.08)';
   ctx.fill();
 
-  // Dots
+  // line
+  ctx.beginPath();
+  ctx.strokeStyle = accent; ctx.lineWidth = 2; ctx.lineJoin = 'round';
   for (let i = 0; i < pts; i++) {
-    const x = pad.left + (i / (years.length - 1)) * (w - pad.left - pad.right);
-    const y = pad.top + (1 - productivity[i] / maxY) * (h - pad.top - pad.bottom);
+    const x = pad.l + (i / (prodYears.length - 1)) * cw;
+    const y = pad.t + (1 - prodVals[i] / maxY) * ch;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+
+  // dots and year labels
+  for (let i = 0; i < pts; i++) {
+    const x = pad.l + (i / (prodYears.length - 1)) * cw;
+    const y = pad.t + (1 - prodVals[i] / maxY) * ch;
     ctx.beginPath();
     ctx.arc(x, y, i === pts - 1 ? 5 : 3, 0, Math.PI * 2);
-    ctx.fillStyle = '#c8401a';
-    ctx.fill();
-    // Year label
+    ctx.fillStyle = accent; ctx.fill();
     if (i % 2 === 0 || i === pts - 1) {
-      ctx.fillStyle = '#6b6560';
-      ctx.font = '9px DM Mono, monospace';
-      ctx.fillText(years[i], x - 12, h - 6);
+      ctx.fillStyle = textC;
+      ctx.font = '9px "DM Mono",monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(prodYears[i], x, H - 4);
     }
+  }
+
+  // y axis label rotated
+  ctx.save();
+  ctx.translate(10, pad.t + ch / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.fillStyle = textC;
+  ctx.font = '9px "DM Mono",monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('researchers needed (×)', 0, 0);
+  ctx.restore();
+}
+
+document.getElementById('prodSlider').addEventListener('input', function() {
+  const i = parseInt(this.value);
+  document.getElementById('prodYear').textContent = prodYears[i];
+  const raw = prodDescs[i].replace(/(\~?\d+[\d,]*×)/, '<span>$1</span>');
+  document.getElementById('prodStat').innerHTML = raw;
+  requestAnimationFrame(() => drawProd(i));
+});
+
+window.addEventListener('load', () => {
+  requestAnimationFrame(() => {
+    drawProd(9);
+    simReset();
+  });
+});
+
+window.addEventListener('resize', () => {
+  requestAnimationFrame(() => {
+    drawProd(parseInt(document.getElementById('prodSlider').value));
+    if (!simRunning) simDraw();
+  });
+});
+
+/* ══════════════════════════════════════════════
+   3. NOVELTY SEARCH SIMULATION
+══════════════════════════════════════════════ */
+const SIM = {
+  GOAL:   { x: 0.82, y: 0.80 },
+  FPEAK:  { x: 0.38, y: 0.60 },
+  START:  { x: 0.08, y: 0.10 },
+  BAR:    { x1: 0.57, x2: 0.67, y1: 0.28, y2: 0.82 },
+  C_OBJ:  '#c8401a',
+  C_NOV:  '#2a7a4b',
+  C_GOAL: '#c8a020',
+  C_FP:   '#c87030',
+  C_BLUE: '#1f5fa6',
+};
+
+let simRunning = false, simRaf = null, simStep = 0;
+let oPos, oTrail, oTrap, oTrapC, oGoal;
+let nPos, nTrail, nArch, nPhase, nGoal;
+
+function simScore(x, y) {
+  const fp = 0.8 * Math.exp(-((x-SIM.FPEAK.x)**2 + (y-SIM.FPEAK.y)**2) / 0.012);
+  const g  = 1.0 * Math.exp(-((x-SIM.GOAL.x)**2  + (y-SIM.GOAL.y)**2)  / 0.014);
+  return fp + g + 0.08*x + 0.08*y;
+}
+function simGrad(x, y) {
+  const h = 0.006;
+  return {
+    dx: (simScore(x+h,y) - simScore(x-h,y)) / (2*h),
+    dy: (simScore(x,y+h) - simScore(x,y-h)) / (2*h)
+  };
+}
+function simInWall(x, y) {
+  return x > SIM.BAR.x1 && x < SIM.BAR.x2 && y > SIM.BAR.y1 && y < SIM.BAR.y2;
+}
+function simDist(a, b) { return Math.sqrt((a.x-b.x)**2+(a.y-b.y)**2); }
+function simClamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+function simReset() {
+  simRunning = false;
+  if (simRaf) cancelAnimationFrame(simRaf);
+  simRaf = null;
+  simStep = 0;
+  document.getElementById('simBtnRun').textContent = 'RUN ▶';
+  oPos = { ...SIM.START }; oTrail = [{ ...SIM.START }]; oTrap = false; oTrapC = 0; oGoal = false;
+  nPos = { ...SIM.START }; nTrail = [{ ...SIM.START }];
+  nArch = [{ ...SIM.START }]; nPhase = 0; nGoal = false;
+  simUpdateStats(); simDraw();
+  document.getElementById('simIns').className = 'sim-insight';
+  document.getElementById('simIns').innerHTML = '<strong>Ready.</strong> Press RUN. Objective search climbs the gradient — fast progress toward the false peak, then gets stuck. Novelty search builds an archive and explores where it has never been.';
+}
+
+function simStepObj() {
+  if (oGoal) return;
+  const g = simGrad(oPos.x, oPos.y);
+  const mag = Math.sqrt(g.dx**2 + g.dy**2) + 1e-9;
+  let nx = oPos.x + (g.dx/mag)*0.013 + (Math.random()-.5)*0.004;
+  let ny = oPos.y + (g.dy/mag)*0.013 + (Math.random()-.5)*0.004;
+  nx = simClamp(nx, 0.02, 0.97); ny = simClamp(ny, 0.02, 0.97);
+  if (simInWall(nx, ny)) { oTrapC++; }
+  else { oPos.x = nx; oPos.y = ny; oTrapC = Math.max(0, oTrapC - 1); }
+  oTrap = oTrapC > 18;
+  oTrail.push({ x: oPos.x, y: oPos.y });
+  if (oTrail.length > 350) oTrail.shift();
+  if (simDist(oPos, SIM.GOAL) < 0.065) oGoal = true;
+}
+
+function simNovelty(pt) {
+  if (nArch.length < 2) return 1;
+  const k = Math.min(7, nArch.length);
+  return nArch.map(a => simDist(pt, a)).sort((a,b)=>a-b).slice(0,k).reduce((s,d)=>s+d,0) / k;
+}
+
+function simStepNov() {
+  if (nGoal) return;
+  const cands = [];
+  for (let i = 0; i < 16; i++) {
+    const a = Math.random() * Math.PI * 2, r = 0.018 + Math.random() * 0.045;
+    let cx = simClamp(nPos.x + Math.cos(a)*r, 0.02, 0.97);
+    let cy = simClamp(nPos.y + Math.sin(a)*r, 0.02, 0.97);
+    if (simInWall(cx, cy)) continue;
+    cands.push({ x: cx, y: cy, nv: simNovelty({x:cx,y:cy}) });
+  }
+  if (!cands.length) return;
+  cands.sort((a,b) => b.nv - a.nv);
+  const best = cands[0];
+  const prevX = nPos.x;
+  nPos.x = best.x; nPos.y = best.y;
+  nTrail.push({ x: nPos.x, y: nPos.y });
+  if (nTrail.length > 400) nTrail.shift();
+  if (best.nv > 0.035) { nArch.push({ x: nPos.x, y: nPos.y }); if (nArch.length > 200) nArch.shift(); }
+  if (prevX < SIM.BAR.x2 + 0.04 && nPos.x > SIM.BAR.x2 + 0.04 && nPos.y > 0.5) nPhase++;
+  if (simDist(nPos, SIM.GOAL) < 0.07) nGoal = true;
+}
+
+function simDrawPanel(cvId, pos, trail, arch, isNov, reached) {
+  const cv = document.getElementById(cvId);
+  const dpr = window.devicePixelRatio || 1;
+  const DW = cv.parentElement.clientWidth - 2;
+  const DH = 240;
+  cv.style.width = DW + 'px'; cv.style.height = DH + 'px';
+  cv.width = DW * dpr; cv.height = DH * dpr;
+  const ctx = cv.getContext('2d');
+  ctx.scale(dpr, dpr);
+  const W = DW, H = DH;
+  function px(x) { return x * W; }
+  function py(y) { return (1-y) * H; }
+
+  // background
+  ctx.fillStyle = '#f8f4ec'; ctx.fillRect(0, 0, W, H);
+
+  // heatmap
+  const res = 48;
+  for (let i = 0; i < res; i++) {
+    for (let j = 0; j < res; j++) {
+      const x = (i+.5)/res, y = (j+.5)/res;
+      if (simInWall(x, y)) continue;
+      const v = simScore(x, y);
+      const n = Math.max(0, Math.min(1, v / 1.1));
+      ctx.fillStyle = isNov
+        ? `rgba(42,122,75,${n*.14})`
+        : `rgba(200,64,26,${n*.16})`;
+      ctx.fillRect(i*(W/res), (res-1-j)*(H/res), W/res+1, H/res+1);
+    }
+  }
+
+  // barrier
+  ctx.fillStyle = '#ccc7be';
+  const bx=px(SIM.BAR.x1), bw=px(SIM.BAR.x2)-px(SIM.BAR.x1);
+  const by=py(SIM.BAR.y2), bh=py(SIM.BAR.y1)-py(SIM.BAR.y2);
+  ctx.fillRect(bx, by, bw, bh);
+  ctx.fillStyle = '#8a8278'; ctx.font = 'bold 8px "DM Mono",monospace';
+  ctx.textAlign = 'center'; ctx.fillText('BARRIER', bx+bw/2, by+bh/2+3);
+
+  // archive (novelty only)
+  if (isNov && arch) {
+    arch.forEach(pt => {
+      ctx.beginPath(); ctx.arc(px(pt.x), py(pt.y), 2, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(42,122,75,0.35)'; ctx.fill();
+    });
+  }
+
+  // trail
+  for (let i = 1; i < trail.length; i++) {
+    const alpha = (i/trail.length) * .65;
+    ctx.beginPath();
+    ctx.moveTo(px(trail[i-1].x), py(trail[i-1].y));
+    ctx.lineTo(px(trail[i].x),   py(trail[i].y));
+    ctx.strokeStyle = isNov
+      ? `rgba(42,122,75,${alpha})`
+      : `rgba(200,64,26,${alpha})`;
+    ctx.lineWidth = 1.3; ctx.stroke();
+  }
+
+  // start
+  ctx.beginPath(); ctx.arc(px(SIM.START.x), py(SIM.START.y), 4.5, 0, Math.PI*2);
+  ctx.fillStyle = SIM.C_BLUE; ctx.fill();
+  ctx.fillStyle = '#5a8ab8'; ctx.font = '8px "DM Mono",monospace';
+  ctx.textAlign = 'center'; ctx.fillText('START', px(SIM.START.x), py(SIM.START.y)+13);
+
+  // false peak
+  ctx.font = 'bold 16px serif'; ctx.fillStyle = SIM.C_FP;
+  ctx.textAlign = 'center'; ctx.fillText('▲', px(SIM.FPEAK.x), py(SIM.FPEAK.y)+6);
+  ctx.font = '8px "DM Mono",monospace'; ctx.fillStyle = '#8a6530';
+  ctx.fillText('false peak', px(SIM.FPEAK.x), py(SIM.FPEAK.y)+17);
+
+  // phase transition zone (novelty only)
+  if (isNov) {
+    ctx.strokeStyle = 'rgba(200,160,32,0.4)'; ctx.lineWidth = 1;
+    ctx.setLineDash([4,3]);
+    ctx.strokeRect(px(SIM.BAR.x2+0.01), py(0.96), px(0.97)-px(SIM.BAR.x2+0.01), py(0.46)-py(0.96));
+    ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(200,160,32,0.45)'; ctx.font = '7px "DM Mono",monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('PHASE TRANSITION ZONE', px(0.82), py(0.95)+10);
+  }
+
+  // goal
+  ctx.font = 'bold 18px serif'; ctx.fillStyle = SIM.C_GOAL;
+  ctx.textAlign = 'center'; ctx.fillText('★', px(SIM.GOAL.x), py(SIM.GOAL.y)+7);
+  ctx.font = '8px "DM Mono",monospace'; ctx.fillStyle = '#a08020';
+  ctx.fillText('GOAL', px(SIM.GOAL.x), py(SIM.GOAL.y)+18);
+
+  // agent
+  ctx.beginPath(); ctx.arc(px(pos.x), py(pos.y), 6, 0, Math.PI*2);
+  ctx.fillStyle = isNov ? SIM.C_NOV : SIM.C_OBJ; ctx.fill();
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.5; ctx.stroke();
+
+  // goal reached
+  if (reached) {
+    ctx.fillStyle = 'rgba(200,160,32,0.1)'; ctx.fillRect(0,0,W,H);
+    ctx.fillStyle = SIM.C_GOAL; ctx.font = 'bold 12px "DM Mono",monospace';
+    ctx.textAlign = 'center'; ctx.fillText('★ GOAL REACHED', W/2, H/2-4);
+    ctx.font = '9px "DM Mono",monospace'; ctx.fillStyle = '#a08020';
+    ctx.fillText('step ' + simStep, W/2, H/2+10);
   }
 }
 
-document.getElementById('prod-slider').addEventListener('input', function() {
-  const idx = parseInt(this.value);
-  document.getElementById('prod-year').textContent = years[idx];
-  document.getElementById('prod-stat').innerHTML = descriptions[idx].replace(/(\~?\d+×)/, '<span>$1</span>');
-  drawProductivity(idx);
-});
+function simDraw() {
+  simDrawPanel('simCO', oPos, oTrail, null, false, oGoal);
+  simDrawPanel('simCN', nPos, nTrail, nArch, true,  nGoal);
+}
 
-window.addEventListener('resize', () => drawProductivity(parseInt(document.getElementById('prod-slider').value)));
+function simUpdateStats() {
+  document.getElementById('sOSc').textContent  = simScore(oPos.x, oPos.y).toFixed(3);
+  document.getElementById('sOTr').innerHTML    = oTrap
+    ? '<span class="sim-v warn">YES ⚠</span>' : 'No';
+  document.getElementById('sOG').innerHTML     = oGoal
+    ? '<span class="sim-v good">YES ✓</span>' : 'No';
+  document.getElementById('sNA').textContent   = nArch.length;
+  document.getElementById('sNP').innerHTML     = nPhase > 0
+    ? `<span class="sim-v good">${nPhase} ✓</span>` : '0';
+  document.getElementById('sNG').innerHTML     = nGoal
+    ? '<span class="sim-v good">YES ✓</span>' : 'No';
+  document.getElementById('simStep').textContent = 'Step: ' + simStep;
+
+  // insight
+  const el = document.getElementById('simIns');
+  if (nGoal && !oGoal) {
+    el.className = 'sim-insight phase';
+    el.innerHTML = '<strong>Novelty search reached the goal. Objective search is still trapped.</strong> Stanley & Lehman\'s core result: on deceptive landscapes, ignoring the objective outperforms chasing it. The archive — the memory of all prior exploration — is more valuable than the gradient toward the goal.';
+  } else if (nGoal && oGoal) {
+    el.className = 'sim-insight';
+    el.innerHTML = '<strong>Both searches complete.</strong> Notice the step count difference. Novelty search collected stepping stones. Objective search climbed the false peak and had to escape.';
+  } else if (nPhase > 0) {
+    el.className = 'sim-insight phase';
+    el.innerHTML = '<strong>Phase transition detected!</strong> Novelty search crossed the barrier — not by forcing through it, but by exploring around it. The archive showed that the region past the barrier was least visited. The search was drawn there. This is the path the objective search gradient will never point toward.';
+  } else if (oTrap) {
+    el.className = 'sim-insight';
+    el.innerHTML = '<strong>Objective search is trapped.</strong> The gradient points toward the false peak — it looks like progress. The barrier blocks the direct path to the true goal. This is every over-optimised research programme: high scores on the wrong metric.';
+  } else if (simStep > 5) {
+    el.className = 'sim-insight';
+    el.innerHTML = '<strong>Watch the divergence.</strong> Objective search climbs confidently. Novelty search wanders — but it is building its archive. Each green dot is a visited location. The search rewards maximum distance from that memory. The stepping stones are accumulating.';
+  }
+}
+
+function simTick() {
+  const spd = parseInt(document.getElementById('simSpd').value);
+  for (let i = 0; i < spd; i++) { simStepObj(); simStepNov(); simStep++; }
+  simDraw(); simUpdateStats();
+  if ((!oGoal || !nGoal) && simStep < 3000) {
+    simRaf = requestAnimationFrame(simTick);
+  } else {
+    simRunning = false;
+    document.getElementById('simBtnRun').textContent = 'RUN ▶';
+  }
+}
+
+function simToggle() {
+  simRunning = !simRunning;
+  document.getElementById('simBtnRun').textContent = simRunning ? 'PAUSE ⏸' : 'RUN ▶';
+  if (simRunning) simRaf = requestAnimationFrame(simTick);
+  else if (simRaf) { cancelAnimationFrame(simRaf); simRaf = null; }
+}
+
+window.addEventListener('load', () => { simReset(); });
 </script>
-
 </body>
 </html>
