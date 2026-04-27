@@ -3,390 +3,333 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>We Keep Building Better THAAD Missiles — The Thinking Archive</title>
-<meta name="description" content="Why science gets stuck — constraints, search, and the missing engine of breakthroughs.">
+<title>Why Science Gets Stuck — The Thinking Archive</title>
+<meta name="description" content="Modern research may be optimizing the known while neglecting the possible. From THAAD missiles to DeepSeek to the neuroscience of the daydream — a search problem, not a resource problem.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-/* ── BASE ───────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-size: 14px; scroll-behavior: smooth; }
+/* ── RESET ─────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:14px;scroll-behavior:smooth}
 
-:root {
-  --ink:     #1a1815;
-  --paper:   #f6f2ea;
-  --muted:   #6b6560;
-  --border:  #ddd8ce;
-  --card:    #eeead f;
-  --card:    #eee9df;
-  --hi:      #e8e3d8;
-  --accent:  #b83a18;
-  --green:   #256640;
-  --blue:    #1d5c9e;
-  --gold:    #b89020;
+:root{
+  --ink:#1a1815;
+  --paper:#f6f3ea;
+  --muted:#6b6560;
+  --border:#ddd8ce;
+  --card:#eee9df;
+  --hi:#e6e1d6;
+  --accent:#b83a18;
+  --green:#256640;
+  --blue:#1d5c9e;
+  --gold:#b89020;
 }
 
-body {
-  background: var(--paper);
-  color: var(--ink);
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 300;
-  font-size: 1rem;
-  line-height: 1.85;
-  overflow-x: hidden;
+body{
+  background:var(--paper);color:var(--ink);
+  font-family:'DM Sans',sans-serif;
+  font-weight:300;font-size:1rem;line-height:1.88;
+  overflow-x:hidden;
 }
-
-/* subtle paper grain */
-body::after {
-  content: '';
-  position: fixed; inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events: none; z-index: 999; opacity: .5;
+body::after{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:999;opacity:.45;
 }
 
 /* ── NAV ────────────────────────────────────── */
-nav {
-  position: sticky; top: 0; z-index: 100;
-  background: var(--paper);
-  border-bottom: 1px solid var(--border);
-  padding: 1.1rem 2.8rem;
-  display: flex; justify-content: space-between; align-items: center;
+nav{
+  position:sticky;top:0;z-index:100;
+  background:var(--paper);border-bottom:1px solid var(--border);
+  padding:1.1rem 2.8rem;
+  display:flex;justify-content:space-between;align-items:center;
 }
-.nav-brand {
-  font-family: 'Playfair Display', serif;
-  font-style: italic; font-size: 1.05rem;
-  color: var(--ink); text-decoration: none;
-  transition: color .2s;
+.nav-brand{
+  font-family:'Playfair Display',serif;font-style:italic;font-size:1.05rem;
+  color:var(--ink);text-decoration:none;transition:color .2s;
 }
-.nav-brand:hover { color: var(--accent); }
-.nav-tag {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.6rem; letter-spacing: .12em;
-  text-transform: uppercase; color: var(--muted);
+.nav-brand:hover{color:var(--accent);}
+.nav-tag{
+  font-family:'DM Mono',monospace;font-size:.6rem;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
 }
 
 /* ── HERO ───────────────────────────────────── */
-.hero {
-  max-width: 720px;
-  padding: 4rem 2.8rem 2rem;
-  animation: rise .7s ease both;
+.hero{max-width:720px;padding:4rem 2.8rem 2rem;animation:rise .7s ease both;}
+.chips{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.6rem;}
+.chip{
+  font-family:'DM Mono',monospace;font-size:.57rem;
+  letter-spacing:.13em;text-transform:uppercase;
+  border:1px solid var(--border);color:var(--muted);
+  padding:.22rem .65rem;border-radius:2px;
 }
-.chip-row { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.6rem; }
-.chip {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.57rem; letter-spacing: .13em; text-transform: uppercase;
-  border: 1px solid var(--border); color: var(--muted);
-  padding: .22rem .65rem; border-radius: 2px;
+.chip.a{color:var(--accent);border-color:var(--accent);}
+.hero h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.7rem,4vw,2.5rem);font-weight:400;
+  line-height:1.18;letter-spacing:-.025em;margin-bottom:.9rem;
 }
-.chip.accent { color: var(--accent); border-color: var(--accent); }
-
-.hero h1 {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(1.7rem, 4vw, 2.5rem);
-  font-weight: 400; line-height: 1.18;
-  letter-spacing: -.025em; margin-bottom: .9rem;
+.hero h1 em{font-style:italic;}
+.hero-deck{
+  font-size:1.05rem;color:var(--muted);
+  line-height:1.7;max-width:580px;margin-bottom:1.8rem;
 }
-.hero h1 em { font-style: italic; }
-.hero-deck {
-  font-size: 1.05rem; color: var(--muted);
-  line-height: 1.7; max-width: 580px; margin-bottom: 1.8rem;
+.byline{
+  border-top:1px solid var(--border);padding-top:1.2rem;
+  display:flex;gap:2rem;flex-wrap:wrap;
+  font-family:'DM Mono',monospace;font-size:.6rem;
+  color:var(--muted);letter-spacing:.07em;
 }
-.byline {
-  border-top: 1px solid var(--border); padding-top: 1.2rem;
-  display: flex; gap: 2rem; flex-wrap: wrap;
-  font-family: 'DM Mono', monospace;
-  font-size: 0.6rem; color: var(--muted); letter-spacing: .07em;
-}
-.byline b { display: block; color: var(--ink); font-weight: 400; margin-bottom: .1rem; }
+.byline b{display:block;color:var(--ink);font-weight:400;margin-bottom:.1rem;}
 
 /* ── TOC ────────────────────────────────────── */
-.toc {
-  margin: 0 2.8rem 2.5rem;
-  padding: 1.4rem 1.6rem;
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 3px; max-width: 360px;
-  animation: rise .7s .15s ease both;
+.toc{
+  margin:0 2.8rem 2.5rem;padding:1.4rem 1.6rem;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:3px;max-width:380px;
+  animation:rise .7s .15s ease both;
 }
-.toc-head {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.55rem; letter-spacing: .18em;
-  text-transform: uppercase; color: var(--muted); margin-bottom: .7rem;
+.toc-h{
+  font-family:'DM Mono',monospace;font-size:.55rem;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:.7rem;
 }
-.toc ol { list-style: none; counter-reset: toc; }
-.toc li { counter-increment: toc; border-bottom: 1px solid var(--border); }
-.toc li:last-child { border-bottom: none; }
-.toc a {
-  display: flex; gap: .6rem; align-items: baseline;
-  padding: .32rem 0; font-size: .86rem;
-  color: var(--muted); text-decoration: none; transition: color .2s;
+.toc ol{list-style:none;counter-reset:toc;}
+.toc li{counter-increment:toc;border-bottom:1px solid var(--border);}
+.toc li:last-child{border-bottom:none;}
+.toc a{
+  display:flex;gap:.6rem;align-items:baseline;
+  padding:.32rem 0;font-size:.86rem;
+  color:var(--muted);text-decoration:none;transition:color .2s;
 }
-.toc a:hover { color: var(--accent); }
-.toc a::before {
-  content: counter(toc, upper-roman);
-  font-family: 'DM Mono', monospace;
-  font-size: 0.55rem; color: var(--border); min-width: 16px;
+.toc a:hover{color:var(--accent);}
+.toc a::before{
+  content:counter(toc,upper-roman);
+  font-family:'DM Mono',monospace;
+  font-size:.55rem;color:var(--border);min-width:16px;
 }
 
-/* ── BODY ───────────────────────────────────── */
-.prose {
-  max-width: 640px; margin: 0 auto;
-  padding: 0 2.8rem 5rem;
-  animation: rise .7s .2s ease both;
+/* ── PROSE ──────────────────────────────────── */
+.prose{
+  max-width:640px;margin:0 auto;
+  padding:0 2.8rem 5rem;
+  animation:rise .7s .2s ease both;
 }
-.prose p { font-size: 1rem; line-height: 1.88; margin-bottom: 1.25rem; }
-.prose p.lede {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.22rem; line-height: 1.65;
+.prose p{font-size:1rem;line-height:1.88;margin-bottom:1.25rem;}
+.prose p.lede{
+  font-family:'Playfair Display',serif;
+  font-size:1.22rem;line-height:1.65;
 }
-.prose p.pull { font-weight: 500; font-size: 1.05rem; }
-.prose strong { font-weight: 500; }
-.prose em { color: var(--muted); font-style: italic; }
+.prose p.pull{font-weight:500;font-size:1.05rem;}
+.prose strong{font-weight:500;}
+.prose em{color:var(--muted);font-style:italic;}
 
-.sec-eyebrow {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.6rem; letter-spacing: .12em;
-  text-transform: uppercase; color: var(--border);
-  margin-top: 3.2rem; margin-bottom: .4rem;
+/* inline citation superscript */
+sup.cite{
+  font-family:'DM Mono',monospace;
+  font-size:.6rem;color:var(--accent);
+  cursor:default;letter-spacing:0;
 }
-.sec-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.4rem; font-weight: 400;
-  line-height: 1.25; margin-bottom: 1.3rem;
+
+.eyebrow{
+  font-family:'DM Mono',monospace;font-size:.6rem;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--border);margin-top:3.2rem;margin-bottom:.4rem;
+}
+.sec-h{
+  font-family:'Playfair Display',serif;
+  font-size:1.4rem;font-weight:400;
+  line-height:1.25;margin-bottom:1.3rem;
 }
 
 /* ── CALLOUT ────────────────────────────────── */
-.callout {
-  margin: 1.8rem 0; padding: 1.4rem 1.7rem;
-  background: var(--card);
-  border-left: 3px solid var(--accent);
-  border-radius: 0 3px 3px 0;
+.callout{
+  margin:1.8rem 0;padding:1.4rem 1.7rem;
+  background:var(--card);
+  border-left:3px solid var(--accent);
+  border-radius:0 3px 3px 0;
 }
-.callout .c-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.55rem; letter-spacing: .15em;
-  text-transform: uppercase; color: var(--accent); margin-bottom: .6rem;
+.callout .cl{
+  font-family:'DM Mono',monospace;font-size:.55rem;
+  letter-spacing:.15em;text-transform:uppercase;
+  color:var(--accent);margin-bottom:.6rem;
 }
-.callout p { font-size: .86rem !important; color: var(--muted) !important; margin-bottom: 0 !important; line-height: 1.75 !important; }
-.callout .eq {
-  font-family: 'DM Mono', monospace;
-  font-size: .86rem; color: var(--ink) !important;
-  margin: .65rem 0 !important; line-height: 2;
+.callout p{font-size:.86rem!important;color:var(--muted)!important;margin-bottom:0!important;line-height:1.75!important;}
+.callout .eq{
+  font-family:'DM Mono',monospace;font-size:.86rem;
+  color:var(--ink)!important;margin:.65rem 0!important;line-height:2;
+}
+
+/* ── NOTE (collapsible) ─────────────────────── */
+.note-wrap{margin:1.5rem 0;}
+.note-toggle{
+  display:flex;align-items:center;gap:.6rem;
+  font-family:'DM Mono',monospace;font-size:.6rem;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--muted);cursor:pointer;
+  background:none;border:none;padding:0;
+  transition:color .2s;
+}
+.note-toggle:hover{color:var(--accent);}
+.note-toggle .nt-icon{
+  width:16px;height:16px;border:1px solid var(--border);
+  border-radius:2px;display:flex;align-items:center;justify-content:center;
+  font-size:.7rem;color:var(--muted);flex-shrink:0;transition:all .2s;
+}
+.note-body{
+  display:none;margin-top:.7rem;
+  padding:1.2rem 1.5rem;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:3px;
+  font-family:'DM Mono',monospace;font-size:.64rem;
+  color:var(--muted);line-height:1.85;
+}
+.note-body.open{display:block;}
+.note-body strong{color:var(--ink);}
+.note-body .neq{
+  font-size:.75rem;color:var(--ink);
+  margin:.5rem 0;display:block;letter-spacing:.03em;
 }
 
 /* ── SEPARATOR ──────────────────────────────── */
-.sep {
-  display: flex; align-items: center; gap: .8rem;
-  margin: 2.2rem 0; color: var(--border);
-  font-family: 'DM Mono', monospace; font-size: .6rem; letter-spacing: .18em;
+.sep{
+  display:flex;align-items:center;gap:.8rem;margin:2.2rem 0;
+  color:var(--border);font-family:'DM Mono',monospace;
+  font-size:.6rem;letter-spacing:.18em;
 }
-.sep::before, .sep::after { content:''; flex:1; height:1px; background:var(--border); }
+.sep::before,.sep::after{content:'';flex:1;height:1px;background:var(--border);}
 
-/* ── INTERACTIVE WRAPPER ────────────────────── */
-.iv {
-  margin: 2rem 0;
-  border: 1px solid var(--border); border-radius: 4px; overflow: hidden;
+/* ── INTERACTIVE WRAP ───────────────────────── */
+.iv{margin:2rem 0;border:1px solid var(--border);border-radius:4px;overflow:hidden;}
+.iv-h{
+  padding:.8rem 1.3rem;background:var(--card);
+  border-bottom:1px solid var(--border);
+  font-family:'DM Mono',monospace;font-size:.57rem;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+  display:flex;justify-content:space-between;align-items:center;
 }
-.iv-head {
-  padding: .8rem 1.3rem;
-  background: var(--card); border-bottom: 1px solid var(--border);
-  font-family: 'DM Mono', monospace;
-  font-size: 0.57rem; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--muted);
-  display: flex; justify-content: space-between; align-items: center;
-}
-.iv-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink:0; }
-.iv-body { padding: 1.5rem 1.3rem; }
+.iv-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;}
+.iv-b{padding:1.5rem 1.3rem;}
 
 /* ── COST CHART ─────────────────────────────── */
-.chart-wrap { position: relative; width: 100%; height: 250px; }
-.chart-legend {
-  display: flex; gap: 1rem; flex-wrap: wrap;
-  margin-top: .8rem; margin-bottom: .5rem;
+.cw{position:relative;width:100%;height:250px;}
+.cleg{display:flex;gap:1rem;flex-wrap:wrap;margin-top:.8rem;margin-bottom:.5rem;}
+.cli{display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:.57rem;color:var(--muted);}
+.clsw{width:9px;height:9px;border-radius:2px;flex-shrink:0;}
+.cnote{
+  font-family:'DM Mono',monospace;font-size:.57rem;color:var(--muted);
+  line-height:1.8;margin-top:.9rem;padding-top:.9rem;border-top:1px solid var(--border);
 }
-.leg-item {
-  display: flex; align-items: center; gap: 5px;
-  font-family: 'DM Mono', monospace; font-size: 0.57rem; color: var(--muted);
-}
-.leg-sw { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
-.chart-note {
-  font-family: 'DM Mono', monospace; font-size: 0.57rem;
-  color: var(--muted); line-height: 1.8;
-  margin-top: .9rem; padding-top: .9rem; border-top: 1px solid var(--border);
-}
-.chart-note span { color: var(--accent); }
+.cnote span{color:var(--accent);}
 
 /* ── PRODUCTIVITY CHART ─────────────────────── */
-.prod-canvas-wrap { width: 100%; height: 185px; }
-.prod-canvas-wrap canvas { display: block; }
-.prod-ctrl {
-  display: flex; align-items: center; gap: .8rem; margin-top: .8rem;
-}
-.prod-ctrl label {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.6rem; color: var(--muted); white-space: nowrap;
-}
-.prod-ctrl input[type=range] { flex: 1; accent-color: var(--accent); cursor: pointer; }
-.prod-year {
-  font-family: 'DM Mono', monospace;
-  font-size: .7rem; color: var(--ink); min-width: 34px;
-}
-.prod-note {
-  font-family: 'DM Mono', monospace; font-size: 0.6rem;
-  color: var(--muted); margin-top: .55rem; line-height: 1.7;
-}
-.prod-note span { color: var(--accent); }
+.pcw{width:100%;height:185px;}
+.pcw canvas{display:block;}
+.pctrl{display:flex;align-items:center;gap:.8rem;margin-top:.8rem;}
+.pctrl label{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--muted);white-space:nowrap;}
+.pctrl input[type=range]{flex:1;accent-color:var(--accent);cursor:pointer;}
+.pyr{font-family:'DM Mono',monospace;font-size:.7rem;color:var(--ink);min-width:34px;}
+.pnote{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--muted);margin-top:.55rem;line-height:1.7;}
+.pnote span{color:var(--accent);}
 
 /* ── NOVELTY SIM ────────────────────────────── */
-.sim-legend {
-  display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 8px;
+.sleg{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px;}
+.sli{display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:.55rem;color:var(--muted);}
+.sld{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+.sctrl{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;}
+.sbtn{
+  padding:5px 14px;border:1px solid var(--border);border-radius:3px;
+  font-family:'DM Mono',monospace;font-size:.57rem;cursor:pointer;
+  color:var(--muted);background:transparent;letter-spacing:.07em;transition:background .15s;
 }
-.sim-leg {
-  display: flex; align-items: center; gap: 5px;
-  font-family: 'DM Mono', monospace; font-size: 0.55rem; color: var(--muted);
+.sbtn:hover{background:var(--hi);}
+.sbtn.run{border-color:var(--accent);color:var(--accent);}
+.ssp{display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:.57rem;color:var(--muted);}
+.ssp input{width:80px;accent-color:var(--accent);cursor:pointer;}
+.sstep{font-family:'DM Mono',monospace;font-size:.57rem;color:var(--muted);}
+.spnls{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.spnl{border:1px solid var(--border);border-radius:4px;overflow:hidden;}
+.sph{padding:6px 10px;font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.13em;text-transform:uppercase;border-bottom:1px solid var(--border);}
+.sph.obj{color:var(--accent);}
+.sph.nov{color:var(--green);}
+.scanv{display:block;width:100%;}
+.sstats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.sstat{background:var(--card);border:1px solid var(--border);border-radius:3px;padding:9px 12px;}
+.sstt{font-family:'DM Mono',monospace;font-size:.5rem;letter-spacing:.13em;text-transform:uppercase;margin-bottom:6px;}
+.srow{display:flex;justify-content:space-between;font-family:'DM Mono',monospace;font-size:.57rem;padding:2.5px 0;border-bottom:1px solid var(--border);}
+.srow:last-child{border-bottom:none;}
+.sk{color:var(--muted);}
+.sv{color:var(--ink);font-weight:500;}
+.sv.w{color:var(--accent);}
+.sv.g{color:var(--green);}
+.sins{
+  padding:9px 12px;background:var(--card);
+  border:1px solid var(--border);border-left:2px solid var(--accent);
+  border-radius:0 3px 3px 0;
+  font-family:'DM Mono',monospace;font-size:.57rem;
+  color:var(--muted);line-height:1.8;min-height:46px;
 }
-.sim-leg-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
-.sim-ctrl {
-  display: flex; gap: 8px; align-items: center;
-  margin-bottom: 10px; flex-wrap: wrap;
-}
-.sbtn {
-  padding: 5px 14px; border: 1px solid var(--border);
-  border-radius: 3px; font-family: 'DM Mono', monospace;
-  font-size: 0.57rem; cursor: pointer;
-  color: var(--muted); background: transparent;
-  letter-spacing: .07em; transition: background .15s;
-}
-.sbtn:hover { background: var(--hi); }
-.sbtn.run { border-color: var(--accent); color: var(--accent); }
-.spd-wrap {
-  display: flex; align-items: center; gap: 6px;
-  font-family: 'DM Mono', monospace; font-size: 0.57rem; color: var(--muted);
-}
-.spd-wrap input { width: 80px; accent-color: var(--accent); cursor: pointer; }
-.sim-step-lbl {
-  font-family: 'DM Mono', monospace; font-size: 0.57rem; color: var(--muted);
-}
-.sim-panels {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;
-}
-.sim-panel { border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
-.sim-ph {
-  padding: 6px 10px; font-family: 'DM Mono', monospace;
-  font-size: 0.5rem; letter-spacing: .13em; text-transform: uppercase;
-  border-bottom: 1px solid var(--border);
-}
-.sim-ph.obj { color: var(--accent); }
-.sim-ph.nov { color: var(--green); }
-.sim-canvas { display: block; width: 100%; }
-.sim-stats {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;
-}
-.sim-stat {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 3px; padding: 9px 12px;
-}
-.sim-stat-title {
-  font-family: 'DM Mono', monospace; font-size: 0.5rem;
-  letter-spacing: .13em; text-transform: uppercase; margin-bottom: 6px;
-}
-.sim-row {
-  display: flex; justify-content: space-between;
-  font-family: 'DM Mono', monospace; font-size: 0.57rem;
-  padding: 2.5px 0; border-bottom: 1px solid var(--border);
-}
-.sim-row:last-child { border-bottom: none; }
-.sk { color: var(--muted); }
-.sv { color: var(--ink); font-weight: 500; }
-.sv.warn { color: var(--accent); }
-.sv.ok { color: var(--green); }
-.sim-insight {
-  padding: 9px 12px;
-  background: var(--card);
-  border: 1px solid var(--border); border-left: 2px solid var(--accent);
-  border-radius: 0 3px 3px 0;
-  font-family: 'DM Mono', monospace; font-size: 0.57rem;
-  color: var(--muted); line-height: 1.8; min-height: 46px;
-}
-.sim-insight strong { color: var(--ink); }
-.sim-insight.phase { border-left-color: var(--gold); }
+.sins strong{color:var(--ink);}
+.sins.ph{border-left-color:var(--gold);}
 
-/* ── REFS ───────────────────────────────────── */
-.refs {
-  margin-top: 3rem; padding-top: 1.6rem; border-top: 1px solid var(--border);
-}
-.refs-lbl {
-  font-family: 'DM Mono', monospace; font-size: 0.55rem;
-  letter-spacing: .18em; text-transform: uppercase;
-  color: var(--muted); margin-bottom: 1rem;
-}
-.refs ol { padding-left: 1.3rem; }
-.refs li {
-  font-family: 'DM Mono', monospace; font-size: 0.6rem;
-  color: var(--muted); line-height: 1.7; margin-bottom: .35rem;
-}
+/* ── REFERENCES ─────────────────────────────── */
+.refs{margin-top:3rem;padding-top:1.6rem;border-top:1px solid var(--border);}
+.refs-h{font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:1rem;}
+.refs ol{padding-left:1.3rem;}
+.refs li{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--muted);line-height:1.75;margin-bottom:.4rem;}
+.refs li a{color:var(--muted);text-decoration:underline;text-underline-offset:3px;}
 
 /* ── FOOTER ─────────────────────────────────── */
-.essay-foot {
-  max-width: 640px; margin: 0 auto;
-  padding: 0 2.8rem 3rem;
-  border-top: 1px solid var(--border);
-  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+.foot{
+  max-width:640px;margin:0 auto;padding:0 2.8rem 3rem;
+  border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;
 }
-.essay-foot p { font-family: 'DM Mono', monospace; font-size: 0.57rem; color: var(--muted); }
-.back-link {
-  font-family: 'DM Mono', monospace; font-size: 0.57rem;
-  color: var(--accent); text-decoration: none; letter-spacing: .1em; text-transform: uppercase;
-}
+.foot p{font-family:'DM Mono',monospace;font-size:.57rem;color:var(--muted);}
+.back{font-family:'DM Mono',monospace;font-size:.57rem;color:var(--accent);text-decoration:none;letter-spacing:.1em;text-transform:uppercase;}
 
 /* ── ANIMATION ──────────────────────────────── */
-@keyframes rise {
-  from { opacity: 0; transform: translateY(14px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 
 /* ── RESPONSIVE ─────────────────────────────── */
-@media (max-width: 640px) {
-  nav, .hero, .prose, .essay-foot { padding-left: 1.3rem; padding-right: 1.3rem; }
-  .toc { margin-left: 1.3rem; margin-right: 1.3rem; }
-  .sim-panels { grid-template-columns: 1fr; }
-  .sim-stats  { grid-template-columns: 1fr; }
+@media(max-width:640px){
+  nav,.hero,.prose,.foot{padding-left:1.3rem;padding-right:1.3rem;}
+  .toc{margin-left:1.3rem;margin-right:1.3rem;}
+  .spnls{grid-template-columns:1fr;}
+  .sstats{grid-template-columns:1fr;}
 }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
   <a href="../../index.html" class="nav-brand">The Thinking Archive</a>
   <span class="nav-tag">Essay No. 01 · April 2026</span>
 </nav>
 
-<!-- HERO -->
 <div class="hero">
-  <div class="chip-row">
-    <span class="chip accent">Astera Essay Competition 2026</span>
+  <div class="chips">
+    <span class="chip a">Astera Essay Competition 2026</span>
     <span class="chip">Scientific Infrastructure</span>
     <span class="chip">Novelty Search</span>
-    <span class="chip">Phase Transitions</span>
+    <span class="chip">Constraint-Driven Innovation</span>
   </div>
-  <h1>We Keep Building Better<br><em>THAAD Missiles</em></h1>
+  <h1>Why Science Gets Stuck<br><em>Modern research may be optimizing the known<br>while neglecting the possible</em></h1>
   <p class="hero-deck">
-    Why science gets stuck — and the missing engine of breakthroughs.
-    From a $12 million missile to DeepSeek to the neuroscience of the daydream,
-    the same pattern keeps appearing. Constraints don't slow discovery.
-    They reveal solutions that abundance makes invisible.
+    From a $12 million missile to DeepSeek to the neuroscience of the daydream —
+    the central bottleneck in science may not be intelligence, effort, or funding.
+    It may be search.
   </p>
   <div class="byline">
-    <div><b>Amritansh</b>Independent AI Researcher</div>
+    <div><b>Amritansh</b>Independent AI Researcher, Neurodynamic AI</div>
     <div><b>April 2026</b>Bengaluru, India</div>
-    <div><b>~15 min read</b>2,480 words</div>
+    <div><b>~15 min read</b></div>
   </div>
 </div>
 
-<!-- TOC -->
 <div class="toc">
-  <div class="toc-head">Contents</div>
+  <div class="toc-h">Contents</div>
   <ol>
     <li><a href="#s1">The $12,000,000 problem</a></li>
     <li><a href="#s2">The same thing happened in AI</a></li>
@@ -394,393 +337,385 @@ nav {
     <li><a href="#s4">The brain already solved this</a></li>
     <li><a href="#s5">The algorithm science is missing</a></li>
     <li><a href="#s6">The experiment</a></li>
+    <li><a href="#s7">Three objections worth taking seriously</a></li>
   </ol>
 </div>
 
-<!-- PROSE -->
 <div class="prose">
 
   <p class="lede">I was doing nothing.</p>
-
   <p>Not reading a paper. Not running an experiment. I was letting my mind drift — across worm biology, swarm robotics, warfare, neuromodulation — when something clicked that months of structured work hadn't produced. A connection between fields I had no reason to juxtapose. An insight that arrived not from effort but from its absence.</p>
-
   <p>That daydream became the spine of my research.</p>
-
   <p class="pull">This bothered me. It should bother you too.</p>
-
-  <p>Because if the most important cognitive event in months of work happened during the one hour nobody was measuring — with no lab, no grant, no advisor, working alone in Bengaluru on rented GPU clusters — then we have a serious structural problem. Not a personal one. A systemic one.</p>
+  <p>Because if the most important cognitive event in months of serious work happened during the one hour nobody was measuring — working alone, no lab, no grant, rented compute — then we have a structural problem. Not a personal one. A systemic one.</p>
+  <p>This essay proposes one simple possibility: the central bottleneck in science may not be intelligence, effort, or funding. It may be <strong>search</strong>. We have built institutions highly capable of exploiting known directions. We have built almost nothing for exploring unknown ones.</p>
 
   <div class="sep">§</div>
 
-  <!-- SECTION 1 -->
-  <p class="sec-eyebrow" id="s1">I.</p>
-  <h2 class="sec-title">The $12,000,000 Problem</h2>
+  <!-- SECTION I -->
+  <p class="eyebrow" id="s1">I.</p>
+  <h2 class="sec-h">The $12,000,000 Problem</h2>
 
   <p>In recent conflicts, Iranian drones costing approximately <strong>$5,000 each</strong> have required THAAD interceptor missiles costing approximately <strong>$12,000,000 per shot</strong> to neutralise.</p>
-
   <p class="pull">Read that again. Five thousand versus twelve million dollars.</p>
+  <p>A 2,400-to-one cost asymmetry. The defender cannot win this game through optimisation. Better missiles cost more. Cheaper drones cost less. The gradient — the direction that looks like improvement — points confidently upward and leads straight into a trap. This is not a failure of engineering. It is a failure of search strategy.</p>
+  <p>The emerging solution is laser-based directed energy defence. Cost per intercept: less than <strong>$1</strong>. A 12,000,000× cost reduction — achieved not by improving the existing missile but by returning to first principles. Someone stopped climbing the missile hill long enough to ask a genuinely different question. They found a different mountain entirely.</p>
+  <p>This phenomenon has a precise name in mathematics and physics. When a system under pressure reorganises into a qualitatively different state — not better, but structurally different — it is called a <strong>phase transition</strong>. Water doesn't become "more liquid" as temperature drops. It becomes ice. The THAAD-to-laser shift is the same kind of event: same problem, completely different solution space. Physicists, mathematicians, and biologists have studied these reorganisations carefully.<sup class="cite">[1]</sup> They share a common signature — a period of apparent stagnation followed by sudden structural change, triggered not by more effort but by a shift in the underlying conditions.</p>
+  <p>This is the pattern. Incumbents optimise the known. Constrained outsiders search for something else. The outsider doesn't always win. But when the landscape is deceptive — when the most direct path leads away from the real solution — the searcher beats the optimiser every time.</p>
+  <p class="pull">This pattern now appears in science.</p>
 
-  <p>A 2,400-to-one cost asymmetry. The defender cannot win this game through optimisation. Better missiles cost more. Cheaper drones cost less. The gradient — the direction of improvement — points confidently upward, and it leads straight into a trap. This is not a failure of engineering. It is a failure of search strategy.</p>
-
-  <p>The emerging solution is laser-based directed energy defence. Cost per intercept: less than <strong>$1</strong>. A 12,000,000× cost reduction — achieved not by improving the existing missile but by returning to physical first principles. Someone stopped climbing the missile hill long enough to ask a different question — and found a completely different mountain.</p>
-
-  <p>In physics, this is called a <strong>phase transition</strong>. The system doesn't improve — it reorganises entirely. Water doesn't become "more liquid" as temperature drops. It becomes ice. A qualitatively different thing, same molecules, completely different game. The mathematics:</p>
-
-  <div class="callout">
-    <div class="c-label">The Bifurcation Equation</div>
-    <p class="eq">V(x, c) = x⁴ + c·x²</p>
-    <p>
-      When c is positive: one obvious minimum — one solution, one hill to climb.<br>
-      When c crosses zero: the landscape reorganises.<br>
-      When c is negative: two minima emerge. The second one is the laser.
-    </p>
-  </div>
-
-  <p>The constraint — limited budget, physical law, export ban — doesn't slow the search. It changes the shape of the solution space. A second minimum appears that was always mathematically present but invisible to anyone climbing the first hill.</p>
-
-<!-- COST CHART -->
-<div class="iv">
-  <div class="iv-head">
-    <span>Cost Per Intercept — Log₁₀ Scale</span>
-    <span class="iv-dot"></span>
-  </div>
-  <div class="iv-body">
-    <div class="chart-wrap">
-      <canvas id="costChart" aria-label="Log scale comparison: laser under $1, drone $5000, THAAD $12 million"></canvas>
-    </div>
-    <div class="chart-legend">
-      <span class="leg-item"><span class="leg-sw" style="background:var(--green)"></span>Laser defence — &lt;$1</span>
-      <span class="leg-item"><span class="leg-sw" style="background:var(--blue)"></span>Iranian drone — $5,000</span>
-      <span class="leg-item"><span class="leg-sw" style="background:var(--accent)"></span>THAAD interceptor — $12,000,000</span>
-    </div>
-    <div class="chart-note">
-      Drone : THAAD — <span>1 : 2,400</span> &nbsp;·&nbsp;
-      THAAD → Laser — <span>12,000,000× cheaper</span> &nbsp;·&nbsp;
-      <span style="opacity:.6">Y-axis uses a logarithmic scale — each gridline is 10× the previous, the standard way to compare values that span many orders of magnitude.</span>
+  <!-- NOTE I -->
+  <div class="note-wrap">
+    <button class="note-toggle" onclick="toggleNote('n1')">
+      <span class="nt-icon" id="ni1">+</span>
+      <span>📎 Note — For the mathematically curious: bifurcation theory</span>
+    </button>
+    <div class="note-body" id="n1">
+      Phase transitions in physics are described by bifurcation theory. A simple example is the double-well potential:<br><br>
+      <span class="neq">V(x, c) = x⁴ + c·x²</span>
+      When c is positive: one minimum — one obvious solution. The missile.<br>
+      When c crosses zero: bifurcation point — the landscape is about to reorganise.<br>
+      When c is negative: two minima emerge. The second one is the laser.<br><br>
+      The constraint — limited budget, physical law, export ban — acts as the control parameter c. It doesn't slow the search. It changes the shape of the solution space, revealing minima that were always mathematically present but invisible to anyone climbing the first hill.<br><br>
+      The same mathematics describes phase transitions in magnetism, protein folding, and the emergence of collective behaviour in biological swarms. It is a universal signature of systems that reorganise under pressure.
     </div>
   </div>
-</div>
+
+  <!-- COST CHART -->
+  <div class="iv">
+    <div class="iv-h"><span>Cost Per Intercept — Log₁₀ Scale</span><span class="iv-dot"></span></div>
+    <div class="iv-b">
+      <div class="cw"><canvas id="costChart" aria-label="Log scale cost comparison: laser under $1, drone $5,000, THAAD $12,000,000"></canvas></div>
+      <div class="cleg">
+        <span class="cli"><span class="clsw" style="background:var(--green)"></span>Laser defence — &lt;$1</span>
+        <span class="cli"><span class="clsw" style="background:var(--blue)"></span>Iranian drone — $5,000</span>
+        <span class="cli"><span class="clsw" style="background:var(--accent)"></span>THAAD interceptor — $12,000,000</span>
+      </div>
+      <div class="cnote">
+        Drone : THAAD — <span>1 : 2,400</span> &nbsp;·&nbsp;
+        THAAD → Laser — <span>12,000,000× cheaper</span> &nbsp;·&nbsp;
+        <span style="opacity:.6">Y-axis uses a log₁₀ scale — each gridline is 10× the previous. Standard for comparing values across many orders of magnitude.</span>
+      </div>
+    </div>
+  </div>
 
   <div class="sep">§</div>
 
-  <!-- SECTION 2 -->
-  <p class="sec-eyebrow" id="s2">II.</p>
-  <h2 class="sec-title">The Same Thing Just Happened in AI</h2>
+  <!-- SECTION II -->
+  <p class="eyebrow" id="s2">II.</p>
+  <h2 class="sec-h">The Same Thing Just Happened in AI</h2>
 
-  <p>In January 2025, DeepSeek published a model matching GPT-4 on most benchmarks. Training cost: <strong>$6 million</strong>. GPT-4's estimated cost: <strong>$80–100 million</strong>. GPU hours used: 2.78 million versus approximately 60 million — a 21× difference.</p>
+  <p>In January 2025, DeepSeek published a model matching GPT-4 on most benchmarks. Training cost: <strong>$6 million</strong>. GPT-4's estimated cost: <strong>$80–100 million</strong>. GPU hours used: 2.78 million versus approximately 60 million — a 21× difference.<sup class="cite">[2]</sup></p>
+  <p>The reason was not superior talent. It was a constraint. The United States government had banned export of NVIDIA's most powerful chips to China. DeepSeek couldn't buy the weapon. So they had to search differently.</p>
+  <p>What they found under that pressure: a way to run only a fraction of the model's parameters for each calculation instead of all of them, a lower-precision arithmetic method nobody had validated at this scale, and a new algorithm that hid communication delays behind computation. None of these existed as standard practice before the constraint forced the search.</p>
+  <p>The export ban was not an obstacle that slowed progress. It was a reorganising pressure that revealed a different solution space — one that better-resourced labs had no incentive to explore.</p>
+  <p class="pull">Same problem. Different mountain.</p>
 
-  <p>The reason: the United States government banned export of NVIDIA's most powerful chips to China. DeepSeek couldn't buy the weapon. So they had to think differently.</p>
-
-  <div class="callout">
-    <div class="c-label">What constraint forced them to invent</div>
-    <p>
-      <strong>Sparse computation (Mixture of Experts)</strong> — instead of running all 671 billion parameters for every calculation, only 37 billion activate at a time. The constraint forced an architecture that dense-model teams had no incentive to pursue.<br><br>
-      <strong>Lower precision training</strong> — 8-bit arithmetic at this scale had never been validated before. Memory limits forced them to try it. It worked. Memory halved, efficiency doubled.<br><br>
-      <strong>A new communication algorithm</strong> — their chips had slower connections than the banned ones. So they invented a method that hides communication delays behind computation. Near-zero overhead on inferior hardware.
-    </p>
+  <!-- NOTE II -->
+  <div class="note-wrap">
+    <button class="note-toggle" onclick="toggleNote('n2')">
+      <span class="nt-icon" id="ni2">+</span>
+      <span>📎 Note — Why this keeps happening: constraint-driven innovation across history</span>
+    </button>
+    <div class="note-body" id="n2">
+      This pattern recurs across domains and across history.<br><br>
+      The Aravind Eye Care System in India couldn't afford Western hospital models — so they invented assembly-line cataract surgery at 1/10th the cost with equivalent outcomes, performing over 300,000 surgeries annually. M-Pesa in Kenya had no banking infrastructure — so they built mobile money from scratch, now used by 53 million people globally. Yuan Longping developed hybrid rice in China under severe resource constraints — feeding hundreds of millions without increasing inputs.<br><br>
+      The common structure: constraint closes the obvious path, forcing search into territory that abundance never visits. The solution found there is often not just cheaper — it is structurally superior to what incumbents were optimising.
+    </div>
   </div>
-
-  <p>None of these came from having more resources. They came from having fewer. The export ban was the constraint wall — the c &lt; 0 in the bifurcation equation. It blocked the obvious path and forced navigation toward a region of design space that well-resourced labs had no incentive to explore.</p>
-
-  <p class="pull">This is not a story about ingenuity. It is a story about search topology.</p>
 
   <div class="sep">§</div>
 
-  <!-- SECTION 3 -->
-  <p class="sec-eyebrow" id="s3">III.</p>
-  <h2 class="sec-title">Science Is Climbing the Wrong Hill</h2>
+  <!-- SECTION III -->
+  <p class="eyebrow" id="s3">III.</p>
+  <h2 class="sec-h">Science Is Climbing the Wrong Hill</h2>
 
-  <p>Bloom et al. (2020) measured something alarming. Research productivity — the number of researchers required to produce a given rate of improvement — has <strong>doubled approximately every 13 years</strong> since the 1930s across multiple fields. Moore's Law required 18 researchers in 1971 to sustain its pace. By 2014, 18 times more were needed.</p>
+  <p>Modern science has more researchers, more data, more instruments, and more computational power than any previous generation. By many measures it is thriving.</p>
+  <p>Yet progress in several important domains feels slower, more expensive, and more administratively burdened than the scale of available talent would suggest.</p>
+  <p>Bloom, Jones, Van Reenen, and Webb (2020) put a number on this.<sup class="cite">[3]</sup> Research productivity — the number of researchers required to produce a given rate of improvement — has <strong>doubled approximately every 13 years</strong> since the 1930s across multiple fields. Moore's Law required 18 researchers in 1971 to sustain its pace. By 2014, 18 times more were needed.</p>
 
-  <p>We are running faster to stand still. Drag the slider below to see what this looks like across nine decades.</p>
-
-<!-- PRODUCTIVITY CHART -->
-<div class="iv">
-  <div class="iv-head">
-    <span>Research Productivity Decline — Bloom et al. (2020)</span>
-    <span class="iv-dot"></span>
-  </div>
-  <div class="iv-body">
-    <div class="prod-canvas-wrap">
-      <canvas id="prodChart" aria-label="Research productivity decline 1930 to 2020"></canvas>
-    </div>
-    <div class="prod-ctrl">
-      <label for="prodSlider">Year</label>
-      <input type="range" min="0" max="9" value="9" step="1" id="prodSlider">
-      <span class="prod-year" id="prodYear">2020</span>
-    </div>
-    <div class="prod-note" id="prodNote">
-      By 2020: <span>~18× more researchers</span> needed to sustain the same rate of progress as 1930.
+  <!-- PRODUCTIVITY CHART -->
+  <div class="iv">
+    <div class="iv-h"><span>Research Productivity Decline — Bloom et al. (2020)</span><span class="iv-dot"></span></div>
+    <div class="iv-b">
+      <div class="pcw"><canvas id="prodChart" aria-label="Research productivity decline from 1930 to 2020"></canvas></div>
+      <div class="pctrl">
+        <label for="ps">Year</label>
+        <input type="range" min="0" max="9" value="9" step="1" id="ps">
+        <span class="pyr" id="pyr">2020</span>
+      </div>
+      <div class="pnote" id="pn">By 2020: <span>~18× more researchers</span> needed to sustain the same rate of progress as 1930.</div>
     </div>
   </div>
-</div>
 
-  <p>This is what a system approaching a local maximum looks like from the inside. The machinery gets bigger. The marginal output gets smaller. Nobody questions the hill because the hill is measurable and being climbed.</p>
+  <p>This is the signature of a system approaching a local maximum. The machinery gets bigger. The marginal output gets smaller. Nobody questions the hill because the hill is measurable and being climbed.</p>
+  <p>Here is how the trap forms. A young researcher choosing between two projects faces an asymmetry that has nothing to do with scientific merit. The first extends established work — clear methods, familiar reviewers, predictable publications, low reputational risk. The second crosses disciplines, depends on uncertain tools, and may fail entirely. Even if successful, it may produce little that current metrics reward.</p>
+  <p>No institution needs to suppress originality deliberately. Incentives do the work quietly.</p>
+  <p>The failure modes are specific. I have experienced them working on brain-inspired AI. I have spent approximately <strong>250 hours repeating experiments</strong> that others had almost certainly already abandoned — silently, invisibly, because there is no infrastructure for sharing structured failure. Negative results go unpublished and quietly repeated. Interdisciplinary work falls between funding categories. The most interesting questions — the ones that don't fit existing frameworks — get systematically deferred.</p>
+  <p class="pull">This is not a funding problem. It is a search problem.</p>
 
-  <p>Here is how the trap forms. A standard research grant requires a specific hypothesis stated in advance, a methodology committed to before results exist, milestones at fixed intervals, and publications as evidence of productivity. Every one of these requirements is architecturally optimised for <strong>exploitation</strong> — squeezing value from known territory — and hostile to <strong>exploration</strong> — finding territory nobody has mapped.</p>
-
-  <p>The failure modes are specific. I have experienced them working on brain-inspired AI:</p>
-
-  <p><strong>Negative results evaporate.</strong> I have spent approximately 250 hours repeating experiments that others had almost certainly already abandoned — silently, invisibly, because the field has no infrastructure for sharing structured failure. The next researcher will repeat the same failures because they are unpublishable.</p>
-
-  <p><strong>Interdisciplinary work falls between categories.</strong> Research spanning computational neuroscience, statistical physics, and machine learning fits no single grant mechanism. No single review panel covers all three. The most interesting work falls between the cracks of every existing funding structure.</p>
-
-  <p><strong>The daydream is treated as waste.</strong> The connection that became my research spine arrived during unstructured time. No grant funded it. No milestone captured it. It is structurally invisible to every metric science uses to measure progress.</p>
-
-  <p class="pull">This is not a funding problem. It is a search strategy problem.</p>
+  <!-- NOTE III -->
+  <div class="note-wrap">
+    <button class="note-toggle" onclick="toggleNote('n3')">
+      <span class="nt-icon" id="ni3">+</span>
+      <span>📎 Note — Exploitation vs exploration: the formal framework</span>
+    </button>
+    <div class="note-body" id="n3">
+      In reinforcement learning and decision theory, this tension has a formal name: the exploration-exploitation trade-off. The Gittins index theorem (Gittins, 1979) proves that the optimal policy for choosing between known and unknown options requires a systematic exploration bonus — a reward for trying what hasn't been tried, proportional to uncertainty.<sup class="cite">[4]</sup> Pure exploitation of the best-known option is mathematically guaranteed to underperform over time.<br><br>
+      Science funding behaves like a system with the exploration bonus removed. Grants reward proximity to known objectives. Reviews reward legibility. Careers reward measurable output. The mathematics says this will converge to a local maximum.<br><br>
+      Wuchty, Jones, and Uzzi (2007) analysed millions of scientific papers and found that while team science has grown dominant, solo and small-team work continues to produce disproportionately disruptive findings — suggesting the search function in science is being concentrated in structures less suited to exploratory discovery.<sup class="cite">[5]</sup>
+    </div>
+  </div>
 
   <div class="sep">§</div>
 
-  <!-- SECTION 4 -->
-  <p class="sec-eyebrow" id="s4">IV.</p>
-  <h2 class="sec-title">The Brain Already Solved This</h2>
+  <!-- SECTION IV -->
+  <p class="eyebrow" id="s4">IV.</p>
+  <h2 class="sec-h">The Brain Already Solved This</h2>
 
-  <p>The brain is the only known system that has solved continuous learning, world modelling, and generalisation simultaneously — on 20 watts, across a human lifetime.</p>
+  <p>The brain is the only known system that has solved continuous learning, generalisation, and adaptation simultaneously — on 20 watts, across a human lifetime.</p>
+  <p>It does this through two architecturally separated modes.</p>
+  <p>The first is focused exploitation — precise, targeted, fast. This is the system active when you are running a planned experiment, writing a paper, optimising a known method. It climbs hills efficiently.</p>
+  <p>The second is something stranger. Neuroscientists call it the Default Mode Network. It becomes more active when you are doing nothing — resting, walking, letting your mind wander. It consumes approximately <strong>20% of total brain energy at rest</strong>.<sup class="cite">[6]</sup> The brain pays a significant metabolic price to keep this system running when you appear to be idle.</p>
+  <p>Why? Because it performs a function the focused system cannot. It integrates across distant, apparently unrelated memory spaces. It is where unexpected connections form — between fields that have no obvious relationship, between a problem and a solution that doesn't look like one yet.</p>
+  <p>Jung-Beeman et al. (2004) captured the moment of insight in real time.<sup class="cite">[7]</sup> The "aha moment" is preceded by the brain actively suppressing its focused attention system — quieting exploitation so exploration can work.</p>
+  <p>A chemical switching system — involving dopamine, acetylcholine, and related signals — coordinates the two modes based on what the moment requires. Exploit when the path is clear. Explore when it isn't.</p>
+  <p>This architecture is not a metaphor for good research practice. It is the actual mechanism that biological intelligence runs on. Five hundred million years of evolution decided it was worth the metabolic cost.</p>
+  <p>Modern research institutions are designed almost entirely around the first mode. We have formalised execution. We have barely formalised discovery.</p>
 
-  <p>It does this through <strong>architecturally separated search modes</strong>, coordinated by a chemical switching system.</p>
-
-  <p>The <strong>exploitation system</strong> — prefrontal cortex, focused attention, high acetylcholine — is precise and fast. This is you debugging code, running a planned experiment, writing a grant application. It climbs known hills efficiently.</p>
-
-  <p>The <strong>exploration system</strong> — called the Default Mode Network — is stranger. Raichle et al. (2001) discovered it when they noticed certain brain regions become <em>more</em> active when subjects are told to do nothing. It consumes approximately <strong>20% of total brain energy at rest</strong>. The brain pays a significant metabolic price to keep this system running when you're staring at the ceiling.</p>
-
-  <p>Why? Because it performs a function the exploitation system cannot: connecting things that have no obvious connection. It holds everything you've ever learned and looks for non-obvious patterns across the whole. It is how worm biology connects to swarm robotics connects to how artificial neural networks forget.</p>
-
-  <p>Jung-Beeman et al. (2004) captured the moment of insight in real time. The "aha moment" is preceded by the brain actively suppressing its focused attention system — quieting the exploitation machinery so the exploration system can make the connection.</p>
-
-  <p>A neuromodulatory system — dopamine, acetylcholine, norepinephrine, serotonin — acts as the meta-controller, switching between the two modes based on what the moment requires. Acetylcholine high: focus and exploit. Default mode active: wander and explore.</p>
-
-  <p>We are studying this system. We are trying to replicate it in machines. We are doing this research inside institutions that eliminated the exploration mode entirely — and then wonder why the breakthroughs have slowed.</p>
+  <!-- NOTE IV -->
+  <div class="note-wrap">
+    <button class="note-toggle" onclick="toggleNote('n4')">
+      <span class="nt-icon" id="ni4">+</span>
+      <span>📎 Note — Why the daydream is not wasted time</span>
+    </button>
+    <div class="note-body" id="n4">
+      The Default Mode Network was initially dismissed as neural noise — an artifact of subtracting task-related activity from brain scans. It took years to recognise it as a distinct, functionally important system. Raichle et al. (2001) established its existence and baseline metabolic significance.<sup class="cite">[6]</sup> Subsequent research linked it to creative cognition, future simulation, social reasoning, and autobiographical memory consolidation.<br><br>
+      The practical implication is uncomfortable: the cognitive state most associated with insight and novel connection-making is precisely the state that modern institutional design treats as unproductive. Protected thinking time, unstructured conversation, and cross-disciplinary wandering are not inefficiencies to be eliminated. They are the substrate of discovery.<br><br>
+      A civilisation should not outsource its exploratory cognition to weekends and chance walks.
+    </div>
+  </div>
 
   <div class="sep">§</div>
 
-  <!-- SECTION 5 -->
-  <p class="sec-eyebrow" id="s5">V.</p>
-  <h2 class="sec-title">The Algorithm Science Is Missing</h2>
+  <!-- SECTION V -->
+  <p class="eyebrow" id="s5">V.</p>
+  <h2 class="sec-h">The Algorithm Science Is Missing</h2>
 
-  <p>Kenneth Stanley and Joel Lehman spent years building robot controllers using evolutionary algorithms. They kept hitting the same wall: the more precisely they defined the goal, the worse the search performed on complex problems. The algorithm climbed confidently toward the objective — and got stuck.</p>
+  <p>Kenneth Stanley and Joel Lehman spent years building controllers for robots using evolutionary algorithms.<sup class="cite">[8,9]</sup> They kept hitting the same wall: the more precisely they defined the goal, the worse the search performed. The algorithm climbed confidently — and got permanently stuck.</p>
+  <p>So they tried something that felt almost irresponsible. They removed the objective entirely.</p>
+  <p>Instead of rewarding progress toward a goal, they rewarded only one thing: <strong>being different from everything explored before</strong>. They called it novelty search. Each candidate solution is scored not by how close it is to the target but by how far it is from an ever-growing archive of everything the search has already visited. The most novel candidate wins. Always.</p>
+  <p>The result was counterintuitive and reproducible. On deceptive landscapes — where the direct path toward the goal leads away from it — <strong>ignoring the objective outperforms chasing it</strong>.</p>
+  <p>The archive is the key. It is the shared memory of where search has been. Without it, the search is a random walk. With it, the search systematically maps the unknown — drawn toward unexplored regions the way water finds the lowest ground.</p>
+  <p>Stepping stones don't look like progress. Vacuum tubes don't look like computers. Cowpox doesn't look like a smallpox vaccine. The worm swarming paper doesn't look like a breakthrough in how machines learn. On deceptive landscapes, the gradient is the enemy. Novelty search ignores the gradient and maps the space.</p>
+  <p><em>The simulation below runs both strategies on the same landscape simultaneously. Watch what happens.</em></p>
 
-  <p>So they tried something radical. They removed the objective entirely.</p>
-
-  <p>Instead of rewarding progress toward a goal, they rewarded only one thing: <strong>being different from everything that had come before</strong>. They called this novelty search. Each candidate solution is scored by its average distance from an ever-growing archive of everything previously explored. The most novel candidate — not the best, not the closest to the goal — wins.</p>
-
-  <div class="callout">
-    <div class="c-label">How Novelty Is Scored</div>
-    <p class="eq">ρ(x) = (1/k) Σᵢ dist(x, μᵢ)</p>
-    <p>ρ(x) is the novelty score of candidate x. μᵢ are its k nearest neighbours in the archive of prior solutions. dist is how different the behaviours are. Only candidates above a novelty threshold enter the archive permanently. The search is rewarded purely for unexplored territory — never for proximity to the goal.</p>
+  <!-- NOVELTY SIMULATION -->
+  <div class="iv">
+    <div class="iv-h"><span>Novelty Search vs Objective Search — Live Simulation</span><span class="iv-dot"></span></div>
+    <div class="iv-b">
+      <div class="sleg">
+        <span class="sli"><span class="sld" style="background:var(--accent)"></span>Objective agent</span>
+        <span class="sli"><span class="sld" style="background:var(--green)"></span>Novelty agent</span>
+        <span class="sli"><span class="sld" style="background:rgba(37,102,64,.35)"></span>Archive (visited)</span>
+        <span class="sli"><span class="sld" style="background:var(--gold)"></span>★ Goal</span>
+        <span class="sli"><span class="sld" style="background:#b87030"></span>▲ False peak</span>
+        <span class="sli"><span class="sld" style="background:#c0b8a8"></span>Barrier</span>
+      </div>
+      <div class="sctrl">
+        <button class="sbtn run" id="sRun" onclick="simToggle()">RUN ▶</button>
+        <button class="sbtn" onclick="simReset()">RESET</button>
+        <div class="ssp">
+          <span>Speed</span>
+          <input type="range" min="1" max="10" value="4" id="sSpd" oninput="document.getElementById('sSpdV').textContent=this.value">
+          <span id="sSpdV">4</span>
+        </div>
+        <span class="sstep" id="sStepLbl">Step: 0</span>
+      </div>
+      <div class="spnls">
+        <div class="spnl">
+          <div class="sph obj">Objective Search — follows gradient toward goal</div>
+          <canvas class="scanv" id="sCanO" height="230"></canvas>
+        </div>
+        <div class="spnl">
+          <div class="sph nov">Novelty Search — maximises distance from archive</div>
+          <canvas class="scanv" id="sCanN" height="230"></canvas>
+        </div>
+      </div>
+      <div class="sstats">
+        <div class="sstat">
+          <div class="sstt" style="color:var(--accent)">Objective Search</div>
+          <div class="srow"><span class="sk">current score</span><span class="sv" id="sOSc">—</span></div>
+          <div class="srow"><span class="sk">trapped at false peak</span><span class="sv" id="sOTr">No</span></div>
+          <div class="srow"><span class="sk">goal reached</span><span class="sv" id="sOG">No</span></div>
+        </div>
+        <div class="sstat">
+          <div class="sstt" style="color:var(--green)">Novelty Search</div>
+          <div class="srow"><span class="sk">archive size</span><span class="sv" id="sNA">0</span></div>
+          <div class="srow"><span class="sk">phase transitions</span><span class="sv" id="sNP">0</span></div>
+          <div class="srow"><span class="sk">goal reached</span><span class="sv" id="sNG">No</span></div>
+        </div>
+      </div>
+      <div class="sins" id="sIns">
+        <strong>Ready.</strong> Press RUN. The objective agent climbs toward the false peak — fast progress, then stuck. The novelty agent builds its archive and explores where it has never been.
+      </div>
+    </div>
   </div>
 
-  <p>The result was counterintuitive and reproducible: <strong>on deceptive landscapes, ignoring the objective outperforms chasing it</strong>. The archive — the shared memory of where search has been — turns out to be more valuable than the gradient toward the goal.</p>
+  <p>Current scientific infrastructure is gradient ascent on a deceptive landscape. Grants reward proximity to stated objectives. Reviews reward advancement of declared agendas. The archive — the record of where the field has searched and failed — does not exist.</p>
+  <p class="pull">We are running gradient ascent with no archive, on a landscape we haven't mapped, toward goals that may be in regions the gradient will never point toward.</p>
 
-  <p>Why does this work? Because complex landscapes are deceptive. The most direct path toward the goal often leads away from it. Stepping stones don't look like progress. Vacuum tubes don't look like computers. Cowpox doesn't look like a smallpox vaccine. The worm swarming paper doesn't look like a continual learning breakthrough.</p>
-
-  <p>Watch the simulation below. Both agents start at the same point facing the same landscape. The goal sits behind a barrier. A false peak sits in the direct path, attracting the objective-driven agent and trapping it. The novelty search agent ignores the goal entirely, builds its archive, and finds the path around.</p>
-
-<!-- NOVELTY SEARCH SIM -->
-<div class="iv">
-  <div class="iv-head">
-    <span>Novelty Search vs Objective Search — Live Simulation</span>
-    <span class="iv-dot"></span>
+  <!-- NOTE V -->
+  <div class="note-wrap">
+    <button class="note-toggle" onclick="toggleNote('n5')">
+      <span class="nt-icon" id="ni5">+</span>
+      <span>📎 Note — Novelty search: the formal definition</span>
+    </button>
+    <div class="note-body" id="n5">
+      The novelty score of a candidate solution x is:<br><br>
+      <span class="neq">ρ(x) = (1/k) Σᵢ dist(x, μᵢ)</span>
+      Where μᵢ are the k nearest neighbours in the archive of prior solutions and dist is behavioural distance — how differently the solutions actually behave, not how different their parameters are. Only candidates above a novelty threshold enter the archive permanently.<br><br>
+      Stanley and Lehman's key finding: this strategy not only avoids local maxima — it often finds the global solution faster than direct objective-based search, precisely because it does not commit to a direction prematurely.<sup class="cite">[8,9]</sup><br><br>
+      Applied to science: the archive is the shared failure log. The novelty scorer is what asks "has anyone tried this before?" The exploration bonus is protected time. The behavioural distance is cross-disciplinary difference. Each component already exists in some form. What doesn't exist is the system that connects them.
+    </div>
   </div>
-  <div class="iv-body">
-
-    <div class="sim-legend">
-      <span class="sim-leg"><span class="sim-leg-dot" style="background:var(--accent)"></span>Objective agent</span>
-      <span class="sim-leg"><span class="sim-leg-dot" style="background:var(--green)"></span>Novelty agent</span>
-      <span class="sim-leg"><span class="sim-leg-dot" style="background:rgba(37,102,64,.35)"></span>Archive (visited)</span>
-      <span class="sim-leg"><span class="sim-leg-dot" style="background:var(--gold)"></span>★ Goal</span>
-      <span class="sim-leg"><span class="sim-leg-dot" style="background:#b87030"></span>▲ False peak</span>
-      <span class="sim-leg"><span class="sim-leg-dot" style="background:#c0b8a8"></span>Barrier</span>
-    </div>
-
-    <div class="sim-ctrl">
-      <button class="sbtn run" id="simRun" onclick="simToggle()">RUN ▶</button>
-      <button class="sbtn" onclick="simReset()">RESET</button>
-      <div class="spd-wrap">
-        <span>Speed</span>
-        <input type="range" min="1" max="10" value="4" id="simSpd"
-          oninput="document.getElementById('simSpdV').textContent=this.value">
-        <span id="simSpdV">4</span>
-      </div>
-      <span class="sim-step-lbl" id="simStepLbl">Step: 0</span>
-    </div>
-
-    <div class="sim-panels">
-      <div class="sim-panel">
-        <div class="sim-ph obj">Objective Search — follows gradient toward goal</div>
-        <canvas class="sim-canvas" id="simCO" height="230"></canvas>
-      </div>
-      <div class="sim-panel">
-        <div class="sim-ph nov">Novelty Search — maximises distance from archive</div>
-        <canvas class="sim-canvas" id="simCN" height="230"></canvas>
-      </div>
-    </div>
-
-    <div class="sim-stats">
-      <div class="sim-stat">
-        <div class="sim-stat-title" style="color:var(--accent)">Objective Search</div>
-        <div class="sim-row"><span class="sk">current score</span><span class="sv" id="sOSc">—</span></div>
-        <div class="sim-row"><span class="sk">trapped at false peak</span><span class="sv" id="sOTr">No</span></div>
-        <div class="sim-row"><span class="sk">goal reached</span><span class="sv" id="sOG">No</span></div>
-      </div>
-      <div class="sim-stat">
-        <div class="sim-stat-title" style="color:var(--green)">Novelty Search</div>
-        <div class="sim-row"><span class="sk">archive size</span><span class="sv" id="sNA">0</span></div>
-        <div class="sim-row"><span class="sk">phase transitions</span><span class="sv" id="sNP">0</span></div>
-        <div class="sim-row"><span class="sk">goal reached</span><span class="sv" id="sNG">No</span></div>
-      </div>
-    </div>
-
-    <div class="sim-insight" id="simIns">
-      <strong>Ready.</strong> Press RUN. The objective agent climbs toward the false peak — fast progress, then stuck. The novelty agent builds its archive and explores where it has never been.
-    </div>
-
-  </div>
-</div>
-
-  <p>Current scientific infrastructure is gradient ascent on a deceptive landscape. Grant committees reward proximity to stated objectives. Reviewers reward advancement of declared agendas. The archive — the record of where the field has searched and failed — doesn't exist. Negative results are unpublishable. Cross-disciplinary combinations are unfundable.</p>
-
-  <p class="pull">We are running gradient ascent with no archive, on a landscape we haven't mapped, toward goals that are almost certainly in regions the gradient will never point toward.</p>
 
   <div class="sep">§</div>
 
-  <!-- SECTION 6 -->
-  <p class="sec-eyebrow" id="s6">VI.</p>
-  <h2 class="sec-title">The Experiment</h2>
+  <!-- SECTION VI -->
+  <p class="eyebrow" id="s6">VI.</p>
+  <h2 class="sec-h">The Experiment</h2>
 
-  <p>Theory is cheap. Here is what to actually do.</p>
+  <p>Theory without a test is just a preference. Here is what to actually build.</p>
 
-  <p>Select <strong>50 early-career researchers</strong> across neuroscience, physics, machine learning, and adjacent fields. Randomly assign to two cohorts.</p>
+  <p><strong>The People.</strong> Select 50 early-career researchers across neuroscience, physics, machine learning, materials science, and adjacent fields. Early-career matters: they have not yet calcified around a single paradigm, and the experiment's outcomes are most visible over the multi-decade arc of a career that is just beginning. Randomly assign to two cohorts of 25.</p>
 
-  <p><strong>Control cohort:</strong> Standard grant expectations — milestones, quarterly reports, conventional publication outputs, specialist evaluation.</p>
+  <p><strong>Control cohort:</strong> Standard grant expectations — milestones, quarterly reports, specialist evaluation, conventional publication outputs.</p>
 
   <p><strong>Search cohort:</strong> Three structural modifications only.</p>
 
-  <p><strong>40% protected exploration time.</strong> No deliverables. No hypothesis required in advance. The only requirement: when something clicks — when the daydream produces a connection — log the cognitive state that produced it. Not the idea. The state. Were you reading? Walking? Connecting unrelated fields? The brain pays 20% of its energy budget to run its exploration system even at rest. We propose paying 40% of researcher time to protect the equivalent.</p>
+  <p><strong>Protected exploration time — 40% of funded hours.</strong> No deliverables. No hypothesis required in advance. The only requirement: when something clicks, log the cognitive state that produced it. Not the idea — the state. Were you reading? Walking? Connecting unrelated fields? The brain pays 20% of its energy budget to run its exploration system even at rest. We propose paying 40% of researcher time to protect the equivalent.</p>
 
-  <p><strong>Shared failure intelligence.</strong> Every experiment — successful or failed — logged in a structured, AI-queryable database. What was tried, what failed, what it rules out, what to try next. My 250 hours of repeated failed experiments become visible. The next researcher finds the log before repeating the same work.</p>
+  <p><strong>Shared failure intelligence.</strong> Every experiment — successful or failed — logged in a structured, AI-queryable database. Hypothesis, method, result, what it rules out, what to try next. This is the archive that novelty search requires. My 250 hours of repeated failed experiments become visible. The next researcher finds the log before repeating the same work.</p>
 
-  <p><strong>Monthly cross-disciplinary salons with novelty scoring.</strong> Each researcher presents their most surprising anomaly — not their best result, but the thing that doesn't fit. An LLM-assisted novelty scorer measures distance from the archive and surfaces the highest-novelty combinations for structured discussion.</p>
+  <p><strong>Monthly cross-disciplinary salons with novelty scoring.</strong> Each researcher presents their most surprising anomaly — not their best result, but the thing that doesn't fit. An LLM-assisted novelty scorer measures distance from the archive and surfaces the highest-novelty combinations for structured discussion. The salon's job is not to evaluate — it is to collide.</p>
 
-  <p>Measure over 24 months: how many researchers produce genuinely novel framings that exit their current optimisation game — assessed by independent reviewers blind to cohort assignment. How often failure logs prevent repeated experiments. Whether breakthroughs trace back through the daydream logs. Plus standard metrics: papers, patents, collaborations, follow-on funding.</p>
+  <p><strong>Why this has worked before.</strong> Bell Labs (1925–1984) combined deep technical specialisation with deliberate physical proximity across disciplines — mathematicians, physicists, chemists, and engineers sharing corridors and problems. The transistor, information theory, the laser, Unix — all emerged from this collision structure.<sup class="cite">[10]</sup> DARPA has funded high-variance research programs since 1958 with explicit tolerance for failure — program managers given a mission, three to five years, and no publication requirements.<sup class="cite">[11]</sup> Xerox PARC generated the graphical user interface, ethernet, and object-oriented programming — none of which required conventional publication metrics to begin.<sup class="cite">[12]</sup> Each is an existence proof, not a blueprint. But each shares a common structure: elite talent, protected time, cross-disciplinary collision, and tolerance for search that doesn't immediately look like progress.</p>
 
-  <p>The experiment can fail. Researchers may not adopt the format. The failure database may be too heterogeneous. The novelty scorer may surface useless combinations. These are real failure modes — and each one tells us something important about what the actual solution needs to look like.</p>
+  <p><strong>The feedback loop.</strong> Measure over 24 months: how many researchers produce genuinely novel framings that exit their current optimisation game — assessed by independent reviewers blind to cohort assignment. How often does the shared failure database prevent repeated experiments. Whether breakthroughs can be traced back through the exploration logs. Plus standard outputs: papers, tools, collaborations, follow-on grants.</p>
 
+  <p><strong>What makes it scale.</strong> Three conditions transfer this beyond a pilot. The archive must be a public good — open infrastructure, closer in spirit to arXiv than to a proprietary database. Novelty scoring must be field-sensitive — what counts as behaviorally novel in neuroscience differs from what counts as novel in materials science, a solvable problem given current LLM capabilities. And evaluation must reward process, not just output — if search cohort researchers are ultimately judged by the same metrics as the control cohort, the structural modification will be undermined from within.</p>
+
+  <p><strong>What could make it fail.</strong> Researchers may not adopt the exploration logging format. The failure database may be too heterogeneous for LLM-assisted reasoning. The monthly salons may calcify into performance rather than genuine collision. The 40% exploration time may produce anxiety rather than insight. These are real failure modes. Each one would tell us something important about what the actual solution needs to look like.</p>
   <p class="pull">That is how science should study science.</p>
-
-  <p>If no gains appear after 24 months, learn and stop. If gains appear, scale. Publish everything — the failures included. Run the experiment on the experiment.</p>
+  <p>If no measurable gains appear after 24 months, learn from it and stop. If gains appear, scale the components that worked independently across fields. Publish everything — including the failures. Run the experiment on the experiment.</p>
 
   <div class="sep">§</div>
 
-  <p>We often imagine scientific progress as a straight line powered by more money, more talent, more compute. Add inputs, get outputs.</p>
+  <!-- SECTION VII -->
+  <p class="eyebrow" id="s7">VII.</p>
+  <h2 class="sec-h">Three Objections Worth Taking Seriously</h2>
 
-  <p>But history suggests a different engine: intelligent constraints, asymmetric search, and freedom to explore strange terrain.</p>
+  <p><strong>Most speculative ideas fail.</strong> Correct. But exploration should be evaluated as a portfolio, not by the success rate of any single attempt. A venture fund that only backed certain winners would never have funded the internet. The question is not whether individual speculative bets fail — they will — but whether the portfolio generates returns that narrow search cannot.</p>
 
-  <p>The brain figured this out 500 million years ago. It built two systems — exploitation and exploration — and a chemical switching mechanism between them. It pays 20% of its energy budget to keep the exploration system running even at rest. It protects the daydream because the daydream is doing real work.</p>
+  <p><strong>Incremental work is essential.</strong> Absolutely. Replication, refinement, and careful engineering are the foundation of reliable knowledge. The problem is not exploitation. It is monoculture — when an entire field converges on the same hill, the same methods, the same metrics, without anyone assigned to look elsewhere.</p>
 
-  <p>Modern science has built powerful machinery for productivity. It has built almost no machinery for exploration.</p>
+  <p><strong>Exploration can be gamed.</strong> So can publication metrics. So can citation counts. So can grant applications. Every evaluation system has failure modes. The solution is better design, not pretending current systems are neutral or complete.</p>
 
+  <div class="sep">§</div>
+
+  <p>Modern science has built powerful machinery for productivity. It can specialise, refine, benchmark, and optimise with extraordinary competence.</p>
+  <p>What it has built less deliberately is machinery for exploration.</p>
   <p>I found the insight that drives my research in a daydream. I was not being paid. No milestone depended on it.</p>
-
   <p class="pull">It was the most productive hour of my last five months.</p>
-
-  <p>We should stop building better THAAD missiles.</p>
-
-  <p><strong>The next breakthrough may not require more force. It may require escaping the hill we already know how to climb.</strong></p>
+  <p>The next great scientific instrument may not be another microscope, collider, or model.</p>
+  <p><strong>It may be a better search architecture for discovery itself.</strong></p>
 
   <!-- REFERENCES -->
   <div class="refs">
-    <div class="refs-lbl">References</div>
+    <div class="refs-h">References</div>
     <ol>
-      <li>Bloom, N. et al. (2020). Are ideas getting harder to find? <em>American Economic Review</em>, 110(4), 1104–1144.</li>
-      <li>Raichle, M.E. et al. (2001). A default mode of brain function. <em>PNAS</em>, 98(2), 676–682.</li>
-      <li>Jung-Beeman, M. et al. (2004). Neural activity in people solving verbal problems with insight. <em>PLOS Biology</em>, 2(4), e97.</li>
-      <li>Stanley, K.O. & Lehman, J. (2015). <em>Why Greatness Cannot Be Planned.</em> Springer.</li>
-      <li>Stanley, K.O. & Lehman, J. (2011). Abandoning objectives: Evolution through novelty alone. <em>Evolutionary Computation</em>, 19(2), 189–223.</li>
-      <li>Gittins, J.C. (1979). Bandit processes and dynamic allocation indices. <em>Journal of the Royal Statistical Society</em>, 41(2), 148–177.</li>
-      <li>DeepSeek-AI (2024). DeepSeek-V3 Technical Report. arXiv:2412.19437.</li>
+      <li id="ref1">Strogatz, S.H. (2003). <em>Sync: The Emerging Science of Spontaneous Order.</em> Hyperion. [On phase transitions and self-organisation across complex systems.]</li>
+      <li id="ref2">DeepSeek-AI (2024). DeepSeek-V3 Technical Report. arXiv:2412.19437. <a href="https://arxiv.org/abs/2412.19437" target="_blank">arxiv.org/abs/2412.19437</a></li>
+      <li id="ref3">Bloom, N., Jones, C.I., Van Reenen, J. & Webb, M. (2020). Are ideas getting harder to find? <em>American Economic Review,</em> 110(4), 1104–1144. <a href="https://doi.org/10.1257/aer.20180338" target="_blank">doi:10.1257/aer.20180338</a></li>
+      <li id="ref4">Gittins, J.C. (1979). Bandit processes and dynamic allocation indices. <em>Journal of the Royal Statistical Society: Series B,</em> 41(2), 148–177.</li>
+      <li id="ref5">Wuchty, S., Jones, B.F. & Uzzi, B. (2007). The increasing dominance of teams in production of knowledge. <em>Science,</em> 316(5827), 1036–1039. <a href="https://doi.org/10.1126/science.1136099" target="_blank">doi:10.1126/science.1136099</a></li>
+      <li id="ref6">Raichle, M.E., MacLeod, A.M., Snyder, A.Z., Powers, W.J., Gusnard, D.A. & Shulman, G.L. (2001). A default mode of brain function. <em>Proceedings of the National Academy of Sciences,</em> 98(2), 676–682. <a href="https://doi.org/10.1073/pnas.98.2.676" target="_blank">doi:10.1073/pnas.98.2.676</a></li>
+      <li id="ref7">Jung-Beeman, M., Bowden, E.M., Haberman, J., Frymiare, J.L., Arambel-Liu, S., Greenblatt, R., Reber, P.J. & Kounios, J. (2004). Neural activity when people solve verbal problems with insight. <em>PLOS Biology,</em> 2(4), e97. <a href="https://doi.org/10.1371/journal.pbio.0020097" target="_blank">doi:10.1371/journal.pbio.0020097</a></li>
+      <li id="ref8">Stanley, K.O. & Lehman, J. (2015). <em>Why Greatness Cannot Be Planned: The Myth of the Objective.</em> Springer.</li>
+      <li id="ref9">Stanley, K.O. & Lehman, J. (2011). Abandoning objectives: Evolution through the search for novelty alone. <em>Evolutionary Computation,</em> 19(2), 189–223. <a href="https://doi.org/10.1162/EVCO_a_00025" target="_blank">doi:10.1162/EVCO_a_00025</a></li>
+      <li id="ref10">Gertner, J. (2012). <em>The Idea Factory: Bell Labs and the Great Age of American Innovation.</em> Penguin Press.</li>
+      <li id="ref11">Weinberger, S. (2017). <em>The Imagineers of War: The Untold Story of DARPA, the Pentagon Agency That Changed the World.</em> Knopf.</li>
+      <li id="ref12">Markoff, J. (2005). <em>What the Dormouse Said: How the Sixties Counterculture Shaped the Personal Computer Industry.</em> Viking.</li>
     </ol>
   </div>
 
 </div><!-- end .prose -->
 
-<!-- FOOTER -->
-<div class="essay-foot">
-  <p>The Thinking Archive · Essay No. 01 · April 2026</p>
-  <a href="../../index.html" class="back-link">← Back to Archive</a>
+<div class="foot">
+  <p>The Thinking Archive · Essay No. 01 · April 2026 · <a href="https://aidude.github.io/thinking_archive" style="color:var(--muted)">aidude.github.io/thinking_archive</a></p>
+  <a href="../../index.html" class="back">← Back to Archive</a>
 </div>
 
-<!-- ═══════════════════════════════════════════
-     SCRIPTS
-═══════════════════════════════════════════ -->
+<!-- ═══════ SCRIPTS ═══════ -->
 <script>
-/* ── helpers ── */
-const mono = "'DM Mono', monospace";
-const gridC = 'rgba(180,175,165,0.22)';
-const textC = '#6b6560';
-const accentC = '#b83a18';
-const greenC  = '#256640';
-const blueC   = '#1d5c9e';
-const goldC   = '#b89020';
+/* ── note toggles ── */
+function toggleNote(id){
+  const body=document.getElementById(id);
+  const icon=document.getElementById('ni'+id.replace('n',''));
+  const open=body.classList.toggle('open');
+  icon.textContent=open?'−':'+';
+}
 
-/* ════════════════════════════════════
-   1. COST CHART
-════════════════════════════════════ */
-(function initCostChart() {
-  const cv = document.getElementById('costChart');
-  new Chart(cv.getContext('2d'), {
-    type: 'bar',
-    data: {
-      labels: ['Laser defence', 'Iranian drone', 'THAAD interceptor'],
-      datasets: [{
-        data: [0.5, 5000, 12000000],
-        backgroundColor: [greenC, blueC, accentC],
-        borderColor:     ['#1a4d2e','#143f70','#8c2910'],
-        borderWidth: 1, borderRadius: 3,
+/* ── shared ── */
+const MONO="'DM Mono',monospace";
+const GC='rgba(180,175,165,0.22)';
+const TC='#6b6560';
+const AC='#b83a18';
+const GRC='#256640';
+const BLC='#1d5c9e';
+const GLD='#b89020';
+
+/* ════════════════════════
+   COST CHART
+════════════════════════ */
+(function(){
+  new Chart(document.getElementById('costChart').getContext('2d'),{
+    type:'bar',
+    data:{
+      labels:['Laser defence','Iranian drone','THAAD interceptor'],
+      datasets:[{
+        data:[0.5,5000,12000000],
+        backgroundColor:[GRC,BLC,AC],
+        borderColor:['#1a4d2e','#143f70','#8c2910'],
+        borderWidth:1,borderRadius:3
       }]
     },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#1a1815',
-          titleColor: '#f0ece2',
-          bodyColor: '#9a9490',
-          padding: 10,
-          callbacks: {
-            label: c => {
-              const v = c.raw;
-              if (v < 1) return '  Less than $1';
-              if (v < 10000) return '  $' + v.toLocaleString();
-              if (v < 1e6)  return '  $' + (v/1000).toFixed(0) + ',000';
-              return '  $' + (v/1e6).toFixed(0) + ',000,000';
-            }
-          }
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'#1a1815',titleColor:'#f0ece2',bodyColor:'#9a9490',padding:10,
+          callbacks:{label:c=>{
+            const v=c.raw;
+            if(v<1) return '  Less than $1';
+            if(v<10000) return '  $'+v.toLocaleString();
+            if(v<1e6) return '  $'+(v/1000).toFixed(0)+',000';
+            return '  $'+(v/1e6).toFixed(0)+',000,000';
+          }}
         }
       },
-      scales: {
-        x: {
-          grid: { color: gridC },
-          ticks: { color: textC, font: { size: 11, family: mono }, maxRotation: 0, padding: 6 }
-        },
-        y: {
-          type: 'logarithmic', min: 0.1, max: 1e8,
-          grid: { color: gridC },
-          title: {
-            display: true,
-            text: 'Cost per unit — log₁₀ scale (USD)',
-            color: textC, font: { size: 10, family: mono },
-            padding: { bottom: 8 }
-          },
-          ticks: {
-            color: textC, font: { size: 10, family: mono }, padding: 6,
-            callback: v => {
-              const m = {
-                0.1:'$0.10', 1:'$1', 10:'$10', 100:'$100',
-                1000:'$1K', 10000:'$10K', 100000:'$100K',
-                1000000:'$1M', 10000000:'$10M', 100000000:'$100M'
-              };
-              return m[v] !== undefined ? m[v] : '';
+      scales:{
+        x:{grid:{color:GC},ticks:{color:TC,font:{size:11,family:MONO},maxRotation:0,padding:6}},
+        y:{
+          type:'logarithmic',min:0.1,max:1e8,
+          grid:{color:GC},
+          title:{display:true,text:'Cost per unit — log₁₀ scale (USD)',color:TC,font:{size:10,family:MONO},padding:{bottom:8}},
+          ticks:{color:TC,font:{size:10,family:MONO},padding:6,
+            callback:v=>{
+              const m={0.1:'$0.10',1:'$1',10:'$10',100:'$100',1000:'$1K',10000:'$10K',100000:'$100K',1000000:'$1M',10000000:'$10M',100000000:'$100M'};
+              return m[v]!==undefined?m[v]:'';
             }
           }
         }
@@ -789,16 +724,16 @@ const goldC   = '#b89020';
   });
 })();
 
-/* ════════════════════════════════════
-   2. PRODUCTIVITY CHART
-════════════════════════════════════ */
-const PY = [1930,1940,1950,1960,1970,1980,1990,2000,2010,2020];
-const PV = [1,1.4,2.1,3.2,4.8,6.9,9.5,12.1,15.3,18.2];
-const PD = [
+/* ════════════════════════
+   PRODUCTIVITY CHART
+════════════════════════ */
+const PY=[1930,1940,1950,1960,1970,1980,1990,2000,2010,2020];
+const PV=[1,1.4,2.1,3.2,4.8,6.9,9.5,12.1,15.3,18.2];
+const PD=[
   '1930: Baseline — 1 researcher-unit produces 1 unit of progress.',
   '1940: <span>1.4×</span> researchers needed for the same output.',
   '1950: <span>2.1×</span> researchers. Diminishing returns emerging.',
-  '1960: <span>3.2×</span> researchers. Post-war boom, falling efficiency.',
+  '1960: <span>3.2×</span> researchers. Efficiency falling despite output rising.',
   '1970: <span>4.8×</span> researchers. The pattern is unmistakable.',
   '1980: <span>6.9×</span> researchers. Science is getting harder to do.',
   '1990: <span>9.5×</span> researchers. Publication rates soar, productivity falls.',
@@ -807,195 +742,174 @@ const PD = [
   '2020: <span>~18×</span> more researchers needed to match 1930\'s rate of progress.'
 ];
 
-function drawProd(idx) {
-  const cv = document.getElementById('prodChart');
-  const wrap = cv.parentElement;
-  const dpr = window.devicePixelRatio || 1;
-  const W = Math.max(wrap.clientWidth || 300, 280);
-  const H = 185;
-  cv.style.width = W + 'px'; cv.style.height = H + 'px';
-  cv.width = W * dpr; cv.height = H * dpr;
-  const ctx = cv.getContext('2d');
-  ctx.scale(dpr, dpr);
-
-  const pad = { l:44, r:14, t:14, b:28 };
-  const cw = W - pad.l - pad.r, ch = H - pad.t - pad.b;
-  const maxY = 20, pts = idx + 1;
-
-  ctx.clearRect(0, 0, W, H);
-
+function drawProd(idx){
+  const cv=document.getElementById('prodChart');
+  const wrap=cv.parentElement;
+  const dpr=window.devicePixelRatio||1;
+  const W=Math.max(wrap.clientWidth||280,280);
+  const H=185;
+  cv.style.width=W+'px';cv.style.height=H+'px';
+  cv.width=W*dpr;cv.height=H*dpr;
+  const ctx=cv.getContext('2d');ctx.scale(dpr,dpr);
+  const pad={l:44,r:14,t:14,b:28};
+  const cw=W-pad.l-pad.r,ch=H-pad.t-pad.b;
+  const maxY=20,pts=idx+1;
+  ctx.clearRect(0,0,W,H);
   // grid
-  [5, 10, 15, 20].forEach(v => {
-    const y = pad.t + (1 - v/maxY) * ch;
-    ctx.beginPath(); ctx.strokeStyle = gridC; ctx.lineWidth = .5;
-    ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + cw, y); ctx.stroke();
-    ctx.fillStyle = textC; ctx.font = `9px ${mono}`;
-    ctx.textAlign = 'right'; ctx.fillText(v + '×', pad.l - 4, y + 3);
+  [5,10,15,20].forEach(v=>{
+    const y=pad.t+(1-v/maxY)*ch;
+    ctx.beginPath();ctx.strokeStyle=GC;ctx.lineWidth=.5;
+    ctx.moveTo(pad.l,y);ctx.lineTo(pad.l+cw,y);ctx.stroke();
+    ctx.fillStyle=TC;ctx.font=`9px ${MONO}`;ctx.textAlign='right';
+    ctx.fillText(v+'×',pad.l-4,y+3);
   });
-
-  // x axis
-  ctx.beginPath(); ctx.strokeStyle = gridC; ctx.lineWidth = .5;
-  ctx.moveTo(pad.l, pad.t + ch); ctx.lineTo(pad.l + cw, pad.t + ch); ctx.stroke();
-
+  ctx.beginPath();ctx.strokeStyle=GC;ctx.lineWidth=.5;
+  ctx.moveTo(pad.l,pad.t+ch);ctx.lineTo(pad.l+cw,pad.t+ch);ctx.stroke();
   // fill
   ctx.beginPath();
-  for (let i = 0; i < pts; i++) {
-    const x = pad.l + (i / (PY.length-1)) * cw;
-    const y = pad.t + (1 - PV[i]/maxY) * ch;
-    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  for(let i=0;i<pts;i++){
+    const x=pad.l+(i/(PY.length-1))*cw;
+    const y=pad.t+(1-PV[i]/maxY)*ch;
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
   }
-  const lx = pad.l + ((pts-1) / (PY.length-1)) * cw;
-  ctx.lineTo(lx, pad.t + ch); ctx.lineTo(pad.l, pad.t + ch); ctx.closePath();
-  ctx.fillStyle = 'rgba(184,58,24,0.07)'; ctx.fill();
-
+  const lx=pad.l+((pts-1)/(PY.length-1))*cw;
+  ctx.lineTo(lx,pad.t+ch);ctx.lineTo(pad.l,pad.t+ch);ctx.closePath();
+  ctx.fillStyle='rgba(184,58,24,0.07)';ctx.fill();
   // line
-  ctx.beginPath(); ctx.strokeStyle = accentC; ctx.lineWidth = 2; ctx.lineJoin = 'round';
-  for (let i = 0; i < pts; i++) {
-    const x = pad.l + (i / (PY.length-1)) * cw;
-    const y = pad.t + (1 - PV[i]/maxY) * ch;
-    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  ctx.beginPath();ctx.strokeStyle=AC;ctx.lineWidth=2;ctx.lineJoin='round';
+  for(let i=0;i<pts;i++){
+    const x=pad.l+(i/(PY.length-1))*cw;
+    const y=pad.t+(1-PV[i]/maxY)*ch;
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
   }
   ctx.stroke();
-
-  // dots + year labels
-  for (let i = 0; i < pts; i++) {
-    const x = pad.l + (i / (PY.length-1)) * cw;
-    const y = pad.t + (1 - PV[i]/maxY) * ch;
-    ctx.beginPath(); ctx.arc(x, y, i === pts-1 ? 5 : 3, 0, Math.PI*2);
-    ctx.fillStyle = accentC; ctx.fill();
-    if (i % 2 === 0 || i === pts-1) {
-      ctx.fillStyle = textC; ctx.font = `9px ${mono}`;
-      ctx.textAlign = 'center'; ctx.fillText(PY[i], x, H - 3);
+  // dots + labels
+  for(let i=0;i<pts;i++){
+    const x=pad.l+(i/(PY.length-1))*cw;
+    const y=pad.t+(1-PV[i]/maxY)*ch;
+    ctx.beginPath();ctx.arc(x,y,i===pts-1?5:3,0,Math.PI*2);
+    ctx.fillStyle=AC;ctx.fill();
+    if(i%2===0||i===pts-1){
+      ctx.fillStyle=TC;ctx.font=`9px ${MONO}`;ctx.textAlign='center';
+      ctx.fillText(PY[i],x,H-3);
     }
   }
-
   // y label
-  ctx.save(); ctx.translate(10, pad.t + ch/2); ctx.rotate(-Math.PI/2);
-  ctx.fillStyle = textC; ctx.font = `9px ${mono}`; ctx.textAlign = 'center';
-  ctx.fillText('researchers needed (×)', 0, 0); ctx.restore();
+  ctx.save();ctx.translate(10,pad.t+ch/2);ctx.rotate(-Math.PI/2);
+  ctx.fillStyle=TC;ctx.font=`9px ${MONO}`;ctx.textAlign='center';
+  ctx.fillText('researchers needed (×)',0,0);ctx.restore();
 }
 
-document.getElementById('prodSlider').addEventListener('input', function() {
-  const i = parseInt(this.value);
-  document.getElementById('prodYear').textContent = PY[i];
-  document.getElementById('prodNote').innerHTML = PD[i];
-  requestAnimationFrame(() => drawProd(i));
+document.getElementById('ps').addEventListener('input',function(){
+  const i=parseInt(this.value);
+  document.getElementById('pyr').textContent=PY[i];
+  document.getElementById('pn').innerHTML=PD[i];
+  requestAnimationFrame(()=>drawProd(i));
 });
 
-/* ════════════════════════════════════
-   3. NOVELTY SEARCH SIMULATION
-════════════════════════════════════ */
-const S = {
-  GOAL:  { x:.82, y:.80 },
-  FPEAK: { x:.38, y:.60 },
-  START: { x:.08, y:.10 },
-  BAR:   { x1:.57, x2:.67, y1:.28, y2:.82 },
+/* ════════════════════════
+   NOVELTY SIMULATION
+════════════════════════ */
+const S={
+  GOAL:{x:.82,y:.80},FPEAK:{x:.38,y:.60},START:{x:.08,y:.10},
+  BAR:{x1:.57,x2:.67,y1:.28,y2:.82}
 };
+let simRun=false,simRaf=null,simStep=0;
+let oPos,oTrail,oTrapC,oTrap,oGoal;
+let nPos,nTrail,nArch,nPhase,nGoal;
 
-let simRunning=false, simRaf=null, simStep=0;
-let oPos, oTrail, oTrapC, oTrap, oGoal;
-let nPos, nTrail, nArch, nPhase, nGoal;
-
-function sc(x,y) {
-  const fp = .8*Math.exp(-((x-S.FPEAK.x)**2+(y-S.FPEAK.y)**2)/.012);
-  const g  = 1.0*Math.exp(-((x-S.GOAL.x)**2 +(y-S.GOAL.y)**2) /.014);
-  return fp+g+.08*x+.08*y;
+function sc(x,y){
+  return .8*Math.exp(-((x-S.FPEAK.x)**2+(y-S.FPEAK.y)**2)/.012)
+       +1.0*Math.exp(-((x-S.GOAL.x)**2+(y-S.GOAL.y)**2)/.014)
+       +.08*x+.08*y;
 }
-function gr(x,y) {
+function gr(x,y){
   const h=.006;
-  return { dx:(sc(x+h,y)-sc(x-h,y))/(2*h), dy:(sc(x,y+h)-sc(x,y-h))/(2*h) };
+  return{dx:(sc(x+h,y)-sc(x-h,y))/(2*h),dy:(sc(x,y+h)-sc(x,y-h))/(2*h)};
 }
-function inW(x,y) { return x>S.BAR.x1&&x<S.BAR.x2&&y>S.BAR.y1&&y<S.BAR.y2; }
-function cl(v,lo,hi) { return Math.max(lo,Math.min(hi,v)); }
-function dst(a,b) { return Math.sqrt((a.x-b.x)**2+(a.y-b.y)**2); }
+function inW(x,y){return x>S.BAR.x1&&x<S.BAR.x2&&y>S.BAR.y1&&y<S.BAR.y2;}
+function cl(v,lo,hi){return Math.max(lo,Math.min(hi,v));}
+function dst(a,b){return Math.sqrt((a.x-b.x)**2+(a.y-b.y)**2);}
 
-function simReset() {
-  simRunning=false; if(simRaf) cancelAnimationFrame(simRaf); simRaf=null; simStep=0;
-  document.getElementById('simRun').textContent='RUN ▶';
-  oPos={...S.START}; oTrail=[{...S.START}]; oTrapC=0; oTrap=false; oGoal=false;
-  nPos={...S.START}; nTrail=[{...S.START}]; nArch=[{...S.START}]; nPhase=0; nGoal=false;
-  simStats(); simDraw();
-  const el=document.getElementById('simIns');
-  el.className='sim-insight';
+function simReset(){
+  simRun=false;if(simRaf)cancelAnimationFrame(simRaf);simRaf=null;simStep=0;
+  document.getElementById('sRun').textContent='RUN ▶';
+  oPos={...S.START};oTrail=[{...S.START}];oTrapC=0;oTrap=false;oGoal=false;
+  nPos={...S.START};nTrail=[{...S.START}];nArch=[{...S.START}];nPhase=0;nGoal=false;
+  simStats();simDraw();
+  const el=document.getElementById('sIns');
+  el.className='sins';
   el.innerHTML='<strong>Ready.</strong> Press RUN. The objective agent climbs toward the false peak — fast progress, then stuck. The novelty agent builds its archive and explores where it has never been.';
 }
 
-function simStepO() {
-  if(oGoal) return;
-  const g=gr(oPos.x,oPos.y), mag=Math.sqrt(g.dx**2+g.dy**2)+1e-9;
-  let nx=cl(oPos.x+(g.dx/mag)*.013+(Math.random()-.5)*.004,0.02,0.97);
-  let ny=cl(oPos.y+(g.dy/mag)*.013+(Math.random()-.5)*.004,0.02,0.97);
+function simStepO(){
+  if(oGoal)return;
+  const g=gr(oPos.x,oPos.y),mag=Math.sqrt(g.dx**2+g.dy**2)+1e-9;
+  let nx=cl(oPos.x+(g.dx/mag)*.013+(Math.random()-.5)*.004,.02,.97);
+  let ny=cl(oPos.y+(g.dy/mag)*.013+(Math.random()-.5)*.004,.02,.97);
   if(inW(nx,ny)){oTrapC++;}else{oPos.x=nx;oPos.y=ny;oTrapC=Math.max(0,oTrapC-1);}
   oTrap=oTrapC>18;
-  oTrail.push({x:oPos.x,y:oPos.y}); if(oTrail.length>350) oTrail.shift();
-  if(dst(oPos,S.GOAL)<.065) oGoal=true;
+  oTrail.push({x:oPos.x,y:oPos.y});if(oTrail.length>350)oTrail.shift();
+  if(dst(oPos,S.GOAL)<.065)oGoal=true;
 }
 
-function nov(pt) {
-  if(nArch.length<2) return 1;
+function nov(pt){
+  if(nArch.length<2)return 1;
   const k=Math.min(7,nArch.length);
   return nArch.map(a=>dst(pt,a)).sort((a,b)=>a-b).slice(0,k).reduce((s,d)=>s+d,0)/k;
 }
 
-function simStepN() {
-  if(nGoal) return;
+function simStepN(){
+  if(nGoal)return;
   const cands=[];
   for(let i=0;i<16;i++){
-    const a=Math.random()*Math.PI*2, r=.018+Math.random()*.045;
+    const a=Math.random()*Math.PI*2,r=.018+Math.random()*.045;
     const cx=cl(nPos.x+Math.cos(a)*r,.02,.97);
     const cy=cl(nPos.y+Math.sin(a)*r,.02,.97);
-    if(inW(cx,cy)) continue;
+    if(inW(cx,cy))continue;
     cands.push({x:cx,y:cy,nv:nov({x:cx,y:cy})});
   }
-  if(!cands.length) return;
+  if(!cands.length)return;
   cands.sort((a,b)=>b.nv-a.nv);
-  const best=cands[0], prevX=nPos.x;
-  nPos.x=best.x; nPos.y=best.y;
-  nTrail.push({x:nPos.x,y:nPos.y}); if(nTrail.length>400) nTrail.shift();
-  if(best.nv>.035){nArch.push({x:nPos.x,y:nPos.y}); if(nArch.length>200) nArch.shift();}
-  if(prevX<S.BAR.x2+.04&&nPos.x>S.BAR.x2+.04&&nPos.y>.5) nPhase++;
-  if(dst(nPos,S.GOAL)<.07) nGoal=true;
+  const best=cands[0],prevX=nPos.x;
+  nPos.x=best.x;nPos.y=best.y;
+  nTrail.push({x:nPos.x,y:nPos.y});if(nTrail.length>400)nTrail.shift();
+  if(best.nv>.035){nArch.push({x:nPos.x,y:nPos.y});if(nArch.length>200)nArch.shift();}
+  if(prevX<S.BAR.x2+.04&&nPos.x>S.BAR.x2+.04&&nPos.y>.5)nPhase++;
+  if(dst(nPos,S.GOAL)<.07)nGoal=true;
 }
 
-function simPanel(cvId, pos, trail, arch, isN, reached) {
+function simPanel(cvId,pos,trail,arch,isN,reached){
   const cv=document.getElementById(cvId);
   const dpr=window.devicePixelRatio||1;
-  const DW=Math.max(cv.parentElement.clientWidth-2,150);
+  const DW=Math.max(cv.parentElement.clientWidth-2,140);
   const DH=230;
-  cv.style.width=DW+'px'; cv.style.height=DH+'px';
-  cv.width=DW*dpr; cv.height=DH*dpr;
-  const ctx=cv.getContext('2d'); ctx.scale(dpr,dpr);
+  cv.style.width=DW+'px';cv.style.height=DH+'px';
+  cv.width=DW*dpr;cv.height=DH*dpr;
+  const ctx=cv.getContext('2d');ctx.scale(dpr,dpr);
   const W=DW,H=DH;
-  const px=x=>x*W, py=y=>(1-y)*H;
-
-  // bg
-  ctx.fillStyle='#f4f0e6'; ctx.fillRect(0,0,W,H);
-
+  const px=x=>x*W,py=y=>(1-y)*H;
+  ctx.fillStyle='#f4f0e6';ctx.fillRect(0,0,W,H);
   // heatmap
-  const res=46;
-  for(let i=0;i<res;i++){
-    for(let j=0;j<res;j++){
-      const x=(i+.5)/res, y=(j+.5)/res;
-      if(inW(x,y)) continue;
-      const v=sc(x,y), n=Math.max(0,Math.min(1,v/1.1));
-      ctx.fillStyle=isN?`rgba(37,102,64,${n*.13})`:`rgba(184,58,24,${n*.15})`;
-      ctx.fillRect(i*(W/res),(res-1-j)*(H/res),W/res+1,H/res+1);
-    }
-  }
-
+  const res=44;
+  for(let i=0;i<res;i++){for(let j=0;j<res;j++){
+    const x=(i+.5)/res,y=(j+.5)/res;
+    if(inW(x,y))continue;
+    const v=sc(x,y),n=Math.max(0,Math.min(1,v/1.1));
+    ctx.fillStyle=isN?`rgba(37,102,64,${n*.13})`:`rgba(184,58,24,${n*.15})`;
+    ctx.fillRect(i*(W/res),(res-1-j)*(H/res),W/res+1,H/res+1);
+  }}
   // barrier
   const bx=px(S.BAR.x1),bw=px(S.BAR.x2)-px(S.BAR.x1);
   const by=py(S.BAR.y2),bh=py(S.BAR.y1)-py(S.BAR.y2);
-  ctx.fillStyle='#c8c0b0'; ctx.fillRect(bx,by,bw,bh);
-  ctx.fillStyle='#8a8278'; ctx.font=`bold 8px ${mono}`;
-  ctx.textAlign='center'; ctx.fillText('BARRIER',bx+bw/2,by+bh/2+3);
-
+  ctx.fillStyle='#c8c0b0';ctx.fillRect(bx,by,bw,bh);
+  ctx.fillStyle='#8a8278';ctx.font=`bold 8px ${MONO}`;ctx.textAlign='center';
+  ctx.fillText('BARRIER',bx+bw/2,by+bh/2+3);
   // archive
-  if(isN&&arch) arch.forEach(pt=>{
-    ctx.beginPath(); ctx.arc(px(pt.x),py(pt.y),2,0,Math.PI*2);
-    ctx.fillStyle='rgba(37,102,64,0.32)'; ctx.fill();
+  if(isN&&arch)arch.forEach(pt=>{
+    ctx.beginPath();ctx.arc(px(pt.x),py(pt.y),2,0,Math.PI*2);
+    ctx.fillStyle='rgba(37,102,64,0.32)';ctx.fill();
   });
-
   // trail
   for(let i=1;i<trail.length;i++){
     const a=(i/trail.length)*.65;
@@ -1003,107 +917,100 @@ function simPanel(cvId, pos, trail, arch, isN, reached) {
     ctx.moveTo(px(trail[i-1].x),py(trail[i-1].y));
     ctx.lineTo(px(trail[i].x),py(trail[i].y));
     ctx.strokeStyle=isN?`rgba(37,102,64,${a})`:`rgba(184,58,24,${a})`;
-    ctx.lineWidth=1.3; ctx.stroke();
+    ctx.lineWidth=1.3;ctx.stroke();
   }
-
   // start
-  ctx.beginPath(); ctx.arc(px(S.START.x),py(S.START.y),4.5,0,Math.PI*2);
-  ctx.fillStyle=blueC; ctx.fill();
-  ctx.fillStyle='#5a8ab8'; ctx.font=`8px ${mono}`; ctx.textAlign='center';
+  ctx.beginPath();ctx.arc(px(S.START.x),py(S.START.y),4.5,0,Math.PI*2);
+  ctx.fillStyle=BLC;ctx.fill();
+  ctx.fillStyle='#5a8ab8';ctx.font=`8px ${MONO}`;ctx.textAlign='center';
   ctx.fillText('START',px(S.START.x),py(S.START.y)+13);
-
   // false peak
-  ctx.font='bold 16px serif'; ctx.fillStyle='#b87030'; ctx.textAlign='center';
+  ctx.font='bold 16px serif';ctx.fillStyle='#b87030';ctx.textAlign='center';
   ctx.fillText('▲',px(S.FPEAK.x),py(S.FPEAK.y)+6);
-  ctx.font=`8px ${mono}`; ctx.fillStyle='#8a6530';
+  ctx.font=`8px ${MONO}`;ctx.fillStyle='#8a6530';
   ctx.fillText('false peak',px(S.FPEAK.x),py(S.FPEAK.y)+17);
-
-  // phase transition zone (novelty panel)
+  // phase zone
   if(isN){
-    ctx.strokeStyle='rgba(184,144,32,.38)'; ctx.lineWidth=1; ctx.setLineDash([4,3]);
+    ctx.strokeStyle='rgba(184,144,32,.35)';ctx.lineWidth=1;ctx.setLineDash([4,3]);
     ctx.strokeRect(px(S.BAR.x2+.01),py(.97),px(.97)-px(S.BAR.x2+.01),py(.45)-py(.97));
     ctx.setLineDash([]);
-    ctx.fillStyle='rgba(184,144,32,.4)'; ctx.font=`7px ${mono}`; ctx.textAlign='center';
+    ctx.fillStyle='rgba(184,144,32,.4)';ctx.font=`7px ${MONO}`;ctx.textAlign='center';
     ctx.fillText('PHASE TRANSITION ZONE',px(.82),py(.96)+9);
   }
-
   // goal
-  ctx.font='bold 18px serif'; ctx.fillStyle=goldC; ctx.textAlign='center';
+  ctx.font='bold 18px serif';ctx.fillStyle=GLD;ctx.textAlign='center';
   ctx.fillText('★',px(S.GOAL.x),py(S.GOAL.y)+7);
-  ctx.font=`8px ${mono}`; ctx.fillStyle='#8a7018';
+  ctx.font=`8px ${MONO}`;ctx.fillStyle='#8a7018';
   ctx.fillText('GOAL',px(S.GOAL.x),py(S.GOAL.y)+18);
-
   // agent
-  ctx.beginPath(); ctx.arc(px(pos.x),py(pos.y),6,0,Math.PI*2);
-  ctx.fillStyle=isN?greenC:accentC; ctx.fill();
-  ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.stroke();
-
-  // goal reached
+  ctx.beginPath();ctx.arc(px(pos.x),py(pos.y),6,0,Math.PI*2);
+  ctx.fillStyle=isN?GRC:AC;ctx.fill();
+  ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.stroke();
+  // reached
   if(reached){
-    ctx.fillStyle='rgba(184,144,32,.1)'; ctx.fillRect(0,0,W,H);
-    ctx.fillStyle=goldC; ctx.font=`bold 12px ${mono}`; ctx.textAlign='center';
+    ctx.fillStyle='rgba(184,144,32,.1)';ctx.fillRect(0,0,W,H);
+    ctx.fillStyle=GLD;ctx.font=`bold 12px ${MONO}`;ctx.textAlign='center';
     ctx.fillText('★ GOAL REACHED',W/2,H/2-4);
-    ctx.font=`9px ${mono}`; ctx.fillStyle='#8a7018';
+    ctx.font=`9px ${MONO}`;ctx.fillStyle='#8a7018';
     ctx.fillText('step '+simStep,W/2,H/2+10);
   }
 }
 
 function simDraw(){
-  simPanel('simCO',oPos,oTrail,null,false,oGoal);
-  simPanel('simCN',nPos,nTrail,nArch,true,nGoal);
+  simPanel('sCanO',oPos,oTrail,null,false,oGoal);
+  simPanel('sCanN',nPos,nTrail,nArch,true,nGoal);
 }
 
 function simStats(){
   document.getElementById('sOSc').textContent=simStep>0?sc(oPos.x,oPos.y).toFixed(3):'—';
-  document.getElementById('sOTr').innerHTML=oTrap?'<span class="sv warn">YES ⚠</span>':'No';
-  document.getElementById('sOG').innerHTML=oGoal?'<span class="sv ok">YES ✓</span>':'No';
+  document.getElementById('sOTr').innerHTML=oTrap?'<span class="sv w">YES ⚠</span>':'No';
+  document.getElementById('sOG').innerHTML=oGoal?'<span class="sv g">YES ✓</span>':'No';
   document.getElementById('sNA').textContent=nArch.length;
-  document.getElementById('sNP').innerHTML=nPhase>0?`<span class="sv ok">${nPhase} ✓</span>`:'0';
-  document.getElementById('sNG').innerHTML=nGoal?'<span class="sv ok">YES ✓</span>':'No';
-  document.getElementById('simStepLbl').textContent='Step: '+simStep;
-
-  const el=document.getElementById('simIns');
+  document.getElementById('sNP').innerHTML=nPhase>0?`<span class="sv g">${nPhase} ✓</span>`:'0';
+  document.getElementById('sNG').innerHTML=nGoal?'<span class="sv g">YES ✓</span>':'No';
+  document.getElementById('sStepLbl').textContent='Step: '+simStep;
+  const el=document.getElementById('sIns');
   if(nGoal&&!oGoal){
-    el.className='sim-insight phase';
-    el.innerHTML='<strong>Novelty search reached the goal. Objective search is still trapped.</strong> On deceptive landscapes, ignoring the objective outperforms chasing it. The archive — the memory of all prior exploration — is more valuable than the gradient toward the goal.';
-  } else if(nGoal&&oGoal){
-    el.className='sim-insight';
-    el.innerHTML='<strong>Both searches complete.</strong> Notice that novelty search reached the goal by collecting stepping stones. Objective search climbed the false peak and had to find its way back.';
-  } else if(nPhase>0){
-    el.className='sim-insight phase';
-    el.innerHTML='<strong>Phase transition.</strong> Novelty search crossed the barrier — not by forcing through it, but by exploring around it. The archive showed that the region past the barrier was least visited. This is the path the objective gradient will never point toward.';
-  } else if(oTrap){
-    el.className='sim-insight';
+    el.className='sins ph';
+    el.innerHTML='<strong>Novelty search reached the goal. Objective search is still trapped.</strong> On deceptive landscapes, ignoring the objective outperforms chasing it. The archive — the shared memory of all prior exploration — is more valuable than the gradient toward the goal.';
+  }else if(nGoal&&oGoal){
+    el.className='sins';
+    el.innerHTML='<strong>Both searches complete.</strong> Novelty search collected stepping stones. Objective search climbed the false peak and had to find a way back.';
+  }else if(nPhase>0){
+    el.className='sins ph';
+    el.innerHTML='<strong>Phase transition detected.</strong> Novelty search crossed the barrier — not by forcing through it, but by exploring around it. The archive showed that the region past the barrier was least visited. This is the path the objective gradient will never point toward.';
+  }else if(oTrap){
+    el.className='sins';
     el.innerHTML='<strong>Objective search is trapped.</strong> The gradient points toward the false peak — it looks like progress. The barrier blocks the direct path to the real goal. This is every over-optimised research programme: high scores on the wrong metric.';
-  } else if(simStep>5){
-    el.className='sim-insight';
+  }else if(simStep>5){
+    el.className='sins';
     el.innerHTML='<strong>Watch the divergence.</strong> Objective search climbs confidently. Novelty search wanders — but it is building its archive. Each green dot is a visited location. Every step rewards maximum distance from that memory. The stepping stones are accumulating.';
   }
 }
 
 function simTick(){
-  const spd=parseInt(document.getElementById('simSpd').value);
+  const spd=parseInt(document.getElementById('sSpd').value);
   for(let i=0;i<spd;i++){simStepO();simStepN();simStep++;}
-  simDraw(); simStats();
-  if((!oGoal||!nGoal)&&simStep<3000) simRaf=requestAnimationFrame(simTick);
-  else{ simRunning=false; document.getElementById('simRun').textContent='RUN ▶'; }
+  simDraw();simStats();
+  if((!oGoal||!nGoal)&&simStep<3000)simRaf=requestAnimationFrame(simTick);
+  else{simRun=false;document.getElementById('sRun').textContent='RUN ▶';}
 }
 
 function simToggle(){
-  simRunning=!simRunning;
-  document.getElementById('simRun').textContent=simRunning?'PAUSE ⏸':'RUN ▶';
-  if(simRunning) simRaf=requestAnimationFrame(simTick);
+  simRun=!simRun;
+  document.getElementById('sRun').textContent=simRun?'PAUSE ⏸':'RUN ▶';
+  if(simRun)simRaf=requestAnimationFrame(simTick);
   else if(simRaf){cancelAnimationFrame(simRaf);simRaf=null;}
 }
 
 /* ── INIT ── */
 window.addEventListener('load',()=>{
-  requestAnimationFrame(()=>{ drawProd(9); simReset(); });
+  requestAnimationFrame(()=>{drawProd(9);simReset();});
 });
 window.addEventListener('resize',()=>{
   requestAnimationFrame(()=>{
-    drawProd(parseInt(document.getElementById('prodSlider').value));
-    if(!simRunning) simDraw();
+    drawProd(parseInt(document.getElementById('ps').value));
+    if(!simRun)simDraw();
   });
 });
 </script>
