@@ -39,7 +39,6 @@ body::after{
   pointer-events:none;z-index:999;opacity:.45;
 }
 
-/* NAV */
 nav{
   position:sticky;top:0;z-index:100;
   background:var(--paper);border-bottom:1px solid var(--border);
@@ -56,7 +55,6 @@ nav{
   letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
 }
 
-/* HERO */
 .hero{
   max-width:var(--w);width:100%;
   padding:4rem var(--pad) 2rem;
@@ -88,7 +86,6 @@ nav{
 }
 .byline b{display:block;color:var(--ink);font-weight:400;margin-bottom:.1rem;}
 
-/* TOC */
 .toc{
   margin:0 var(--pad) 2.5rem;
   padding:1.4rem 1.8rem;
@@ -116,7 +113,6 @@ nav{
   font-size:.55rem;color:var(--border);min-width:18px;
 }
 
-/* PROSE */
 .prose{
   max-width:var(--w);width:100%;
   margin:0 auto;padding:0 var(--pad) 5rem;
@@ -129,7 +125,7 @@ nav{
 }
 .prose p.pull{font-weight:500;font-size:1.05rem;}
 .prose strong{font-weight:500;}
-.prose em.muted{color:var(--muted);font-style:italic;}
+.prose em.m{color:var(--muted);font-style:italic;}
 
 sup.cite{
   font-family:'DM Mono',monospace;
@@ -147,7 +143,6 @@ sup.cite{
   line-height:1.25;margin-bottom:1.3rem;
 }
 
-/* CALLOUT */
 .callout{
   margin:1.8rem 0;padding:1.4rem 1.8rem;
   background:var(--card);
@@ -165,22 +160,20 @@ sup.cite{
   color:var(--ink)!important;margin:.65rem 0!important;line-height:2;
 }
 
-/* AI CALLOUT — distinct style */
-.ai-callout{
-  margin:1.8rem 0;padding:1.4rem 1.8rem;
+.ai-box{
+  margin:1.8rem 0;padding:1.5rem 1.8rem;
   background:var(--card);
   border-left:3px solid var(--blue);
   border-radius:0 3px 3px 0;
 }
-.ai-callout .cl{
+.ai-box .cl{
   font-family:'DM Mono',monospace;font-size:.55rem;
   letter-spacing:.15em;text-transform:uppercase;
-  color:var(--blue);margin-bottom:.6rem;
+  color:var(--blue);margin-bottom:.8rem;
 }
-.ai-callout p{font-size:1rem;line-height:1.85;margin-bottom:.9rem;}
-.ai-callout p:last-child{margin-bottom:0;}
+.ai-box p{font-size:1rem;line-height:1.85;margin-bottom:.9rem;color:var(--ink);}
+.ai-box p:last-child{margin-bottom:0;}
 
-/* COLLAPSIBLE NOTE */
 .note-wrap{margin:1.5rem 0;}
 .note-toggle{
   display:flex;align-items:center;gap:.6rem;
@@ -210,7 +203,6 @@ sup.cite{
   margin:.5rem 0;display:block;letter-spacing:.03em;
 }
 
-/* SEPARATOR */
 .sep{
   display:flex;align-items:center;gap:.8rem;margin:2.4rem 0;
   color:var(--border);font-family:'DM Mono',monospace;
@@ -218,7 +210,6 @@ sup.cite{
 }
 .sep::before,.sep::after{content:'';flex:1;height:1px;background:var(--border);}
 
-/* INTERACTIVE WRAPPER */
 .iv{margin:2rem 0;border:1px solid var(--border);border-radius:4px;overflow:hidden;}
 .iv-h{
   padding:.8rem 1.4rem;background:var(--card);
@@ -230,7 +221,6 @@ sup.cite{
 .iv-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;}
 .iv-b{padding:1.5rem 1.4rem;}
 
-/* COST CHART */
 .cw{position:relative;width:100%;height:260px;}
 .cleg{display:flex;gap:1rem;flex-wrap:wrap;margin-top:.8rem;margin-bottom:.5rem;}
 .cli{display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:.57rem;color:var(--muted);}
@@ -241,7 +231,6 @@ sup.cite{
 }
 .cnote span{color:var(--accent);}
 
-/* PRODUCTIVITY CHART */
 .pcw{width:100%;height:190px;}
 .pcw canvas{display:block;}
 .pctrl{display:flex;align-items:center;gap:.8rem;margin-top:.8rem;}
@@ -251,7 +240,6 @@ sup.cite{
 .pnote{font-family:'DM Mono',monospace;font-size:.6rem;color:var(--muted);margin-top:.55rem;line-height:1.7;}
 .pnote span{color:var(--accent);}
 
-/* NOVELTY SIM */
 .sleg{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px;}
 .sli{display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:.55rem;color:var(--muted);}
 .sld{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
@@ -291,7 +279,6 @@ sup.cite{
 .sins strong{color:var(--ink);}
 .sins.ph{border-left-color:var(--gold);}
 
-/* REFERENCES */
 .refs{margin-top:3rem;padding-top:1.6rem;border-top:1px solid var(--border);}
 .refs-h{
   font-family:'DM Mono',monospace;font-size:.55rem;
@@ -305,7 +292,6 @@ sup.cite{
 }
 .refs li a{color:var(--muted);text-decoration:underline;text-underline-offset:3px;}
 
-/* FOOTER */
 .foot{
   max-width:var(--w);width:100%;
   margin:0 auto;padding:0 var(--pad) 3rem;
@@ -371,7 +357,6 @@ sup.cite{
 
 <div class="prose">
 
-  <!-- OPENING -->
   <p class="lede">I was doing nothing.</p>
   <p>Not reading a paper. Not running an experiment. I was letting my mind drift — across worm biology, swarm robotics, warfare, neuromodulation — when something clicked that months of structured work hadn't produced. A connection between fields I had no reason to juxtapose. An insight that arrived not from effort but from its absence.</p>
   <p>That daydream became the spine of my research.</p>
@@ -399,10 +384,10 @@ sup.cite{
       <span>📎 Note — For the mathematically curious: bifurcation theory</span>
     </button>
     <div class="note-body" id="n1">
-      Phase transitions are described by bifurcation theory. A simple example is the double-well potential:<br><br>
+      Phase transitions are described by bifurcation theory. A simple example:<br><br>
       <span class="neq">V(x, c) = x⁴ + c·x²</span>
       When c is positive: one minimum — the missile.<br>
-      When c crosses zero: bifurcation point — the landscape is about to reorganise.<br>
+      When c crosses zero: bifurcation point — the landscape reorganises.<br>
       When c is negative: two minima emerge. The second one is the laser.<br><br>
       The constraint acts as the control parameter c. It changes the shape of the solution space, revealing minima that were always mathematically present but invisible to anyone climbing the first hill. The same mathematics describes phase transitions in magnetism, protein folding, and the emergence of collective behaviour in biological swarms.
     </div>
@@ -436,6 +421,7 @@ sup.cite{
   <p>What they found: a way to run only a fraction of the model's parameters for each calculation, a lower-precision arithmetic method nobody had validated at this scale, and a new algorithm that hid communication delays behind computation. None of these existed as standard practice before the constraint forced the search.</p>
   <p>The export ban was not an obstacle that slowed progress. It was a reorganising pressure that revealed a different solution space — one that well-funded labs had no incentive to explore.</p>
   <p class="pull">Same problem. Different mountain.</p>
+  <p>The pattern holds across domains — war, technology, medicine, agriculture. The question is whether it holds for science itself, and whether we have the institutional honesty to look.</p>
 
   <div class="note-wrap">
     <button class="note-toggle" onclick="tn('n2','ni2')">
@@ -454,10 +440,10 @@ sup.cite{
   <p class="eyebrow" id="s3">III.</p>
   <h2 class="sec-h">Science Is Climbing the Wrong Hill</h2>
 
-  <p>Modern science has more researchers, more data, more instruments, and more computational power than any previous generation. By many measures it is thriving.</p>
+  <p>Modern science has more researchers, more data, more instruments, and more computational power than any previous generation. By many measures it is thriving. We are producing more activity, but not always proportionally more discovery.</p>
   <p>Yet the same pattern — optimising the known while neglecting the possible — may now be operating inside science itself.</p>
   <p>The distinction that matters is between exploitation and exploration. Exploitation: refining what works, scaling proven tools, extending known theories. Exploration: searching uncertain territory, combining distant ideas, following anomalies into unfamiliar terrain. Every adaptive system needs both. A system that only exploits becomes efficient at climbing the nearest hill while missing taller mountains elsewhere.</p>
-  <p>Bloom, Jones, Van Reenen, and Webb (2020) put a number on this.<sup class="cite">[3]</sup> Research productivity — the number of researchers required to produce a given rate of improvement — has <strong>doubled approximately every 13 years</strong> since the 1930s across multiple fields. Moore's Law required 18 researchers in 1971 to sustain its pace. By 2014, 18 times more were needed. Michael Nielsen and Patrick Collison have argued independently that science is delivering less per unit input than in earlier eras. Recent analyses of papers and patents show them becoming less disruptive over time — more work building on existing trajectories rather than redirecting them.</p>
+  <p>Bloom, Jones, Van Reenen, and Webb (2020) put a number on this.<sup class="cite">[3]</sup> Research productivity — the number of researchers required to produce a given rate of improvement — has <strong>doubled approximately every 13 years</strong> since the 1930s across multiple fields. Moore's Law required 18 researchers in 1971 to sustain its pace. By 2014, 18 times more were needed. Michael Nielsen and Patrick Collison have argued independently that science is delivering less per unit input than in earlier eras. A 2023 analysis of 45 million papers found that the share of genuinely disruptive work has fallen sharply across every major field since the 1940s.<sup class="cite">[3]</sup></p>
   <p class="pull">This is precisely what an over-exploitative system produces.</p>
 
   <div class="iv">
@@ -473,8 +459,9 @@ sup.cite{
     </div>
   </div>
 
-  <p>Part of the problem is what gets counted. Papers filed, citations accumulated, grants won, benchmarks moved — useful signals, but not identical to discovery. When proxies become targets, behaviour adapts around them. Grant committees and peer reviewers consistently show caution toward novel or interdisciplinary proposals — not from bad faith, but because a genuinely strange idea is genuinely hard to evaluate before it succeeds.</p>
-  <p>Here is how the trap forms in practice. A young researcher chooses between two projects. The first extends established work — familiar reviewers, predictable timeline, low career risk. The second crosses disciplines, may fail entirely, and earns little credit from current metrics even when it works. Hiring panels don't reject boldness. They reward the safer bet. Across thousands of such choices, caution compounds into a field.</p>
+  <p>Part of the problem is what gets counted. Papers filed, citations accumulated, grants won, benchmarks moved — useful signals, but not identical to discovery. When proxies become targets, behaviour adapts around them. Institutions rarely ban originality. They simply make caution cheaper. Grant committees and peer reviewers consistently show caution toward novel or interdisciplinary proposals — not from bad faith, but because a genuinely strange idea is genuinely hard to evaluate before it succeeds. Studies of grant allocation have found that highly novel proposals are systematically scored lower in initial review, even when they are later judged more important.<sup class="cite">[3]</sup></p>
+  <p>Here is how the trap forms in practice. A young researcher chooses between two projects. The first extends established work — familiar reviewers, predictable timeline, low career risk. The second crosses disciplines, may fail entirely, and earns little credit from current metrics even when it works. Even in institutions that publicly celebrate innovation, the first project is often the prudent choice. Across thousands of such decisions, prudence compounds into conservatism.</p>
+  <p>I have watched talented researchers narrow their curiosity — not because they lacked imagination, but because imagination carried career cost.</p>
   <p>The failure modes are specific. Working on brain-inspired AI, I spent approximately <strong>250 hours repeating experiments</strong> that others had almost certainly already abandoned — invisibly, because there is no shared log of dead ends. Negative results stay in private notebooks. Interdisciplinary work falls between funding categories. The most interesting questions get deferred because no review panel owns them.</p>
   <p>I am not unique in this.</p>
   <p>Henri Poincaré — one of the greatest mathematicians of the nineteenth century — spent weeks attacking a problem in Fuchsian functions without progress. Focused work. Daily effort. Nothing. Then, stepping onto a bus during a geology excursion, thinking about nothing in particular, the connection appeared complete and certain. He had no time to verify it. He simply knew. The insight had not come from the desk. It came from the transit between ideas — the geology reading, the unfamiliar landscape, the mind finally released from its own urgency.</p>
@@ -508,7 +495,8 @@ sup.cite{
   <p>Jung-Beeman et al. (2004) captured the moment of insight in real time.<sup class="cite">[7]</sup> The "aha moment" is preceded by the brain actively suppressing its focused system — quieting one mode so the other can work.</p>
   <p class="pull">This is not a metaphor.</p>
   <p>It is the actual mechanism that biological intelligence runs on. Five hundred million years of evolution decided both modes were worth the cost. The wandering mind is not a distraction from the work. It is half the work.</p>
-  <p>Modern research runs almost entirely on the focused system. Deadlines. Deliverables. Quarterly reports. Visible output. We have formalised execution down to the hour. We have barely formalised discovery at all.</p>
+  <p>What the neuroscience reveals, institutions have yet to accept: the cognitive infrastructure for discovery is not the same as the cognitive infrastructure for productivity. Modern research runs almost entirely on the focused system. Deadlines. Deliverables. Quarterly reports. Visible output. We have formalised execution down to the hour. We have barely formalised discovery at all.</p>
+  <p>A civilisation should not rely on evenings, showers, and chance walks to host part of its search function.</p>
 
   <div class="note-wrap">
     <button class="note-toggle" onclick="tn('n4','ni4')">
@@ -517,8 +505,7 @@ sup.cite{
     </button>
     <div class="note-body" id="n4">
       The Default Mode Network was initially dismissed as neural noise. Raichle et al. (2001) established its existence and baseline metabolic significance.<sup class="cite">[6]</sup> Subsequent research linked it to creative cognition, future simulation, social reasoning, and autobiographical memory consolidation.<br><br>
-      The practical implication is uncomfortable: the cognitive state most associated with insight and novel connection-making is precisely the state that modern institutional design treats as unproductive. Protected thinking time, unstructured conversation, and cross-disciplinary wandering are not inefficiencies to be eliminated. They are the substrate of discovery.<br><br>
-      A civilisation should not outsource its exploratory cognition to weekends and chance walks.
+      The practical implication is uncomfortable: the cognitive state most associated with insight and novel connection-making is precisely the state that modern institutional design treats as unproductive. Protected thinking time, unstructured conversation, and cross-disciplinary wandering are not inefficiencies to be eliminated. They are the substrate of discovery.
     </div>
   </div>
 
@@ -528,14 +515,14 @@ sup.cite{
   <p class="eyebrow" id="s5">V.</p>
   <h2 class="sec-h">The Algorithm Science Is Missing</h2>
 
-  <p>Kenneth Stanley and Joel Lehman kept hitting the same wall: the more precisely they defined the goal, the worse their search algorithms performed.<sup class="cite">[8,9]</sup> The algorithm climbed confidently — and got permanently stuck.</p>
+  <p>The brain's solution points toward an algorithmic one. Kenneth Stanley and Joel Lehman kept hitting the same wall building robot controllers: the more precisely they defined the goal, the worse their search algorithms performed.<sup class="cite">[8,9]</sup> The algorithm climbed confidently — and got permanently stuck.</p>
   <p>So they removed the objective entirely.</p>
   <p>Instead of rewarding progress toward a goal, they rewarded only one thing: <strong>being different from everything explored before</strong>. They called it novelty search. Each candidate is scored by how far it is from an ever-growing archive of everything the search has already visited. The most novel candidate wins. Always.</p>
   <p>The result was counterintuitive and reproducible.</p>
   <p>On deceptive landscapes — where the direct path toward the goal leads away from it — <strong>ignoring the objective outperforms chasing it</strong>.</p>
   <p>The archive is what makes this work. Without it, the search is a random walk. With it, the search maps the unknown systematically — drawn toward unexplored territory the way water finds the lowest ground. The archive is the shared memory of every dead end, every abandoned direction, every result too strange to publish.</p>
   <p>Stepping stones don't look like progress. Vacuum tubes don't look like computers. Cowpox doesn't look like a smallpox vaccine. A geology excursion doesn't look like a mathematics breakthrough. On deceptive landscapes, the gradient is the enemy.</p>
-  <p><em class="muted">The simulation below runs both strategies on the same landscape simultaneously. Watch what happens.</em></p>
+  <p><em class="m">The simulation below runs both strategies on the same landscape simultaneously. Watch what happens.</em></p>
 
   <div class="iv">
     <div class="iv-h"><span>Novelty Search vs Objective Search — Live Simulation</span><span class="iv-dot"></span></div>
@@ -618,18 +605,18 @@ sup.cite{
   <p><strong>Protected exploration time — 40% of funded hours.</strong> No deliverables. No hypothesis required. The only requirement: when something clicks, log the cognitive state that produced it. Not the idea — the state. Were you reading? Walking? Connecting unrelated fields? This normalises wandering as legitimate work and makes the exploration fingerprint visible for measurement.</p>
   <p><strong>Shared failure intelligence.</strong> Every experiment — successful or failed — logged in a structured, AI-queryable database. Hypothesis, method, result, what it rules out, what to try next. My 250 hours of repeated failed experiments become visible. The next researcher finds the log before repeating the same work. Poincaré's geology excursion gets recorded, not lost.</p>
   <p><strong>Monthly cross-disciplinary salons with novelty scoring.</strong> Each researcher presents their most surprising anomaly — not their best result, but the result that doesn't fit. An LLM-assisted novelty scorer surfaces the highest-novelty combinations for structured discussion. The salon's job is not to evaluate. It is to collide.</p>
-  <p>Bell Labs combined deep specialisation with deliberate proximity — mathematicians, physicists, chemists, and engineers sharing corridors and problems. The transistor, information theory, the laser, Unix — all emerged from that collision.<sup class="cite">[10]</sup> DARPA has funded high-variance programs since 1958 with explicit tolerance for failure — program managers given a mission, three to five years, no publication requirements.<sup class="cite">[11]</sup> Xerox PARC generated the graphical user interface, ethernet, and object-oriented programming before conventional metrics could have justified them.<sup class="cite">[12]</sup> Each is an existence proof, not a blueprint. Each shares a common structure: protected time, cross-disciplinary collision, and tolerance for search that doesn't immediately look like progress.</p>
+  <p>Bell Labs combined deep specialisation with deliberate proximity — mathematicians, physicists, chemists, and engineers sharing corridors and problems. The transistor, information theory, the laser, Unix — all emerged from that collision.<sup class="cite">[10]</sup> DARPA has funded high-variance programs since 1958 with explicit tolerance for failure — program managers given a mission, three to five years, no publication requirements.<sup class="cite">[11]</sup> Xerox PARC generated the graphical user interface, ethernet, and object-oriented programming before conventional metrics could have justified them.<sup class="cite">[12]</sup> Breakthroughs are not only products of brilliant individuals. They are also products of environments that preserve room for search.</p>
 
-  <div class="ai-callout">
+  <div class="ai-box">
     <div class="cl">Where AI changes the equation</div>
     <p>Bell Labs needed physical corridors because proximity was the only way to create accidental collisions between distant ideas. That constraint no longer holds.</p>
     <p>Large language models can now read across the entire published literature — neuroscience papers, physics preprints, materials science datasets, failed engineering reports — and surface non-obvious connections that no individual researcher could find by browsing. An LLM does not replace the wandering mind. It extends its reach. Where Poincaré needed a geology excursion to stumble into the right analogy, a researcher today can query an AI-assisted archive and ask: what has been tried in adjacent fields that nobody in my field has noticed? What failed in protein folding that might inform continual learning? What anomaly in climate modelling maps onto an open problem in neuroscience?</p>
-    <p>The archive, made queryable by AI, becomes a systematic instrument for cross-domain serendipity — the geology excursion, but at scale, available to everyone, running continuously. This is not AI doing science. It is AI doing what the Default Mode Network does: holding the entire space of known ideas simultaneously and noticing what doesn't yet connect.</p>
+    <p>The archive, made queryable by AI, becomes a systematic instrument for cross-domain serendipity — the geology excursion, at scale, available to everyone, running continuously. This is not AI doing science. It is AI doing what the Default Mode Network does: holding the entire space of known ideas simultaneously and noticing what doesn't yet connect.</p>
   </div>
 
   <p>Measure over 24 months. How many researchers produce genuinely novel framings — assessed by reviewers blind to cohort assignment. How often does the failure database prevent repeated work. Whether breakthroughs trace back through the exploration logs. Plus standard outputs: papers, collaborations, follow-on grants.</p>
   <p>For this to scale: the archive must be a public good — open infrastructure, closer in spirit to arXiv than a proprietary database. Novelty scoring must be field-sensitive. Evaluation must reward process, not just output — if search cohort researchers are ultimately measured by the same benchmarks as the control cohort, the modification collapses from within.</p>
-  <p>What could make it fail: researchers may not adopt the logging format; the failure database may be too heterogeneous; the salons may calcify into performance rather than collision; the exploration time may produce anxiety rather than insight. These are real failure modes. Each one tells us something important about what the actual solution needs to look like.</p>
+  <p>What could make it fail: researchers may not adopt the logging format; the failure database may be too heterogeneous; the salons may calcify into performance rather than collision; the exploration time may produce anxiety rather than insight. These are real failure modes. Each one tells us something important about what the actual solution needs to look like. Even a null result would be useful — it would show that protected exploration time matters less than many assume, and that reform efforts should look elsewhere.</p>
   <p class="pull">That is how science should study science.</p>
   <p>If no gains appear after 24 months, learn and stop. If gains appear, scale what worked. Publish everything — including the failures.</p>
 
@@ -645,14 +632,13 @@ sup.cite{
 
   <div class="sep">§</div>
 
-  <!-- CLOSING -->
   <p>Modern science has built powerful machinery for productivity. It can specialise, refine, benchmark, and optimise with extraordinary competence.</p>
   <p>What it has built less deliberately is machinery for discovery.</p>
   <p>I found the insight that drives my research in a daydream. Poincaré found his on a bus. The settings were different. The cognitive state was identical — the focused mind released, the wandering mind finally free to connect what the desk could not.</p>
   <p>Neither of us was being productive by any measurable standard.</p>
   <p class="pull">Both of us were doing the most important work of the day.</p>
-  <p>The next great scientific instrument may not be another microscope, collider, or model.</p>
-  <p><strong>It may be a better search architecture for discovery itself — one that holds space for the geology excursion, the rented compute, the hour nobody was measuring.</strong></p>
+  <p>Science has become remarkably good at climbing hills it already knows exist.</p>
+  <p><strong>The next leap may come not from climbing faster, but from learning how to search again.</strong></p>
 
   <!-- REFERENCES -->
   <div class="refs">
@@ -660,7 +646,7 @@ sup.cite{
     <ol>
       <li id="ref1">Strogatz, S.H. (2003). <em>Sync: The Emerging Science of Spontaneous Order.</em> Hyperion.</li>
       <li id="ref2">DeepSeek-AI (2024). DeepSeek-V3 Technical Report. arXiv:2412.19437. <a href="https://arxiv.org/abs/2412.19437" target="_blank">arxiv.org/abs/2412.19437</a></li>
-      <li id="ref3">Bloom, N., Jones, C.I., Van Reenen, J. & Webb, M. (2020). Are ideas getting harder to find? <em>American Economic Review,</em> 110(4), 1104–1144. <a href="https://doi.org/10.1257/aer.20180338" target="_blank">doi:10.1257/aer.20180338</a></li>
+      <li id="ref3">Bloom, N., Jones, C.I., Van Reenen, J. & Webb, M. (2020). Are ideas getting harder to find? <em>American Economic Review,</em> 110(4), 1104–1144. <a href="https://doi.org/10.1257/aer.20180338" target="_blank">doi:10.1257/aer.20180338</a> · Park, M., Leahey, E. & Funk, R.J. (2023). Papers and patents are becoming less disruptive over time. <em>Nature,</em> 613, 138–144. <a href="https://doi.org/10.1038/s41586-022-05543-x" target="_blank">doi:10.1038/s41586-022-05543-x</a></li>
       <li id="ref4">Gittins, J.C. (1979). Bandit processes and dynamic allocation indices. <em>Journal of the Royal Statistical Society: Series B,</em> 41(2), 148–177.</li>
       <li id="ref5">Wuchty, S., Jones, B.F. & Uzzi, B. (2007). The increasing dominance of teams in production of knowledge. <em>Science,</em> 316(5827), 1036–1039. <a href="https://doi.org/10.1126/science.1136099" target="_blank">doi:10.1126/science.1136099</a></li>
       <li id="ref6">Raichle, M.E. et al. (2001). A default mode of brain function. <em>PNAS,</em> 98(2), 676–682. <a href="https://doi.org/10.1073/pnas.98.2.676" target="_blank">doi:10.1073/pnas.98.2.676</a></li>
@@ -673,7 +659,7 @@ sup.cite{
     </ol>
   </div>
 
-</div><!-- end .prose -->
+</div>
 
 <div class="foot">
   <p>The Thinking Archive · Essay No. 01 · April 2026 · <a href="https://aidude.github.io/thinking_archive" style="color:var(--muted)">aidude.github.io/thinking_archive</a></p>
@@ -681,7 +667,6 @@ sup.cite{
 </div>
 
 <script>
-/* note toggles */
 function tn(id,ico){
   const b=document.getElementById(id);
   const open=b.classList.toggle('open');
