@@ -1043,12 +1043,12 @@
       that highly novel proposals are systematically scored lower in initial review, even when they are later judged
       more important.<sup class="cite">[3]</sup></p>
     <p>Here is how the trap forms in practice. A young researcher chooses between two projects. The first extends
-      established work — familiar reviewers, predictable timeline, low career risk. The second crosses disciplines, may
+      established work: familiar reviewers, predictable timeline, low career risk. The second crosses disciplines, may
       fail entirely, and earns little credit from current metrics even when it works. Even in institutions that publicly
       celebrate innovation, the first project is often the prudent choice. Across thousands of such decisions, prudence
       compounds into conservatism.</p>
     <p>I have watched talented researchers narrow their curiosity not because they lacked imagination, but because their
-      imagination carried career cost.</p>
+      imagination has a career cost.</p>
     <p>The failure modes are specific. Working on brain-inspired AI, I spent approximately <strong>250 hours repeating
         experiments</strong> that others had almost certainly already abandoned invisibly, because there is no shared
       log of dead ends. Negative results stay in private notebooks. Interdisciplinary work falls between funding
@@ -1070,7 +1070,7 @@
       <div class="note-body" id="n3">
         In reinforcement learning and decision theory, this tension has a formal name: the exploration-exploitation
         trade-off. The Gittins index theorem (Gittins, 1979) proves that the optimal policy for choosing between known
-        and unknown options requires a systematic exploration bonus — a reward for trying what hasn't been tried,
+        and unknown options requires a systematic exploration reward for trying what hasn't been tried,
         proportional to uncertainty.<sup class="cite">[12]</sup> Pure exploitation of the best-known option is
         mathematically guaranteed to underperform over time.<br><br>
         Science funding behaves like a system with the exploration bonus removed. Grants reward proximity to known
@@ -1091,7 +1091,7 @@
     <p>The brain is the only known system that has solved continuous learning, generalisation, and adaptation
       simultaneously — on 20 watts, across a human lifetime.</p>
     <p>It does this through two systems, not one.</p>
-    <p>The focused system handles execution — precise, targeted, fast. Running the experiment. Writing the paper.
+    <p>The focused system handles execution in a precise, targeted and fast manner. Running the experiment. Writing the paper.
       Climbing the known hill.</p>
     <p>The second system is stranger. Neuroscientists call it the Default Mode Network. It activates when you are doing
       nothing — resting, walking, staring out a window. It consumes approximately <strong>20% of total brain energy at
@@ -1099,12 +1099,12 @@
       focused one cannot: connecting things that have no obvious connection. It is where the worm biology meets the
       phase transition. Where the geology excursion meets the mathematics problem.</p>
     <p>Jung-Beeman et al. (2004) captured the moment of insight in real time.<sup class="cite">[6]</sup> The "aha
-      moment" is preceded by the brain actively suppressing its focused system — quieting one mode so the other can
+      moment" is preceded by the brain actively suppressing its focused system so the other can
       work.</p>
     <p class="pull">This is not a metaphor.</p>
     <p>It is the actual mechanism that biological intelligence runs on. Five hundred million years of evolution decided
       both modes were worth the cost. The wandering mind is not a distraction from the work. It is half the work.</p>
-    <p>What the neuroscience suggests — and it is a suggestion, not a proof — is that the cognitive infrastructure for
+    <p>What the neuroscience suggests and it is a suggestion, is that the cognitive infrastructure for
       discovery may not be the same as the cognitive infrastructure for productivity. We cannot run a controlled trial
       on Poincaré's bus journey. But we can observe that the brain pays a significant metabolic price to keep the
       exploration system running, and ask whether our institutions pay any equivalent cost at all. Modern research runs
@@ -1134,17 +1134,17 @@
 
     <p>The brain's solution points toward an algorithmic one. Kenneth Stanley and Joel Lehman kept hitting the same wall
       building robot controllers: the more precisely they defined the goal, the worse their search algorithms
-      performed.<sup class="cite">[7,8]</sup> The algorithm climbed confidently — and got permanently stuck.</p>
+      performed.<sup class="cite">[7,8]</sup> The algorithm climbed confidently and got permanently stuck.</p>
     <p>So they removed the objective entirely.</p>
     <p>Instead of rewarding progress toward a goal, they rewarded only one thing: <strong>being different from
         everything explored before</strong>. They called it novelty search. Each candidate is scored by how far it is
       from an ever-growing archive of everything the search has already visited. The most novel candidate wins. Always.
     </p>
     <p>The result was counterintuitive and reproducible.</p>
-    <p>On deceptive landscapes — where the direct path toward the goal leads away from it — <strong>ignoring the
+    <p>On deceptive landscapes where the direct path toward the goal leads away from it <strong>ignoring the
         objective outperforms chasing it</strong>.</p>
     <p>The archive is what makes this work. Without it, the search is a random walk. With it, the search maps the
-      unknown systematically — drawn toward unexplored territory the way water finds the lowest ground. The archive is
+      unknown systematically, drawn toward unexplored territory the way water finds the lowest ground. The archive is
       the shared memory of every dead end, every abandoned direction, every result too strange to publish.</p>
     <p>Stepping stones don't look like progress. Vacuum tubes don't look like computers. Cowpox doesn't look like a
       smallpox vaccine. A geology excursion doesn't look like a mathematics breakthrough. On deceptive landscapes, the
@@ -1204,20 +1204,20 @@
       </div>
     </div>
 
-    <p>That archive — the shared record of dead ends and abandoned paths — does not exist in science. Negative results
+    <p>The shared record of dead ends and abandoned paths does not exist in science. Negative results
       stay in private notebooks. Cross-disciplinary work falls between journal scopes. We are navigating without a map,
       toward destinations that the straightest path will never reach.</p>
     <p>The question is whether this algorithm can be applied not to robots but to research institutions.</p>
 
     <div class="note-wrap">
       <button class="note-toggle" onclick="tn('n5','ni5')"><span class="nt-icon" id="ni5">+</span><span>📎 Note: 
-          Novelty search: the formal definition</span></button>
+          Novelty search - the formal definition</span></button>
       <div class="note-body" id="n5">
         The novelty score of a candidate solution x is:<br><br>
         <span class="neq">ρ(x) = (1/k) Σᵢ dist(x, μᵢ)</span>
-        Where μᵢ are the k nearest neighbours in the archive and dist is behavioural distance — how differently the
+        Where μᵢ are the k nearest neighbours in the archive and dist is behavioural distance: how differently the
         solutions actually behave, not how different their parameters are.<br><br>
-        Stanley and Lehman's key finding: this strategy not only avoids local maxima — it often finds the global
+        Stanley and Lehman's key finding: this strategy not only avoids local maxima and finds the global
         solution faster than direct objective-based search, precisely because it does not commit to a direction
         prematurely.<sup class="cite">[7,8]</sup><br><br>
         Applied to science: the archive is the shared failure log. The novelty scorer asks "has anyone tried this
@@ -1236,21 +1236,20 @@
     <p>Select <strong>50 early-career researchers</strong> across neuroscience, physics, machine learning, materials
       science, and adjacent fields. Early-career matters: they have not yet calcified around a single paradigm. Randomly
       assign to two cohorts of 25.</p>
-    <p><strong>Control cohort:</strong> Standard grant expectations — milestones, quarterly reports, specialist
+    <p><strong>Control cohort:</strong> Standard grant expectations milestones, quarterly reports, specialist
       evaluation, conventional outputs.</p>
     <p><strong>Search cohort:</strong> Three structural modifications.</p>
-    <p><strong>Protected exploration time — 40% of funded hours.</strong> No deliverables. No hypothesis required. The
-      only requirement: when something clicks, log the cognitive state that produced it. Not the idea — the state. Were
+    <p><strong>Protected exploration time : 40% of funded hours.</strong> No deliverables. No hypothesis required. The
+      only requirement: when something clicks, log the cognitive state that produced it. Not the idea rather the state. Were
       you reading? Walking? Connecting unrelated fields? This normalises wandering as legitimate work and makes the
       exploration fingerprint visible for measurement.</p>
-    <p><strong>Shared failure intelligence.</strong> Every experiment — successful or failed — logged in a structured,
+    <p><strong>Shared failure intelligence.</strong> Every experiment successful or failed should be logged in a structured,
       AI-queryable database. Hypothesis, method, result, what it rules out, what to try next. My 250 hours of repeated
       failed experiments become visible. The next researcher finds the log before repeating the same work. Poincaré's
       geology excursion gets recorded, not lost.</p>
     <p><strong>Monthly cross-disciplinary salons with novelty scoring.</strong> Each researcher presents their most
-      surprising anomaly — not their best result, but the result that doesn't fit. An LLM-assisted novelty scorer
-      surfaces the highest-novelty combinations for structured discussion. The salon's job is not to evaluate. It is to
-      collide.</p>
+      surprising anomaly; not their best result, but the result that doesn't fit. An LLM-assisted novelty scorer
+      surfaces the highest-novelty combinations for structured discussion. </p>
 
     <!-- 2x2 MATRIX -->
     <div class="iv">
@@ -1472,10 +1471,10 @@
       </div>
     </div>
 
-    <p>Bell Labs combined deep specialisation with deliberate proximity — mathematicians, physicists, chemists, and
-      engineers sharing corridors and problems. The transistor, information theory, the laser, Unix — all emerged from
+    <p>Bell Labs combined deep specialisation with deliberate proximity of mathematicians, physicists, chemists, and
+      engineers sharing corridors and problems. The transistor, information theory, the laser & Unix all emerged from
       that collision.<sup class="cite">[9]</sup> DARPA has funded high-variance programs since 1958 with explicit
-      tolerance for failure — program managers given a mission, three to five years, no publication requirements.<sup
+      tolerance for failure: A program managers given a mission, three to five years, no publication requirements.<sup
         class="cite">[10]</sup> Xerox PARC generated the graphical user interface, ethernet, and object-oriented
       programming before conventional metrics could have justified them.<sup class="cite">[11]</sup> Breakthroughs are
       not only products of brilliant individuals. They are also products of environments that preserve room for search.
@@ -1485,14 +1484,13 @@
       <div class="cl">Where AI changes the equation</div>
       <p>Bell Labs needed physical corridors because proximity was the only way to create accidental collisions between
         distant ideas. That constraint no longer holds.</p>
-      <p>Large language models can now read across the entire published literature — neuroscience papers, physics
-        preprints, materials science datasets, failed engineering reports — and surface non-obvious connections that no
+      <p>Large language models can now read across the entire published neuroscience papers, physics
+        preprints, materials science datasets, failed engineering reports and could surface non-obvious connections that no
         individual researcher could find by browsing. An LLM does not replace the wandering mind. It extends its reach.
         Where Poincaré needed a geology excursion to stumble into the right analogy, a researcher today can query an
         AI-assisted archive and ask what has been tried in adjacent fields that nobody in their own field has noticed.
       </p>
-      <p>The archive, made queryable by AI, becomes a systematic instrument for cross-domain serendipity — the geology
-        excursion, at scale, available to everyone, running continuously. This is not AI doing science. It is AI doing
+      <p>The archive, made queryable by AI, becomes a systematic instrument for cross-domain serendipity at scale, available to everyone, running continuously. This is not AI doing science. It is AI doing
         what the Default Mode Network does: holding the entire space of known ideas simultaneously and noticing what
         doesn't yet connect.</p>
     </div>
