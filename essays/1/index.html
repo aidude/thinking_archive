@@ -88,15 +88,25 @@
 
     .nav-brand {
       font-family: 'Playfair Display', serif;
-      font-style: italic;
       font-size: 1.05rem;
       color: var(--ink);
       text-decoration: none;
       transition: color .2s;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+    }
+
+    .nav-brand span {
+      font-style: italic;
+      color: var(--accent);
     }
 
     .nav-brand:hover {
       color: var(--accent);
+    }
+
+    .nav-brand:hover span {
+      color: var(--ink);
     }
 
     .nav-tag {
@@ -379,14 +389,35 @@
     .nt-icon {
       width: 16px;
       height: 16px;
-      border: 1px solid var(--border);
-      border-radius: 2px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: .7rem;
-      color: var(--muted);
       flex-shrink: 0;
+      color: var(--muted);
+      font-size: .55rem;
+      transition: transform .22s ease;
+      /* Downward-pointing triangle via CSS */
+      border: none;
+      background: none;
+    }
+
+    .nt-icon::before {
+      content: '';
+      display: block;
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid var(--muted);
+      transition: border-top-color .2s, transform .22s ease;
+    }
+
+    .note-toggle:hover .nt-icon::before {
+      border-top-color: var(--accent);
+    }
+
+    .nt-icon.open {
+      transform: rotate(180deg);
     }
 
     .note-body {
@@ -850,7 +881,7 @@
 <body>
 
   <nav>
-    <a href="../../index.html" class="nav-brand">The Thinking Archive</a>
+    <a href="../../index.html" class="nav-brand">The <span>Thinking</span> Archive</a>
     <span class="nav-tag">Essay No. 01 · April 2026</span>
   </nav>
 
@@ -1592,8 +1623,9 @@
   <script>
     function tn(id, ico) {
       const b = document.getElementById(id);
+      const icon = document.getElementById(ico);
       const open = b.classList.toggle('open');
-      document.getElementById(ico).textContent = open ? '−' : '+';
+      icon.classList.toggle('open', open);
     }
 
     const MONO = "'DM Mono',monospace";
