@@ -1,1 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catastrophic Forgetting Is Not an Optimization Problem — The Thinking Archive</title>
+<meta name="description" content="Every approach to catastrophic forgetting treats it as an optimization failure. The brain treats it as a phase transition. These are not the same problem.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0 }
+  html { font-size: 14px; scroll-behavior: smooth }
+  :root {
+    --ink: #1a1815; --paper: #f6f3ea; --muted: #6b6560; --border: #ddd8ce;
+    --card: #eae5d8; --hi: #e2ddd2; --accent: #b83a18; --green: #256640;
+    --blue: #1d5c9e; --gold: #b89020; --w: 860px; --pad: 2.8rem;
+  }
+  body { background:var(--paper); color:var(--ink); font-family:'DM Sans',sans-serif; font-weight:300; font-size:1rem; line-height:1.82; overflow-x:hidden; }
+  body::after { content:''; position:fixed; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events:none; z-index:999; opacity:.45; }
+  nav { position:sticky; top:0; z-index:100; background:var(--paper); border-bottom:1px solid var(--border); padding:1.1rem var(--pad); display:flex; justify-content:space-between; align-items:center; }
+  .nav-brand { font-family:'Playfair Display',serif; font-size:1.05rem; color:var(--ink); text-decoration:none; transition:color .2s; font-weight:400; letter-spacing:-.01em; }
+  .nav-brand span { font-style:italic; color:var(--accent); }
+  .nav-brand:hover { color:var(--accent); } .nav-brand:hover span { color:var(--ink); }
+  .nav-tag { font-family:'DM Mono',monospace; font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+  @keyframes rise { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
+  .hero { max-width:var(--w); width:100%; padding:4rem var(--pad) 2rem; animation:rise .7s ease both; }
+  .chips { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1.6rem; }
+  .chip { font-family:'DM Mono',monospace; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; border:1px solid var(--border); color:var(--muted); padding:.22rem .65rem; border-radius:2px; }
+  .chip.a { color:var(--accent); border-color:var(--accent); }
+  .hero h1 { font-family:'Playfair Display',serif; font-size:clamp(1.7rem,4vw,2.6rem); font-weight:400; line-height:1.18; letter-spacing:-.025em; margin-bottom:.9rem; }
+  .hero h1 em { font-style:italic; }
+  .hero-deck { font-size:1rem; color:var(--muted); line-height:1.82; max-width:680px; margin-bottom:1.8rem; }
+  .byline { border-top:1px solid var(--border); padding-top:1.2rem; display:flex; gap:2.5rem; flex-wrap:wrap; font-family:'DM Mono',monospace; font-size:.62rem; color:var(--muted); letter-spacing:.07em; }
+  .byline b { display:block; color:var(--ink); font-weight:400; margin-bottom:.1rem; }
+  .toc { margin:0 var(--pad) 2.5rem; padding:1.4rem 1.8rem; background:var(--card); border:1px solid var(--border); border-radius:3px; max-width:460px; animation:rise .7s .15s ease both; }
+  .toc-h { font-family:'DM Mono',monospace; font-size:.62rem; letter-spacing:.15em; text-transform:uppercase; color:var(--muted); margin-bottom:.7rem; }
+  .toc ol { list-style:none; counter-reset:toc; }
+  .toc li { counter-increment:toc; border-bottom:1px solid var(--border); }
+  .toc li:last-child { border-bottom:none; }
+  .toc a { display:flex; gap:.6rem; align-items:baseline; padding:.38rem 0; font-size:1rem; color:var(--muted); text-decoration:none; transition:color .2s; line-height:1.5; }
+  .toc a:hover { color:var(--accent); }
+  .toc a::before { content:counter(toc,upper-roman); font-family:'DM Mono',monospace; font-size:.62rem; color:var(--border); min-width:22px; }
 
+  /* ── PROSE ── */
+  .prose { max-width:var(--w); width:100%; margin:0 auto; padding:0 var(--pad) 5rem; animation:rise .7s .2s ease both; }
+  .prose p { font-size:1rem; line-height:1.82; margin-bottom:1.4rem; color:var(--ink); }
+  .prose p.lede { font-family:'Playfair Display',serif; font-size:1.18rem; line-height:1.65; color:var(--ink); }
+  .prose p.pull { font-size:1rem; line-height:1.82; font-weight:500; border-left:3px solid var(--accent); padding-left:1.2rem; color:var(--ink); margin-bottom:1.4rem; }
+  .prose strong { font-weight:500; }
+  sup.cite { font-family:'DM Mono',monospace; font-size:.6rem; color:var(--accent); cursor:default; }
+  .eyebrow { font-family:'DM Mono',monospace; font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-top:3.2rem; margin-bottom:.4rem; }
+  .sec-h { font-family:'Playfair Display',serif; font-size:1.45rem; font-weight:400; line-height:1.25; margin-bottom:1.3rem; }
+
+  /* ── CALLOUT & AI-BOX — same body text ── */
+  .callout { margin:1.8rem 0; padding:1.4rem 1.8rem; background:var(--card); border-left:3px solid var(--accent); border-radius:0 3px 3px 0; }
+  .callout .cl { font-family:'DM Mono',monospace; font-size:.62rem; letter-spacing:.13em; text-transform:uppercase; color:var(--accent); margin-bottom:.7rem; }
+  .callout p { font-size:1rem; color:var(--muted); margin-bottom:.8rem; line-height:1.82; }
+  .callout p:last-child { margin-bottom:0; }
+  .ai-box { margin:1.8rem 0; padding:1.5rem 1.8rem; background:var(--card); border-left:3px solid var(--blue); border-radius:0 3px 3px 0; }
+  .ai-box .cl { font-family:'DM Mono',monospace; font-size:.62rem; letter-spacing:.13em; text-transform:uppercase; color:var(--blue); margin-bottom:.7rem; }
+  .ai-box p { font-size:1rem; line-height:1.82; margin-bottom:.9rem; color:var(--ink); }
+  .ai-box p:last-child { margin-bottom:0; }
+
+  /* ── COLLAPSIBLE NOTE ── */
+  .note-wrap { margin:1.5rem 0; }
+  .note-toggle { display:flex; align-items:center; gap:.6rem; font-family:'DM Mono',monospace; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); cursor:pointer; background:none; border:none; padding:0; transition:color .2s; }
+  .note-toggle:hover { color:var(--accent); }
+  .nt-icon { width:16px; height:16px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:transform .22s ease; border:none; background:none; }
+  .nt-icon::before { content:''; display:block; width:0; height:0; border-left:5px solid transparent; border-right:5px solid transparent; border-top:6px solid var(--muted); transition:border-top-color .2s,transform .22s ease; }
+  .note-toggle:hover .nt-icon::before { border-top-color:var(--accent); }
+  .nt-icon.open { transform:rotate(180deg); }
+  .note-body { display:none; margin-top:.7rem; padding:1.2rem 1.5rem; background:var(--card); border:1px solid var(--border); border-radius:3px; font-size:1rem; color:var(--muted); line-height:1.82; }
+  .note-body.open { display:block; }
+  .note-body strong { color:var(--ink); font-weight:500; }
+  .note-body .neq { font-family:'DM Mono',monospace; font-size:.9rem; color:var(--ink); margin:.6rem 0; display:block; }
+
+  /* ── SECTION DIVIDERS ── */
+  .sep { display:flex; align-items:center; gap:.8rem; margin:2.4rem 0; color:var(--border); font-family:'DM Mono',monospace; font-size:.62rem; letter-spacing:.18em; }
+  .sep::before, .sep::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  /* ── SIMULATION FRAMES ── */
+  .iv { margin:2rem 0; border:1px solid var(--border); border-radius:4px; overflow:hidden; }
+  .iv-h { padding:.75rem 1.4rem; background:#fff; border-bottom:1px solid var(--border); font-family:'DM Mono',monospace; font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); display:flex; justify-content:space-between; align-items:center; }
+  .iv-dot { width:6px; height:6px; border-radius:50%; background:var(--accent); flex-shrink:0; }
+  .iv-ctrl { padding:.65rem 1.4rem; background:#fff; border-bottom:1px solid var(--border); display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .sbtn { padding:5px 14px; border:1px solid var(--border); border-radius:3px; font-family:'DM Mono',monospace; font-size:.62rem; cursor:pointer; color:var(--muted); background:transparent; letter-spacing:.06em; transition:background .15s; }
+  .sbtn:hover { background:var(--hi); }
+  .sbtn.cat { border-color:var(--blue); color:var(--blue); background:#e8f0f9; }
+  .sbtn.dog { border-color:var(--green); color:var(--green); background:#e6f2ec; }
+  .sbtn.on { border-color:var(--accent); color:var(--accent); background:#fbeae6; }
+  .iv-stage { display:grid; grid-template-columns:1fr 170px; }
+  .iv-canvas { border-right:1px solid var(--border); }
+  .iv-sidebar { background:var(--card); padding:.9rem; display:flex; flex-direction:column; gap:8px; }
+  .iv-metric { background:var(--paper); border:1px solid var(--border); border-radius:3px; padding:.6rem .8rem; }
+  .iv-ml { font-family:'DM Mono',monospace; font-size:.55rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:3px; }
+  .iv-mv { font-family:'DM Mono',monospace; font-size:1.15rem; font-weight:400; color:var(--ink); line-height:1; }
+  .iv-ms { font-family:'DM Mono',monospace; font-size:.55rem; color:var(--muted); margin-top:2px; }
+  .iv-bar { height:4px; background:var(--border); border-radius:2px; overflow:hidden; margin-top:5px; }
+  .iv-bar-f { height:100%; border-radius:2px; transition:width .55s ease,background .55s ease; }
+  .iv-wpnls { display:grid; grid-template-columns:1fr 1fr; border-top:1px solid var(--border); }
+  .iv-wp { padding:.75rem 1rem; }
+  .iv-wp+.iv-wp { border-left:1px solid var(--border); background:var(--card); }
+  .iv-wl { font-family:'DM Mono',monospace; font-size:.55rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:.45rem; }
+  .wrow { display:flex; align-items:center; gap:5px; margin-bottom:4px; }
+  .wn { font-family:'DM Mono',monospace; font-size:.58rem; color:var(--muted); width:60px; flex-shrink:0; }
+  .wt { flex:1; height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+  .wf { height:100%; border-radius:2px; transition:width .5s ease,background .5s ease; }
+  .wv { font-family:'DM Mono',monospace; font-size:.58rem; width:34px; text-align:right; }
+  .iv-cap { padding:.75rem 1.4rem; font-family:'DM Sans',sans-serif; font-size:1rem; font-weight:300; color:var(--muted); line-height:1.82; border-top:1px solid var(--border); min-height:48px; background:var(--paper); }
+  .iv-cap strong { color:var(--ink); font-weight:500; }
+  .sctrl-row { display:flex; align-items:center; gap:.8rem; margin-bottom:.55rem; }
+  .sctrl-row label { font-family:'DM Sans',sans-serif; font-size:1rem; font-weight:300; color:var(--muted); width:160px; flex-shrink:0; }
+  .sctrl-row input[type=range] { flex:1; accent-color:var(--accent); cursor:pointer; }
+  .sctrl-row .sval { font-family:'DM Mono',monospace; font-size:.7rem; color:var(--ink); min-width:40px; text-align:right; }
+
+  /* ── FOOTNOTES ── */
+  .fn-wrap { margin-top:3.5rem; padding-top:2rem; border-top:1px solid var(--border); }
+  .fn-h { font-family:'DM Mono',monospace; font-size:.62rem; letter-spacing:.15em; text-transform:uppercase; color:var(--muted); margin-bottom:1rem; }
+  .fn-item { display:flex; gap:.8rem; margin-bottom:1rem; font-size:.88rem; color:var(--muted); line-height:1.75; }
+  .fn-num { font-family:'DM Mono',monospace; color:var(--accent); flex-shrink:0; font-size:.88rem; }
+
+  /* ── NEXT CARD & FOOTER ── */
+  .next-card { margin-top:4rem; padding:1.6rem 1.8rem; background:var(--card); border:1px solid var(--border); border-radius:3px; }
+  .next-lbl { font-family:'DM Mono',monospace; font-size:.62rem; letter-spacing:.13em; text-transform:uppercase; color:var(--muted); margin-bottom:.7rem; }
+  .next-title { font-family:'Playfair Display',serif; font-size:1.15rem; font-style:italic; margin-bottom:.45rem; color:var(--ink); line-height:1.35; }
+  .next-desc { font-size:1rem; color:var(--muted); line-height:1.82; }
+  footer { border-top:1px solid var(--border); padding:2rem var(--pad); font-family:'DM Mono',monospace; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); display:flex; justify-content:space-between; align-items:center; }
+
+  /* ── 3D CANVAS WRAPPERS ── */
+  .c3wrap { position:relative; background:#ffffff; }
+  .c3wrap canvas { display:block; width:100%; cursor:grab; }
+  .c3wrap canvas:active { cursor:grabbing; }
+  .c3label { position:absolute; top:8px; right:10px; font-family:'DM Mono',monospace; font-size:.55rem; color:rgba(80,75,68,.4); letter-spacing:.08em; text-transform:uppercase; }
+  @media(max-width:600px){ :root{--pad:1.3rem;} .iv-stage{grid-template-columns:1fr;} .iv-sidebar{display:none;} .iv-wpnls{grid-template-columns:1fr;} footer{flex-direction:column;gap:.5rem;text-align:center;} }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="../../index.html" class="nav-brand">The <span>Thinking</span> Archive</a>
+  <span class="nav-tag">Essay 02</span>
+</nav>
+
+<div class="hero">
+  <div class="chips">
+    <span class="chip a">Continual Learning</span>
+    <span class="chip">Phase Transitions</span>
+    <span class="chip">Neuroscience</span>
+    <span class="chip">Original Research</span>
+  </div>
+  <h1>Catastrophic Forgetting Is Not an <em>Optimization</em> Problem</h1>
+  <p class="hero-deck">Every approach to catastrophic forgetting treats it as an optimization failure. Elastic weight consolidation, replay buffers, adapter methods: each one tunes a loss function and hopes the weights cooperate. The brain treats it as a phase transition. These are not the same problem and they do not have the same solution.</p>
+  <div class="byline">
+    <div><b>Author</b>Amritansh · Neurodynamic AI</div>
+    <div><b>Published</b>May 2026</div>
+    <div><b>Read time</b>~25 min</div>
+    <div><b>Series</b>Essay 02 of 04</div>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="toc-h">Contents</div>
+  <ol>
+    <li><a href="#s1">Introduction: the strange thing a neural network does</a></li>
+    <li><a href="#s2">Background: what continual learning actually requires</a></li>
+    <li><a href="#s3">The stability-plasticity dilemma</a></li>
+    <li><a href="#s4">The geometry underneath the gradient</a></li>
+    <li><a href="#s5">The nullspace: where safe learning lives</a></li>
+    <li><a href="#s6">Why every standard fix treats the wrong thing</a></li>
+    <li><a href="#s7">The phase transition underneath it all</a></li>
+    <li><a href="#s8">What is left open</a></li>
+  </ol>
+</div>
+
+<div class="prose">
+
+<!-- ═══════════════════════════════════════════════════════ SECTION I -->
+<div class="sep">I</div>
+<p class="eyebrow" id="s1">Introduction</p>
+<h2 class="sec-h">The strange thing a neural network does</h2>
+
+<p>I was doing nothing useful when the thought arrived. Not running an experiment. Not reading a paper. Just sitting with the accumulated weight of six failed experiments in a row, seventeen through twenty-two, each of which had confirmed with increasing precision that my architecture was being beaten by a frozen ViT-B backbone that had learned nothing new at all.</p>
+
+<p>A pretrained model, doing nothing, outperforming everything I built. That should have been discouraging. It felt diagnostic. Zero is information. A frozen model cannot forget, and for six experiments that had been enough to win. The question was not why my architecture was failing. The question was what that failure was <em>made of</em>.</p>
+
+<p>To understand what I mean, consider the simplest version of the problem. You train a neural network to recognize cats. You push accuracy to ninety-four percent. Then you train the same network on dogs. Then you test it on cats again.</p>
+
+<p>The accuracy does not degrade gracefully. It does not slip to eighty percent, then seventy, settling into some reasonable compromise. It collapses. Often to near-chance levels. The network that knew cats no longer knows them. Not partially, not fuzzily. The knowledge is simply gone. This is catastrophic forgetting, and it has been one of the central unsolved problems in machine learning since the late 1980s.<sup class="cite">[1,2]</sup></p>
+
+<p>The disorienting fact about it, the thing that took me months to fully absorb, is that nothing was erased. The weights were not wiped. The training data for cats was not deleted. The network's capacity did not shrink. What happened is subtler and in some ways more troubling: the weights <em>moved</em>. They drifted into a new region of the high-dimensional weight space, a region optimized for dogs, and there is no force pulling them back. The cat valley still exists in the landscape. The network is simply no longer in it.</p>
+
+<p class="pull">Forgetting is not erasure. It is displacement. The knowledge still exists, encoded in the shape of a loss surface the network can no longer reach.</p>
+
+<p>The simulation below makes this concrete. The 3D surface is the loss landscape, projected down to two weight dimensions for visibility. Blue is the cat task surface. Green is the dog task surface. The glowing orange dot is the network's current weight position. Train on cats, and the dot rolls into the blue valley. Then train on dogs. Watch what happens — not just to the accuracy numbers on the right, but to where the dot ends up. Then rotate the scene and notice that the blue valley is still there, intact, in the landscape. The dot is just somewhere else.</p>
+
+<!-- ═══ SIM 1: 3D LOSS LANDSCAPE ═══ -->
+<div class="iv">
+  <div class="iv-h"><span>Simulation 1 · dual loss landscape — weight displacement during sequential training</span><div class="iv-dot"></div></div>
+  <div class="iv-ctrl">
+    <button class="sbtn cat" id="s1-cat" onclick="s1Train('cat')">① Train on cats</button>
+    <button class="sbtn" id="s1-dog" onclick="s1Train('dog')">② Train on dogs</button>
+    <button class="sbtn" id="s1-both" onclick="s1ShowBoth()">Show both surfaces</button>
+    <button class="sbtn" id="s1-rst" onclick="s1Reset()">Reset</button>
+    <span style="font-family:'DM Mono',monospace;font-size:.5rem;color:var(--muted);margin-left:auto">drag to rotate</span>
+  </div>
+  <div class="iv-stage">
+    <div class="iv-canvas c3wrap" style="background:#ffffff">
+      <canvas id="cv1" height="360"></canvas>
+      <div class="c3label">3D weight space · 2-dim projection</div>
+    </div>
+    <div class="iv-sidebar">
+      <div class="iv-metric">
+        <div class="iv-ml">Cat accuracy</div>
+        <div class="iv-mv" id="s1-acc-cat" style="transition:color .4s">—</div>
+        <div class="iv-ms" id="s1-sub-cat">untrained</div>
+        <div class="iv-bar"><div class="iv-bar-f" id="s1-bar-cat" style="width:0%;background:var(--blue)"></div></div>
+      </div>
+      <div class="iv-metric">
+        <div class="iv-ml">Dog accuracy</div>
+        <div class="iv-mv" id="s1-acc-dog">—</div>
+        <div class="iv-ms" id="s1-sub-dog">untrained</div>
+        <div class="iv-bar"><div class="iv-bar-f" id="s1-bar-dog" style="width:0%;background:var(--green)"></div></div>
+      </div>
+      <div class="iv-metric">
+        <div class="iv-ml">Training phase</div>
+        <div class="iv-mv" id="s1-epoch" style="font-size:.85rem;line-height:1.3;margin-top:2px">—</div>
+      </div>
+    </div>
+  </div>
+  <div class="iv-wpnls">
+    <div class="iv-wp"><div class="iv-wl">Cat feature weights</div><div id="s1-w-cat"></div></div>
+    <div class="iv-wp"><div class="iv-wl">Dog feature weights</div><div id="s1-w-dog"></div></div>
+  </div>
+  <div class="iv-cap" id="s1-cap">Press <strong>Train on cats</strong> to begin. Watch the orange dot settle into the blue valley as cat accuracy climbs. Then press <strong>Train on dogs</strong> and observe the displacement.</div>
+</div>
+
+<p>Notice what you just watched. The dog training did not attack the cat weights. There was no adversarial process. The optimizer followed the gradient for dogs, and the gradient for dogs has no information about the cat surface. The forgetting is a byproduct of indifference, not malice. The loss surface for cats remains geometrically intact after dog training ends. The network is simply somewhere else in weight space.</p>
+
+<p>This distinction between erasure and displacement is not semantic. It is the key to understanding why every major approach to catastrophic forgetting has been attacking the wrong target for thirty years. If forgetting were erasure, you would protect the weights. If forgetting is displacement, you need to understand the geometry of the space well enough to prevent the displacement from happening in the first place.</p>
+
+<!-- ═══════════════════════════════════════════════════════ SECTION II -->
+<div class="sep">II</div>
+<p class="eyebrow" id="s2">Background</p>
+<h2 class="sec-h">What continual learning actually requires</h2>
+
+<p>To appreciate why catastrophic forgetting matters beyond benchmark performance, consider what any intelligent system deployed in the real world actually has to do. A robot encounters new environments, new objects, new manipulation tasks. A medical AI sees new disease variants, new imaging modalities, new patient populations. A language model needs to incorporate new knowledge without losing command of what it already knows. All of these systems must learn continuously across time, from a non-stationary stream of experience, without access to all past data simultaneously.</p>
+
+<p>This is the continual learning problem. It is harder than it sounds, and not because of computational constraints. It is hard because of a mathematical tension built into how gradient-based learning works: the same parameter update that makes you better at the new task can make you worse at everything else. The tension is not an engineering artefact that better hardware resolves. It is fundamental.<sup class="cite">[1,3]</sup></p>
+
+<p>To make this precise: a neural network is a function parameterized by a weight vector w. Training on Task A finds a w that minimizes L_A(w). Training on Task B then minimizes L_B(w). Unless the optima of L_A and L_B are in exactly the same region of weight space, sequential gradient descent on L_B will move w away from the L_A optimum. The distance it moves depends on the gradient magnitude, the similarity of the tasks, and the geometry of the loss surfaces. When that distance is large enough that the network is no longer in the basin of attraction for L_A, forgetting is catastrophic.</p>
+
+<p>What makes the problem interesting from a research perspective is that there exists, somewhere in weight space, a region that is simultaneously good for both tasks. It is not empty. The two loss surfaces were constructed from the same world, encoded in overlapping feature spaces. The question is whether gradient descent, operating sequentially on one task at a time, can ever find that joint optimum without explicit access to both tasks simultaneously. The answer, in general, is no. And understanding exactly why that answer is no turns out to require understanding a geometry that most treatments of continual learning never examine directly.</p>
+
+<div class="callout">
+  <div class="cl">Why replay does not solve the problem</div>
+  <p>The most intuitive response to catastrophic forgetting is experience replay: store some examples from Task A and include them in the Task B training batch. This works up to a point. It reduces the drift by mixing gradients from both tasks. But it does not change the underlying geometry. The joint optimum is still where it is. Replay helps you approximate joint training, but the approximation degrades as the number of tasks grows and the buffer becomes a smaller fraction of the total training data. It is a practical workaround, not a solution to the geometric problem.<sup class="cite">[3]</sup></p>
+</div>
+
+<p>The simulation below gives you a bird's-eye view of what the network is actually navigating. Fifty neurons are shown as a 3D grid. Each one activates at some level for each task. You can see Task A's activation pattern in blue, Task B's in green. The red neurons are the ones both tasks rely on. When you train on Task B, those red neurons get updated to serve Task B. That update necessarily degrades their encoding of Task A. This is where forgetting lives, not in any single weight, but in the shared representation neurons that two tasks cannot both use simultaneously.</p>
+
+<!-- ═══ SIM 2: 3D NEURON ACTIVATION VOLUME ═══ -->
+<div class="iv">
+  <div class="iv-h"><span>Simulation 2 · neuron activation volume — where forgetting lives in the network</span><div class="iv-dot"></div></div>
+  <div class="iv-ctrl">
+    <button class="sbtn cat" id="s2-cat" onclick="s2Show('cat')">Task A (cats)</button>
+    <button class="sbtn" id="s2-dog" onclick="s2Show('dog')">Task B (dogs)</button>
+    <button class="sbtn" id="s2-both" onclick="s2Show('both')">Show overlap</button>
+    <button class="sbtn" id="s2-forget" onclick="s2Show('forget')">After Task B training</button>
+    <span style="font-family:'DM Mono',monospace;font-size:.5rem;color:var(--muted);margin-left:auto">drag to rotate</span>
+  </div>
+  <div class="iv-stage">
+    <div class="iv-canvas c3wrap" style="background:#ffffff">
+      <canvas id="cv2" height="360"></canvas>
+      <div class="c3label">3D neuron grid · 5×5×4 = 100 neurons</div>
+    </div>
+    <div class="iv-sidebar">
+      <div class="iv-metric">
+        <div class="iv-ml">Task A neurons</div>
+        <div class="iv-mv" id="s2-n-a">—</div>
+        <div class="iv-ms">active for cats</div>
+      </div>
+      <div class="iv-metric">
+        <div class="iv-ml">Task B neurons</div>
+        <div class="iv-mv" id="s2-n-b">—</div>
+        <div class="iv-ms">active for dogs</div>
+      </div>
+      <div class="iv-metric">
+        <div class="iv-ml">Shared (at risk)</div>
+        <div class="iv-mv" id="s2-n-shared" style="color:var(--accent)">—</div>
+        <div class="iv-ms">interference zone</div>
+      </div>
+      <div class="iv-metric">
+        <div class="iv-ml">Cat accuracy</div>
+        <div class="iv-mv" id="s2-acc">—</div>
+        <div class="iv-ms" id="s2-acc-sub"></div>
+      </div>
+    </div>
+  </div>
+  <div class="iv-cap" id="s2-cap">Select a mode to explore which neurons activate for each task. The red neurons in <strong>overlap</strong> mode are the interference zone: they cannot serve both tasks simultaneously with a single weight value.</div>
+</div>
+
+<p>The interference zone is not the whole story, but it is where most of the damage happens. A neuron that fires strongly for both "cat ear shape" and "dog snout curvature" must encode both features in a single weight vector. When Task B training updates that neuron to better encode dog snouts, it loses precision on cat ears. The loss is proportional to how similar the two feature demands are, and how many neurons are shared.</p>
+
+<p>In a small network, the shared zone is a large fraction of the total. In a large network like ViT-B/14 with 768-dimensional representations, it is a smaller fraction. But the key question is not the absolute size of the shared zone. It is whether the architecture gives the network any way to learn Task B <em>outside</em> the shared zone. And that question turns out to depend on a concept that most continual learning research ignores entirely.</p>
+
+<!-- ═══════════════════════════════════════════════════════ SECTION III -->
+<div class="sep">III</div>
+<p class="eyebrow" id="s3">The stability-plasticity dilemma</p>
+<h2 class="sec-h">A constraint imposed by geometry, not by engineering</h2>
+
+<p>The stability-plasticity dilemma is the oldest framing of the continual learning problem.<sup class="cite">[4]</sup> A system that is perfectly stable cannot learn anything new: its weights are fixed. A system that is perfectly plastic forgets everything instantly: each new update overwrites the last. Every biological and artificial learning system lives somewhere between these extremes, and the question is how to navigate that space well.</p>
+
+<p>The standard framing presents this as a tradeoff: you sacrifice some plasticity to gain stability, or vice versa. Turn up the learning rate and the system learns fast but forgets fast. Turn it down and it retains old knowledge but struggles to acquire new knowledge quickly. This framing is intuitive and partially correct. But it misses the deeper structure of the problem.</p>
+
+<p>The real issue is not that stability and plasticity pull in opposite directions along a single axis. The real issue is that they are geometrically incompatible under single-pathway gradient descent. To be plastic, the weights must move in response to new data. To be stable, the weights must not move away from old solutions. If new data pushes the weights in a direction that overlaps with the old solution's basin, you cannot satisfy both constraints simultaneously with a single gradient step. No learning rate, no regularizer, and no loss function resolves this. The conflict is structural.</p>
+
+<p>The brain does not resolve this conflict. It sidesteps it entirely, by using two separate learning systems that operate at different timescales and never directly compete for the same weights.<sup class="cite">[5]</sup> The hippocampus is the fast learner: it encodes new episodes rapidly, one-shot if necessary, in sparse representations. The neocortex is the slow learner: it integrates experience over thousands of repetitions into dense, overlapping representations. Critically, the hippocampus does not write directly to the neocortex in real time. Instead, during sleep, it replays compressed versions of the day's experiences, and the neocortex updates slowly in response to these replays, interleaved with all its prior experience. The result is that the slow system never receives a gradient dominated by a single new task. It always sees a mixture.</p>
+
+<p>The simulation below lets you explore the stability-plasticity surface directly. The vertical axis is effective performance, measured across both old and new tasks simultaneously. The two horizontal axes are plasticity and stability. The surface has a ridge: there is a region of joint parameter space where the system performs well on both dimensions. Outside that ridge, performance collapses. The brain's operating point sits on the ridge. Standard neural network training with sequential gradient descent does not.</p>
+
+<!-- ═══ SIM 3: 3D STABILITY-PLASTICITY SURFACE ═══ -->
+<div class="iv">
+  <div class="iv-h"><span>Simulation 3 · stability-plasticity surface — the geometry of the dilemma</span><div class="iv-dot"></div></div>
+  <div class="iv-ctrl">
+    <button class="sbtn cat" id="s3-brain" onclick="s3SetPoint('brain')">Brain operating point</button>
+    <button class="sbtn" id="s3-sgd" onclick="s3SetPoint('sgd')">Standard SGD</button>
+    <button class="sbtn" id="s3-ewc" onclick="s3SetPoint('ewc')">EWC</button>
+    <button class="sbtn" id="s3-adapter" onclick="s3SetPoint('adapter')">Residual adapter</button>
+    <span style="font-family:'DM Mono',monospace;font-size:.5rem;color:var(--muted);margin-left:auto">drag to rotate</span>
+  </div>
+  <div class="iv-stage">
+    <div class="iv-canvas c3wrap" style="background:#ffffff">
+      <canvas id="cv3" height="360"></canvas>
+      <div class="c3label">stability × plasticity → performance surface</div>
+    </div>
+    <div class="iv-sidebar">
+      <div class="iv-metric">
+        <div class="iv-ml">System</div>
+        <div class="iv-mv" id="s3-name" style="font-size:.8rem;line-height:1.3">—</div>
+      </div>
+      <div class="iv-metric">
+        <div class="iv-ml">Plasticity</div>
+        <div class="iv-mv" id="s3-plast">—</div>
+        <div class="iv-ms">ability to learn new tasks</div>
+      </div>
+      <div class="iv-metric">
+        <div class="iv-ml">Stability</div>
+        <div class="iv-mv" id="s3-stab">—</div>
+        <div class="iv-ms">retention of old tasks</div>
+      </div>
+      <div class="iv-metric">
+        <div class="iv-ml">Joint performance</div>
+        <div class="iv-mv" id="s3-perf" style="transition:color .4s">—</div>
+        <div class="iv-ms" id="s3-perf-sub"></div>
+      </div>
+    </div>
+  </div>
+  <div class="iv-cap" id="s3-cap">Select a system to see where it sits on the stability-plasticity surface. Notice how standard SGD achieves high plasticity but near-zero stability, while frozen models achieve high stability but zero plasticity. The brain and residual adapters find the ridge.</div>
+</div>
+
+<p>Several things become clear from this surface. First, the ridge is narrow. The joint optimum requires precise coordination between plasticity and stability, not just a moderate value of each. Second, the standard engineering response, tuning a single learning rate or regularization coefficient, moves you along the surface but cannot get you onto the ridge unless the architecture itself creates the separation. Third, and most importantly, the brain's solution is not on the stability-plasticity tradeoff at all. It is above it, on the ridge, because it uses architectural separation rather than parameter tuning to achieve both simultaneously.</p>
+
+<p>This is the first architectural lesson. The stability-plasticity dilemma is not a constraint you optimize through. It is a constraint you escape from, by building a system that does not have to make the tradeoff in the first place. The CLS theory tells us the brain's solution. The question for machine learning is whether we can build an analogous structure.</p>
+
+<div class="ai-box">
+  <div class="cl">The complementary learning systems theory</div>
+  <p>McClelland, McNaughton and O'Reilly (1995) proposed that the brain uses two distinct memory systems at fundamentally different timescales: the hippocampus for rapid encoding of new episodes in sparse, pattern-separated representations, and the neocortex for slow, distributed consolidation of structured knowledge.<sup class="cite">[5]</sup> The hippocampus can learn a new fact in a single exposure. The neocortex requires thousands of interleaved exposures before it incorporates a new pattern without disrupting old ones. Crucially, McClelland et al. demonstrate through simulation that fast neocortical learning produces catastrophic interference, while slow interleaved learning does not — the timescale separation is not incidental but mechanistically essential.</p>
+  <p>The mechanism that makes this work is offline replay. During sleep, the hippocampus re-activates compressed representations of recent experiences and replays them to the cortex. The cortex receives these replays interleaved with activations of existing knowledge, ensuring that the gradient it sees is always a mixture, never dominated by any single new task. A subsequent review by O'Reilly et al. (2014) confirmed this picture with two decades of additional neuroscientific evidence, particularly regarding sharp-wave ripple events during hippocampal replay.<sup class="cite">[7]</sup></p>
+  <p>The machine learning field has known about CLS theory for thirty years. It has mostly failed to take the architectural implication seriously: the solution is not a better loss function. It is structural separation of fast and slow learning pathways, with an explicit mechanism for interleaved consolidation.</p>
+</div>
+
+<p>The sections that follow trace what happens when you take the geometric and architectural lessons seriously. They move from the abstract stability-plasticity surface to the specific geometry of weight space, to the concept of the nullspace, and finally to the phase transition that determines whether forgetting is gradual or catastrophic. Each section is accompanied by a simulation that lets you develop direct intuition for the mathematics involved.</p>
+
+<!-- ═══════════════════════════════════════════════════════ FOOTNOTES -->
+<div class="fn-wrap">
+  <div class="fn-h">Notes and references — sections I through III</div>
+
+  <div class="fn-item"><span class="fn-num">[1]</span><span>McCloskey, M. and Cohen, N. J. (1989). "Catastrophic interference in connectionist networks: the sequential learning problem." In G. H. Bower (ed.), <em>The Psychology of Learning and Motivation</em>, vol. 24, pp. 109–165. Academic Press. doi:10.1016/S0079-7421(08)60536-8.</span></div>
+
+  <div class="fn-item"><span class="fn-num">[2]</span><span>Ratcliff, R. (1990). "Connectionist models of recognition memory: constraints imposed by learning and forgetting functions." <em>Psychological Review</em>, 97(2), 285–308. doi:10.1037/0033-295x.97.2.285.</span></div>
+
+  <div class="fn-item"><span class="fn-num">[3]</span><span>French, R. M. (1999). "Catastrophic forgetting in connectionist networks." <em>Trends in Cognitive Sciences</em>, 3(4), 128–135. doi:10.1016/S1364-6613(99)01294-2.</span></div>
+
+  <div class="fn-item"><span class="fn-num">[4]</span><span>Grossberg, S. (1980). "How does a brain build a cognitive code?" <em>Psychological Review</em>, 87(1), 1–51. doi:10.1037/0033-295X.87.1.1.</span></div>
+
+  <div class="fn-item"><span class="fn-num">[5]</span><span>McClelland, J. L., McNaughton, B. L., and O'Reilly, R. C. (1995). "Why there are complementary learning systems in the hippocampus and neocortex: insights from the successes and failures of connectionist models of learning and memory." <em>Psychological Review</em>, 102(3), 419–457. doi:10.1037/0033-295X.102.3.419.</span></div>
+
+  <div class="fn-item"><span class="fn-num">[6]</span><span>Kirkpatrick, J., Pascanu, R., Rabinowitz, N., Veness, J., Desjardins, G., Rusu, A. A., Milan, K., Quan, J., Ramalho, T., Grabska-Barwinska, A., Hassabis, D., Clopath, C., Kumaran, D., and Hadsell, R. (2017). "Overcoming catastrophic forgetting in neural networks." <em>Proceedings of the National Academy of Sciences</em>, 114(13), 3521–3526. doi:10.1073/pnas.1611835114.</span></div>
+
+  <div class="fn-item"><span class="fn-num">[7]</span><span>O'Reilly, R. C., Bhattacharyya, R., Howard, M. D., and Ketz, N. (2014). "Complementary learning systems." <em>Cognitive Science</em>, 38(6), 1229–1248. doi:10.1111/j.1551-6709.2011.01214.x.</span></div>
+</div>
+
+<div class="next-card">
+  <div class="next-lbl">Continuing in this essay · Sections IV through VIII</div>
+  <div class="next-title">The geometry underneath the gradient — nullspace, phase transitions, and what experiment 023 actually proved</div>
+  <div class="next-desc">The next sections move from the stability-plasticity framing to the specific geometry of high-dimensional weight space. They introduce the nullspace concept, explain why the 768-to-128 bottleneck destroyed it, and show how the residual adapter's Pareto improvement is direct empirical evidence for the geometric hypothesis.</div>
+</div>
+
+</div><!-- /prose -->
+
+<footer>
+  <span>The Thinking Archive · Bengaluru, India · Open Science · 2026</span>
+  <a href="../../index.html" style="color:var(--muted);text-decoration:none">← Back to archive</a>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   UTILITIES
+════════════════════════════════════════════════════════════════════ */
+function eio(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;}
+function lerp(a,b,t){return a+(b-a)*t;}
+window.toggleNote=function(id){document.getElementById(id).classList.toggle('open');document.getElementById('ni-'+id).classList.toggle('open');};
+
+function makeRenderer(canvasId, height){
+  const cv=document.getElementById(canvasId);
+  const W=cv.parentElement.clientWidth;
+  const H=height||360;
+  cv.width=W*devicePixelRatio; cv.height=H*devicePixelRatio;
+  cv.style.width=W+'px'; cv.style.height=H+'px';
+  const r=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:false});
+  r.setPixelRatio(devicePixelRatio); r.setSize(W,H); r.setClearColor(0xffffff,1);
+  r.shadowMap.enabled=true;
+  return {renderer:r, W, H};
+}
+
+function orbitControl(cv,camera,target,defaultTheta,defaultPhi,radius){
+  let drag=false,lx=0,ly=0,th=defaultTheta,ph=defaultPhi;
+  const T=target||new THREE.Vector3(0,0,0);
+  const R=radius||5.5;
+  function update(){camera.position.set(T.x+R*Math.sin(ph)*Math.sin(th),T.y+R*Math.cos(ph),T.z+R*Math.sin(ph)*Math.cos(th));camera.lookAt(T);}
+  update();
+  cv.addEventListener('mousedown',e=>{drag=true;lx=e.clientX;ly=e.clientY;});
+  window.addEventListener('mouseup',()=>drag=false);
+  window.addEventListener('mousemove',e=>{if(!drag)return;th+=(e.clientX-lx)*.009;ph=Math.max(.1,Math.min(1.35,ph-(e.clientY-ly)*.009));lx=e.clientX;ly=e.clientY;update();});
+  cv.addEventListener('touchstart',e=>{lx=e.touches[0].clientX;ly=e.touches[0].clientY;},{passive:true});
+  cv.addEventListener('touchmove',e=>{th+=(e.touches[0].clientX-lx)*.011;ph=Math.max(.1,Math.min(1.35,ph-(e.touches[0].clientY-ly)*.011));lx=e.touches[0].clientX;ly=e.touches[0].clientY;update();},{passive:true});
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   SIM 1 · DUAL LOSS LANDSCAPE
+════════════════════════════════════════════════════════════════════ */
+(function(){
+  const {renderer,W,H}=makeRenderer('cv1',360);
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(42,W/H,.1,100);
+  orbitControl(document.getElementById('cv1'),camera,new THREE.Vector3(0,-.3,0),.42,.58,5.8);
+
+  scene.add(new THREE.AmbientLight(0xffffff,.75));
+  const dl=new THREE.DirectionalLight(0xffffff,.6); dl.position.set(3,5,2); scene.add(dl);
+  const dl2=new THREE.DirectionalLight(0xddeeff,.3); dl2.position.set(-3,2,-2); scene.add(dl2);
+
+  const G=52, R=2.0;
+  const CAT={x:-.68,z:-.55}, DOG={x:.60,z:.62};
+  function cL(x,z){const dx=x-CAT.x,dz=z-CAT.z;return .05+2.0*(dx*dx*1.3+dz*dz+.32*dx*dz);}
+  function dL(x,z){const dx=x-DOG.x,dz=z-DOG.z;return .05+2.0*(dx*dx*1.2+dz*dz-.28*dx*dz);}
+
+  function buildSurf(lFn,hex,opacity){
+    const geo=new THREE.BufferGeometry(),v=[],c=[],idx=[];
+    const r=(hex>>16&255)/255,g=(hex>>8&255)/255,b=(hex&255)/255;
+    for(let i=0;i<=G;i++){for(let j=0;j<=G;j++){
+      const x=-R+2*R*(i/G),z=-R+2*R*(j/G),l=Math.min(lFn(x,z),3.0),y=-l*.48;
+      v.push(x,y,z);
+      // On white bg: valley = vivid color, ridges = lighter (blend toward white)
+      const t=Math.min(l/3.0,1); // t=0 at valley, t=1 at peak
+      const cr=r+(1-r)*t*.85, cg=g+(1-g)*t*.85, cb=b+(1-b)*t*.85;
+      c.push(cr,cg,cb);
+    }}
+    for(let i=0;i<G;i++){for(let j=0;j<G;j++){const a=i*(G+1)+j,b=a+1,cc=a+(G+1),d=cc+1;idx.push(a,b,cc,b,d,cc);}}
+    geo.setAttribute('position',new THREE.Float32BufferAttribute(v,3));
+    geo.setAttribute('color',new THREE.Float32BufferAttribute(c,3));
+    geo.setIndex(idx); geo.computeVertexNormals();
+    return new THREE.Mesh(geo,new THREE.MeshPhongMaterial({vertexColors:true,side:THREE.DoubleSide,transparent:true,opacity,shininess:40}));
+  }
+
+  const catSurf=buildSurf(cL,0x1d5c9e,.85); scene.add(catSurf);
+  const dogSurf=buildSurf(dL,0x256640,.0); scene.add(dogSurf);
+
+  // weight dot — vivid orange for white bg
+  const dotGeo=new THREE.SphereGeometry(.09,20,16);
+  const dotMat=new THREE.MeshPhongMaterial({color:0xf04800,emissive:0xc02000,shininess:120});
+  const dot=new THREE.Mesh(dotGeo,dotMat); scene.add(dot);
+
+  // glow halo
+  const haloGeo=new THREE.SphereGeometry(.18,16,12);
+  const haloMat=new THREE.MeshBasicMaterial({color:0xff6020,transparent:true,opacity:.15});
+  const halo=new THREE.Mesh(haloGeo,haloMat); scene.add(halo);
+
+  // trail
+  let trailPts=[];
+  const trailGeo=new THREE.BufferGeometry();
+  trailGeo.setAttribute('position',new THREE.Float32BufferAttribute([],3));
+  const trail=new THREE.Line(trailGeo,new THREE.LineBasicMaterial({color:0xd85a1a,transparent:true,opacity:.65}));
+  scene.add(trail);
+
+  // label sprites helper — dark text for white bg
+  function textSprite(text,color){
+    const c=document.createElement('canvas'); c.width=320; c.height=56;
+    const ctx=c.getContext('2d');
+    ctx.font='600 20px "DM Mono",monospace';
+    ctx.fillStyle=color||'rgba(30,25,20,.8)'; ctx.textAlign='center'; ctx.fillText(text,160,36);
+    const tex=new THREE.CanvasTexture(c);
+    const mat=new THREE.SpriteMaterial({map:tex,transparent:true});
+    const sp=new THREE.Sprite(mat); sp.scale.set(1.4,.32,1); return sp;
+  }
+  const catLbl=textSprite('cat minimum','rgba(29,92,158,.9)');
+  const dogLbl=textSprite('dog minimum','rgba(37,102,64,.9)');
+  catLbl.position.set(CAT.x,-cL(CAT.x,CAT.z)*.48-.3,CAT.z); scene.add(catLbl);
+  dogLbl.position.set(DOG.x,-dL(DOG.x,DOG.z)*.48-.3,DOG.z); scene.add(dogLbl); dogLbl.visible=false;
+
+  let wd={x:.05,z:.05},phase='idle',timer=null,catAcc=0,dogAcc=0;
+  let cw=[.11,-.07,.20,-.14,.06],dw=[-.06,.17,-.11,.08,-.20];
+  const CN=['ear shape','whisker','eye slit','fur coat','tail curl'];
+  const DN=['ear flop','snout','eye round','fur length','tail wag'];
+
+  function posY(x,z){return -(phase==='cat'||phase==='cD'?cL(x,z):dL(x,z))*.48+.1;}
+
+  function updateDot(){
+    const y=posY(wd.x,wd.z);
+    dot.position.set(wd.x,y,wd.z);
+    halo.position.set(wd.x,y,wd.z);
+    trailPts.push(new THREE.Vector3(wd.x,y,wd.z));
+    if(trailPts.length>120)trailPts.shift();
+    const tg=new THREE.BufferGeometry().setFromPoints(trailPts);
+    trail.geometry.dispose(); trail.geometry=tg;
+  }
+
+  function uMetrics(){
+    const ce=document.getElementById('s1-acc-cat'),de=document.getElementById('s1-acc-dog');
+    ce.textContent=catAcc>0?catAcc+'%':'—';
+    de.textContent=dogAcc>0?dogAcc+'%':'—';
+    const warn=catAcc<35&&dogAcc>0,deg=catAcc<65&&dogAcc>0;
+    ce.style.color=warn?'#b83a18':deg?'#b89020':'var(--ink)';
+    document.getElementById('s1-bar-cat').style.width=catAcc+'%';
+    document.getElementById('s1-bar-cat').style.background=warn?'#b83a18':deg?'#b89020':'var(--blue)';
+    document.getElementById('s1-bar-dog').style.width=dogAcc+'%';
+    document.getElementById('s1-sub-cat').textContent=warn?'catastrophic forgetting!':deg?'degrading...':'';
+  }
+
+  function uWeights(p,t){
+    const cT=[.83,-.72,.90,-.79,.66],dT=[-.70,.86,-.63,.76,-.89],n=()=>(Math.random()-.5)*.04;
+    if(p==='cat'){cw=cw.map((w,i)=>w+(cT[i]-w)*t+n()); dw=dw.map(w=>w*(1-t*.08)+n()*.3);}
+    else{dw=dw.map((w,i)=>w+(dT[i]-w)*t+n()); cw=cw.map((w,i)=>cT[i]*(1-eio(t)*.87)+n());}
+    const rW=(wts,names,k)=>{
+      const bc=k==='cat'?'var(--blue)':'var(--green)';
+      return wts.map((w,i)=>{const pct=Math.round(Math.abs(w)*100);const bad=k==='cat'&&phase==='dD'&&pct<20;const c=bad?'var(--accent)':bc;return `<div class="wrow"><div class="wn">${names[i]}</div><div class="wt"><div class="wf" style="width:${pct}%;background:${c}"></div></div><div class="wv" style="color:${c}">${w<0?'−':''}${Math.abs(w).toFixed(2)}</div></div>`;}).join('');
+    };
+    document.getElementById('s1-w-cat').innerHTML=rW(cw,CN,'cat');
+    document.getElementById('s1-w-dog').innerHTML=rW(dw,DN,'dog');
+  }
+
+  window.s1Train=function(p){
+    if(timer)clearInterval(timer);
+    document.getElementById('s1-cat').className='sbtn'+(p==='cat'?' cat':'');
+    document.getElementById('s1-dog').className='sbtn'+(p==='dog'?' dog':'');
+    phase=p; const tgt=p==='cat'?CAT:DOG; const steps=28,ns=.14; let step=0,sx=wd.x,sz=wd.z;
+    if(p==='dog'){dogLbl.visible=true;}
+    const caps={cat:'Gradient descent follows the cat loss surface. Watch the dot settle into the blue valley as the cat weights encode ear shape, whisker patterns, eye structure.',dog:'The gradient now pulls toward the dog loss valley. Both surfaces exist simultaneously in weight space. The dot moves away from the cat minimum — not because cats are forgotten, but because the gradient does not know they exist.'};
+    document.getElementById('s1-cap').innerHTML=caps[p];
+    document.getElementById('s1-epoch').textContent=p==='cat'?'learning cats':'learning dogs';
+    timer=setInterval(()=>{
+      step++; const t=eio(step/steps),noise=(1-t)*ns;
+      wd.x=sx+(tgt.x-sx)*t+(Math.random()-.5)*noise;
+      wd.z=sz+(tgt.z-sz)*t+(Math.random()-.5)*noise;
+      if(p==='cat'){catAcc=Math.round(Math.min(94,t*94));catSurf.material.opacity=.85;dogSurf.material.opacity=.12;}
+      else{dogAcc=Math.round(Math.min(92,t*92));catAcc=Math.round(Math.max(8,94*(1-eio(t)*.91)));catSurf.material.opacity=Math.max(.1,.85*(1-t*.6));dogSurf.material.opacity=Math.min(.85,t*.85);}
+      updateDot(); uMetrics(); uWeights(p,t);
+      if(step>=steps){clearInterval(timer);timer=null;phase=p==='cat'?'cD':'dD';
+        document.getElementById('s1-epoch').textContent=p==='cat'?'cats: complete':'dogs: complete';
+        document.getElementById('s1-cap').innerHTML=p==='dog'
+          ?`<strong>Displacement complete.</strong> Cat accuracy fell from 94% to ${catAcc}%. Rotate the scene and look for the blue valley. It is still there — geometrically unchanged. The dot is simply no longer in it. This is what forgetting looks like from the weight space perspective.`
+          :'<strong>Cat task learned — 94%.</strong> Now press <strong>Train on dogs</strong> to see what sequential gradient descent does to the cat minimum.';}
+    },130);
+  };
+
+  window.s1ShowBoth=function(){
+    catSurf.material.opacity=.65; dogSurf.material.opacity=.65; dogLbl.visible=true;
+    document.getElementById('s1-both').className='sbtn on';
+    document.getElementById('s1-cap').innerHTML='Both loss surfaces are now visible simultaneously. This is the actual landscape the network inhabits. There are two valleys. The network can only be in one at a time. Rotate to see how the valleys relate in 3D.';
+  };
+
+  window.s1Reset=function(){
+    if(timer){clearInterval(timer);timer=null;}
+    wd={x:.05,z:.05};phase='idle';catAcc=0;dogAcc=0;trailPts=[];
+    trail.geometry.dispose();trail.geometry=new THREE.BufferGeometry().setFromPoints([]);
+    dot.position.set(.05,posY(.05,.05),.05);halo.position.copy(dot.position);
+    catSurf.material.opacity=.85;dogSurf.material.opacity=.0;dogLbl.visible=false;
+    ['s1-cat','s1-dog','s1-both'].forEach(id=>document.getElementById(id).className='sbtn'+(id==='s1-cat'?' cat':''));
+    document.getElementById('s1-acc-cat').textContent='—';document.getElementById('s1-acc-cat').style.color='var(--ink)';
+    document.getElementById('s1-acc-dog').textContent='—';document.getElementById('s1-sub-cat').textContent='';
+    document.getElementById('s1-bar-cat').style.width='0%';document.getElementById('s1-bar-cat').style.background='var(--blue)';
+    document.getElementById('s1-bar-dog').style.width='0%';document.getElementById('s1-epoch').textContent='—';
+    document.getElementById('s1-cap').innerHTML='Press <strong>Train on cats</strong> to begin. Watch the orange dot settle into the blue valley as cat accuracy climbs. Then press <strong>Train on dogs</strong> and observe the displacement.';
+    uWeights('cat',0);
+  };
+
+  uWeights('cat',0);
+  let af1; function loop(){af1=requestAnimationFrame(loop);renderer.render(scene,camera);}
+  window.addEventListener('load',()=>{loop();s1Reset();});
+  window.addEventListener('resize',()=>{const cv=document.getElementById('cv1');const W2=cv.parentElement.clientWidth;cv.width=W2*devicePixelRatio;cv.style.width=W2+'px';renderer.setSize(W2,360);camera.aspect=W2/360;camera.updateProjectionMatrix();});
+})();
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   SIM 2 · 3D NEURON ACTIVATION VOLUME
+════════════════════════════════════════════════════════════════════ */
+(function(){
+  const {renderer,W,H}=makeRenderer('cv2',360);
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(40,W/H,.1,100);
+  orbitControl(document.getElementById('cv2'),camera,new THREE.Vector3(0,0,0),.55,.62,7.5);
+  scene.add(new THREE.AmbientLight(0xffffff,.7));
+  const dl=new THREE.DirectionalLight(0xffffff,.6);dl.position.set(4,6,3);scene.add(dl);
+  const dl2=new THREE.DirectionalLight(0xddeeff,.3);dl2.position.set(-3,2,-2);scene.add(dl2);
+
+  const NX=5,NY=4,NZ=5,N=NX*NY*NZ;
+  const rng=(seed=>()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;})(12345);
+
+  // assign each neuron its task usage
+  const neurons=[];
+  for(let x=0;x<NX;x++){for(let y=0;y<NY;y++){for(let z=0;z<NZ;z++){
+    const usA=rng()<.58, usB=rng()<.52;
+    neurons.push({x,y,z,usA,usB,shared:usA&&usB,mesh:null,glow:null});
+  }}}
+  // ensure ~28% overlap
+  neurons.forEach(n=>{if(rng()<.1){n.usA=true;n.usB=true;n.shared=true;}});
+
+  const nA=neurons.filter(n=>n.usA).length;
+  const nB=neurons.filter(n=>n.usB).length;
+  const nS=neurons.filter(n=>n.shared).length;
+
+  const gap=1.4;
+  const ox=-(NX-1)*gap/2,oy=-(NY-1)*gap/2,oz=-(NZ-1)*gap/2;
+
+  const MAT={
+    idle:new THREE.MeshPhongMaterial({color:0xd8d2c8,transparent:true,opacity:.35,shininess:5}),
+    cat:new THREE.MeshPhongMaterial({color:0x1d5c9e,emissive:0x0a2040,transparent:true,opacity:.9,shininess:60}),
+    dog:new THREE.MeshPhongMaterial({color:0x256640,emissive:0x082818,transparent:true,opacity:.9,shininess:60}),
+    shared:new THREE.MeshPhongMaterial({color:0xb83a18,emissive:0x5a1000,transparent:true,opacity:.95,shininess:80}),
+    dead:new THREE.MeshPhongMaterial({color:0x3a2010,emissive:0x000000,transparent:true,opacity:.35,shininess:5}),
+    ghost:new THREE.MeshPhongMaterial({color:0x1d3060,transparent:true,opacity:.15,shininess:5}),
+  };
+
+  neurons.forEach(n=>{
+    const geo=new THREE.SphereGeometry(.28,14,10);
+    n.mesh=new THREE.Mesh(geo,MAT.idle.clone());
+    n.mesh.position.set(ox+n.x*gap,oy+n.y*gap,oz+n.z*gap);
+    scene.add(n.mesh);
+    // glow sphere for active neurons
+    const gg=new THREE.SphereGeometry(.42,10,8);
+    n.glow=new THREE.Mesh(gg,new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:0}));
+    n.glow.position.copy(n.mesh.position);
+    scene.add(n.glow);
+  });
+
+  // connection lines between shared neurons and their neighbours
+  const connMat=new THREE.LineBasicMaterial({color:0xb83a18,transparent:true,opacity:.18});
+  neurons.filter(n=>n.shared).forEach(n=>{
+    neurons.filter(m=>m.usA&&!m.shared&&Math.random()<.3).forEach(m=>{
+      const geo=new THREE.BufferGeometry().setFromPoints([n.mesh.position,m.mesh.position]);
+      scene.add(new THREE.Line(geo,connMat));
+    });
+  });
+
+  let curMode='idle',blinkT=0;
+  function setMode(mode){
+    curMode=mode;
+    neurons.forEach(n=>{
+      let col,gAlpha=0,emissive=0x000000,opacity=1;
+      if(mode==='cat'){
+        if(n.usA&&n.shared){col=0xe07030;emissive=0x803010;opacity=.95;gAlpha=.12;}
+        else if(n.usA){col=0x2272d8;emissive=0x0a2880;opacity=.92;gAlpha=.1;}
+        else{col=0xe8e4dc;emissive=0x000000;opacity=.35;gAlpha=0;}
+      } else if(mode==='dog'){
+        if(n.usB&&n.shared){col=0xe07030;emissive=0x803010;opacity=.95;gAlpha=.12;}
+        else if(n.usB){col=0x22a860;emissive=0x086030;opacity=.92;gAlpha=.1;}
+        else{col=0xe8e4dc;emissive=0x000000;opacity=.35;gAlpha=0;}
+      } else if(mode==='both'){
+        if(n.shared){col=0xe83820;emissive=0xa01000;opacity=.98;gAlpha=.22;}
+        else if(n.usA){col=0x3080e8;emissive=0x103880;opacity=.85;gAlpha=.1;}
+        else if(n.usB){col=0x20c068;emissive=0x0a6030;opacity=.85;gAlpha=.1;}
+        else{col=0xdbd6cc;emissive=0x000000;opacity=.25;gAlpha=0;}
+      } else if(mode==='forget'){
+        if(n.shared){col=0x22a860;emissive=0x086030;opacity=.92;gAlpha=.12;}
+        else if(n.usA&&!n.usB){col=0xadc4e8;emissive=0x000000;opacity=.38;gAlpha=0;}
+        else if(n.usB){col=0x22a860;emissive=0x086030;opacity=.88;gAlpha=.1;}
+        else{col=0xe5e1d8;emissive=0x000000;opacity=.2;gAlpha=0;}
+      } else {
+        col=0xd8d2c8;emissive=0x000000;opacity=.4;gAlpha=0;
+      }
+      n.mesh.material.color.setHex(col);
+      n.mesh.material.emissive.setHex(emissive);
+      n.mesh.material.opacity=opacity;
+      n.glow.material.opacity=gAlpha;
+      n.glow.material.color.setHex(col);
+    });
+
+    const caps={
+      idle:'Select a mode to explore which neurons activate for each task.',
+      cat:`<strong>Task A (cats) active.</strong> ${nA} of ${N} neurons fire for the cat task. Blue neurons encode features like ear shape, whisker patterns, and eye structure. These weights have been tuned through training on cats.`,
+      dog:`<strong>Task B (dogs) active.</strong> ${nB} of ${N} neurons fire for the dog task. Many overlap with the cat network — four-legged mammal structure, fur texture, and body proportions are shared features.`,
+      both:`<strong>Overlap revealed.</strong> <span style="color:#b83a18">${nS} red neurons</span> are active for both tasks. They cannot encode both sets of features simultaneously with a single weight value. When Task B training updates them, Task A encoding degrades. This is the interference zone.`,
+      forget:`<strong>After Task B training.</strong> The shared neurons (now green) have been retrained to serve dogs. The pure cat neurons (faded blue) have partially degraded because the gradient from dog training propagated through the network. Cat accuracy collapses not because cat neurons were targeted, but because shared neurons were reassigned.`
+    };
+    document.getElementById('s2-cap').innerHTML=caps[mode];
+
+    const accMap={idle:'—',cat:'94%',dog:'92% (dog)',both:'94%',forget:'11%'};
+    document.getElementById('s2-acc').textContent=accMap[mode];
+    document.getElementById('s2-acc').style.color=mode==='forget'?'#b83a18':'var(--ink)';
+    document.getElementById('s2-acc-sub').textContent=mode==='forget'?'catastrophic forgetting':mode==='both'?'before dog training':'';
+    document.getElementById('s2-n-a').textContent=nA;
+    document.getElementById('s2-n-b').textContent=nB;
+    document.getElementById('s2-n-shared').textContent=nS;
+  }
+
+  window.s2Show=function(m){
+    ['cat','dog','both','forget'].forEach(k=>document.getElementById('s2-'+k).className='sbtn'+(k===m?(m==='cat'?' cat':m==='dog'?' dog':' on'):''));
+    setMode(m);
+  };
+
+  setMode('idle');
+  let af2,blinkPhase=0;
+  function loop2(){
+    af2=requestAnimationFrame(loop2);
+    blinkPhase+=.04;
+    if(curMode==='both'){
+      neurons.filter(n=>n.shared).forEach(n=>{
+        const pulse=.08+.06*Math.sin(blinkPhase+n.x+n.z);
+        n.glow.material.opacity=pulse;
+        // pulse emissive between orange-red
+        const ev=0.5+pulse*2;
+        n.mesh.material.emissive.setRGB(ev*.65,ev*.1,0);
+      });
+    }
+    renderer.render(scene,camera);
+  }
+  window.addEventListener('load',()=>loop2());
+  window.addEventListener('resize',()=>{const cv=document.getElementById('cv2');const W2=cv.parentElement.clientWidth;cv.width=W2*devicePixelRatio;cv.style.width=W2+'px';renderer.setSize(W2,360);camera.aspect=W2/360;camera.updateProjectionMatrix();});
+})();
+
+
+/* ═══════════════════════════════════════════════════════════════════
+   SIM 3 · 3D STABILITY-PLASTICITY PERFORMANCE SURFACE
+════════════════════════════════════════════════════════════════════ */
+(function(){
+  const {renderer,W,H}=makeRenderer('cv3',360);
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(40,W/H,.1,100);
+  orbitControl(document.getElementById('cv3'),camera,new THREE.Vector3(0,.3,0),.38,.52,6.8);
+  scene.add(new THREE.AmbientLight(0xffffff,.7));
+  const dl=new THREE.DirectionalLight(0xffffff,.6);dl.position.set(3,5,2);scene.add(dl);
+  const dl2=new THREE.DirectionalLight(0xddeeff,.25);dl2.position.set(-2,1,-3);scene.add(dl2);
+
+  // build the surface: X=plasticity[0..1], Z=stability[0..1], Y=performance
+  const G=60;
+  function perfFn(p,s){
+    // ridge along p+s≈1.1, peak at p=.55 s=.55
+    const ridge=Math.exp(-Math.pow(p+s-1.1,2)/.06)*Math.exp(-Math.pow(p-.55,2)/.12)*Math.exp(-Math.pow(s-.55,2)/.12);
+    const catOnly=s*.35*(1-p*.7); // high stability, low plasticity: retains old, can't learn
+    const dogOnly=p*.2*(1-s*.8); // high plasticity, low stability: learns fast, forgets instantly
+    return Math.max(0,Math.min(1,ridge*.95+catOnly*.18+dogOnly*.06));
+  }
+
+  const geo=new THREE.BufferGeometry(),v=[],c=[],idx=[];
+  for(let i=0;i<=G;i++){for(let j=0;j<=G;j++){
+    const p=i/G,s=j/G,perf=perfFn(p,s),y=perf*2.2-1.1;
+    const x=(p-.5)*3.8,z=(s-.5)*3.8;
+    v.push(x,y,z);
+    // vivid: low perf = warm coral, high perf = vivid teal-green, mid = amber
+    const rr=perf<.5?1:lerp(1,.08,Math.min((perf-.5)*2,1));
+    const gg=perf<.35?lerp(.15,.65,(perf/.35)):perf<.65?lerp(.65,.85,((perf-.35)/.3)):lerp(.85,.72,((perf-.65)/.35));
+    const bb=perf<.5?lerp(.15,.08,perf*2):lerp(.08,.48,Math.min((perf-.5)*2,1));
+    c.push(rr,gg,bb);
+  }}
+  for(let i=0;i<G;i++){for(let j=0;j<G;j++){const a=i*(G+1)+j,b=a+1,cc=a+(G+1),d=cc+1;idx.push(a,b,cc,b,d,cc);}}
+  geo.setAttribute('position',new THREE.Float32BufferAttribute(v,3));
+  geo.setAttribute('color',new THREE.Float32BufferAttribute(c,3));
+  geo.setIndex(idx);geo.computeVertexNormals();
+  const surf=new THREE.Mesh(geo,new THREE.MeshPhongMaterial({vertexColors:true,side:THREE.DoubleSide,shininess:15,transparent:true,opacity:.88}));
+  scene.add(surf);
+
+  // wireframe grid overlay — subtle dark lines on white bg
+  const wfGeo=geo.clone();
+  const wf=new THREE.Mesh(wfGeo,new THREE.MeshBasicMaterial({color:0x555040,wireframe:true,transparent:true,opacity:.06}));
+  scene.add(wf);
+
+  // axis labels — dark text for white bg
+  function axisSprite(text,pos,col){
+    const c2=document.createElement('canvas');c2.width=320;c2.height=56;
+    const ctx=c2.getContext('2d');ctx.font='600 18px "DM Mono",monospace';
+    ctx.fillStyle=col||'rgba(40,35,28,.7)';ctx.textAlign='center';ctx.fillText(text,160,36);
+    const tex=new THREE.CanvasTexture(c2);
+    const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true}));
+    sp.scale.set(1.9,.42,1);sp.position.set(...pos);scene.add(sp);return sp;
+  }
+  axisSprite('← stability →',[2.2,-1.5,2.2],'rgba(140,100,20,.85)');
+  axisSprite('← plasticity →',[-2.2,-1.5,-2.2],'rgba(20,80,160,.85)');
+  axisSprite('joint performance',[0,1.55,0],'rgba(20,120,60,.85)');
+
+  // operating point dot — vivid colored sphere
+  const ptGeo=new THREE.SphereGeometry(.13,16,12);
+  const ptMat=new THREE.MeshPhongMaterial({color:0x40c070,emissive:0x106030,shininess:120});
+  const ptDot=new THREE.Mesh(ptGeo,ptMat);scene.add(ptDot);
+  const glowGeo=new THREE.SphereGeometry(.24,12,10);
+  const glowMat=new THREE.MeshBasicMaterial({color:0x40c070,transparent:true,opacity:.18});
+  const glowDot=new THREE.Mesh(glowGeo,glowMat);scene.add(glowDot);
+
+  // vertical line from dot to base — dark on white
+  const vLineMat=new THREE.LineBasicMaterial({color:0x333028,transparent:true,opacity:.25});
+  let vLine=null;
+
+  let curPoint='brain';
+  const POINTS={
+    brain:{p:.68,s:.72,color:0x10c060,emissive:0x086030,label:'Brain (CLS)'},
+    sgd:  {p:.88,s:.06,color:0xe83020,emissive:0xa01000,label:'Standard SGD'},
+    ewc:  {p:.52,s:.42,color:0xe89010,emissive:0xa05800,label:'EWC regularization'},
+    adapter:{p:.62,s:.65,color:0x2080f0,emissive:0x104890,label:'Residual adapter'}
+  };
+
+  window.s3SetPoint=function(k){
+    curPoint=k;
+    ['brain','sgd','ewc','adapter'].forEach(id=>{
+      const btn=document.getElementById('s3-'+id);
+      if(btn) btn.className='sbtn'+(id===k?(k==='brain'?' cat':k==='sgd'?' on':k==='adapter'?' dog':' on'):'');
+    });
+    const pt=POINTS[k];
+    const perf=perfFn(pt.p,pt.s),y=perf*2.2-1.1;
+    const x=(pt.p-.5)*3.8,z=(pt.s-.5)*3.8;
+    ptDot.position.set(x,y+.2,z);
+    ptDot.material.color.setHex(pt.color);
+    ptDot.material.emissive.setHex(pt.emissive||0x000000);
+    glowDot.position.set(x,y+.2,z);
+    glowDot.material.color.setHex(pt.color);
+    if(vLine){scene.remove(vLine);}
+    const lpts=[new THREE.Vector3(x,-1.15,z),new THREE.Vector3(x,y+.12,z)];
+    vLine=new THREE.Line(new THREE.BufferGeometry().setFromPoints(lpts),vLineMat);
+    scene.add(vLine);
+    const el=id=>document.getElementById(id);
+    el('s3-name').textContent=pt.label;
+    el('s3-plast').textContent=Math.round(pt.p*100)+'%';
+    el('s3-stab').textContent=Math.round(pt.s*100)+'%';
+    const perfPct=Math.round(perf*100);
+    el('s3-perf').textContent=perfPct+'%';
+    el('s3-perf').style.color=perfPct>65?'#1a7a40':perfPct>35?'#9a6010':'#c02010';
+    el('s3-perf-sub').textContent=perfPct>65?'on the ridge':'below the ridge';
+    const caps={
+      brain:`<strong>Brain (CLS).</strong> The hippocampus and neocortex operate at separate timescales and never compete for the same weights. Performance sits on the ridge at ~${perfPct}%. This is architectural separation, not parameter tuning.`,
+      sgd:`<strong>Standard SGD.</strong> Maximum plasticity, near-zero stability. Every new task overwrites the old one. Performance collapses to ${perfPct}%. This is catastrophic forgetting in the performance space.`,
+      ewc:`<strong>Elastic Weight Consolidation.</strong> Regularization reduces effective plasticity slightly. Performance rises to ${perfPct}% but stays below the ridge. EWC slides along the tradeoff surface — it cannot escape it.`,
+      adapter:`<strong>Residual adapter (exp 023).</strong> Frozen backbone provides stability; small adapter provides plasticity in the nullspace. Performance reaches ${perfPct}%, approaching the ridge without joint training.`
+    };
+    el('s3-cap').innerHTML=caps[k]||'Select a system to place it on the surface.';
+  };
+
+  window.addEventListener('load',()=>{ window.s3SetPoint('brain'); loop3(); });
+  let af3,glowT=0;
+  function loop3(){af3=requestAnimationFrame(loop3);glowT+=.04;glowDot.material.opacity=.1+.08*Math.sin(glowT);renderer.render(scene,camera);}
+  window.addEventListener('resize',()=>{const cv=document.getElementById('cv3');const W2=cv.parentElement.clientWidth;cv.width=W2*devicePixelRatio;cv.style.width=W2+'px';renderer.setSize(W2,360);camera.aspect=W2/360;camera.updateProjectionMatrix();});
+})();
+</script>
+</body>
+</html>
